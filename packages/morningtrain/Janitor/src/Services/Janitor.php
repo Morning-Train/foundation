@@ -4,6 +4,7 @@ namespace morningtrain\Janitor\Services;
 
 use Illuminate\Routing\Router;
 use morningtrain\Janitor\Exceptions\JanitorException;
+use morningtrain\Janitor\Middleware\GlobalMiddleware;
 
 class Janitor {
 
@@ -74,10 +75,17 @@ class Janitor {
         $router = app()->make(Router::class);
 
         foreach($middleware as $key => $handler) {
+            // Global middleware
+            if (is_int($key)) {
+                GlobalMiddleware::append($handler);
+            }
+
             // Group
-            if (is_array($handler)) {
+            else if (is_array($handler)) {
                 $router->middlewareGroup($key, $handler);
             }
+
+            // Named middleware
             else {
                 $router->middleware($key, $handler);
             }

@@ -37,7 +37,7 @@ class ThemerServiceProvider extends ServiceProvider
         $this->app->bind('Themer', function( $app ) {
             // Register middleware in Janitor
             $app->make('Janitor')->registerMiddleware([
-                'themer' => LoadTheme::class
+                LoadTheme::class
             ]);
 
             return new Themer();
