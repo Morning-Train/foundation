@@ -21,6 +21,7 @@
             "database"
         ],
         "psr-4": {
+            "morningtrain\\Crud\\": "packages/morningtrain/Crud/src",
             "morningtrain\\Themer\\": "packages/morningtrain/Themer/src",
             "morningtrain\\Janitor\\": "packages/morningtrain/Janitor/src",
             "App\\": "app/"

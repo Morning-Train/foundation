@@ -21,7 +21,7 @@ class LoadTheme {
             config('themer.default', 'Base');
 
         // Load theme
-        app()->make('Themer')->load($themeName);
+        app()->make('themer')->load($themeName);
 
         return $next($request);
     }

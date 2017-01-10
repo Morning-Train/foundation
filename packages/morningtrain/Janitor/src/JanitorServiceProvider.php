@@ -21,7 +21,7 @@ class JanitorServiceProvider extends ServiceProvider
         ], 'config');
 
         // Register service
-        $this->app->bind('Janitor', Janitor::class);
+        $this->app->singleton('janitor', Janitor::class);
 
     }
 

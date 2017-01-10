@@ -48,7 +48,7 @@ class Theme {
 		// Fetch arguments
 		$args = array_slice(func_get_args(), 1);
 
-		if (is_array($this->actions[$actionName])) {
+		if (isset($this->actions[$actionName]) && is_array($this->actions[$actionName])) {
 			foreach ($this->actions[$actionName] as $callback) {
 				call_user_func_array($callback, $args);
 			}

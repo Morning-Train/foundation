@@ -177,6 +177,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        morningtrain\Crud\CrudServiceProvider::class,
+
         morningtrain\Janitor\JanitorServiceProvider::class,
         morningtrain\Themer\ThemerServiceProvider::class,
 

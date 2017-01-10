@@ -77,7 +77,8 @@ class GlobalMiddleware {
         $this->index++;
 
         if ($this->index === count(static::$middleware)) {
-            return $this->terminate($request);
+            $terminate = $this->terminate;
+            return $terminate($request);
         }
 
         $middlewareClass = static::$middleware[ $this->index ];
@@ -87,7 +88,10 @@ class GlobalMiddleware {
             throw new JanitorException("Global middleware `$middlewareClass` is invalid.");
         }
 
-        return $middleware->handle($request, [ $this, 'next' ]);
+        return $middleware->handle($request, \Closure::bind(function( $request ) {
+            return $this->next($request);
+
+        }, $this, static::class));
     }
 
 }

@@ -4,13 +4,47 @@ namespace morningtrain\Themer;
 
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
+use morningtrain\Janitor\Exceptions\JanitorException;
 use morningtrain\Themer\Middleware\LoadTheme;
 use morningtrain\Themer\Services\Themer;
 
 class ThemerServiceProvider extends ServiceProvider
 {
 
+    /**
+     * Perform post-registration booting of services.
+     *
+     * @return void
+     */
+    public function boot() {
+
+        // Publish files
+        $this->publish();
+
+        // Register blade directives
+        $this->registerBladeDirectives();
+
+    }
+
+    /**
+     * Register any package services.
+     *
+     * @return void
+     */
+    public function register() {
+
+        // Register themer service
+        $this->app->singleton('themer', function( $app ) {
+            return new Themer();
+        });
+
+    }
+
+    /**
+     * Files to publish
+     */
     public function publish() {
+
         // Publish config file
         $this->publishes([
             __DIR__ . '/../config/themer.php'  => config_path('themer.php')
@@ -22,35 +56,34 @@ class ThemerServiceProvider extends ServiceProvider
             __DIR__ . '/../gulp/themer.js'  => base_path('gulp/themer.js')
 
         ], 'gulp');
+
     }
 
     /**
-     * Perform post-registration booting of services.
-     *
-     * @return void
+     * Blade directives
      */
-    public function boot()
-    {
-        $this->publish();
+    public function registerBladeDirectives() {
+        $app = $this->app;
+        $blade = $this->app->make('blade.compiler');
 
-        // Register service
-        $this->app->bind('Themer', function( $app ) {
-            // Register middleware in Janitor
-            $app->make('Janitor')->registerMiddleware([
-                LoadTheme::class
-            ]);
+        // @act
+        $blade->directive('do', function( $expression ) use( $app ) {
 
-            return new Themer();
+            // Fetch arguments
+            $arguments = explode(',', str_replace(['(', ')', ' '], '', $expression));
+
+            if (
+                (count($arguments) === 0) ||
+                !is_string($arguments[0]) ||
+                (strlen($arguments[0]) === 0)
+            ) {
+                throw new JanitorException('Invalid action name passed to blade @act.');
+            }
+
+            // Stringify arguments
+            $arguments = implode(', ', $arguments);
+
+            return "<?php call_user_func_array([ app()->make('themer')->current(), 'do' ], [ $arguments ]); ?>";
         });
-    }
-
-    /**
-     * Register any package services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        //
     }
 }
