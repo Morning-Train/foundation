@@ -13,6 +13,9 @@ class CrudServiceProvider extends ServiceProvider {
      */
     public function boot() {
         $this->publish();
+
+        // Base classes
+        $this->registerBaseClasses();
     }
 
     /**
@@ -21,7 +24,28 @@ class CrudServiceProvider extends ServiceProvider {
      * @return void
      */
     public function register() {
-        //
+
+    }
+
+    public function registerBaseClasses() {
+        $janitor = $this->app->make('janitor');
+        $modelNamespace = config('janitor.namespaces.models', 'App\Models');
+        $controllerNamespace = config('janitor.namespaces.controllers', 'App\Http\Controllers');
+
+        // Base model
+        if (!class_exists("$modelNamespace\\Model")) {
+            $janitor->registerModels([
+                 "$modelNamespace\\Model"   => \Illuminate\Database\Eloquent\Model::class
+            ]);
+        }
+
+        // Base controller
+        if (!class_exists("$controllerNamespace\\Controller")) {
+            $janitor->registerControllers([
+                "$controllerNamespace\\Controller"  => \Illuminate\Routing\Controller::class
+            ]);
+        }
+
     }
 
     /**
@@ -46,6 +70,18 @@ class CrudServiceProvider extends ServiceProvider {
             __DIR__ . '/../resources/views' => base_path('resources/views/crud')
 
         ], 'views');
+
+        // Publish fields
+        $this->publishes([
+            __DIR__ . '/../resources/fields' => base_path('resources/fields')
+
+        ], 'fields');
+
+        // Publish stubs
+        $this->publishes([
+            __DIR__ . '/../resources/stubs' => base_path('resources/stubs')
+
+        ], 'stubs');
 
     }
 

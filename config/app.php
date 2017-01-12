@@ -177,9 +177,9 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-        morningtrain\Crud\CrudServiceProvider::class,
-
+        morningtrain\Stub\StubServiceProvider::class,
         morningtrain\Janitor\JanitorServiceProvider::class,
+        morningtrain\Crud\CrudServiceProvider::class,
         morningtrain\Themer\ThemerServiceProvider::class,
 
     ],
@@ -240,6 +240,7 @@ return [
 
         'Janitor' => \morningtrain\Janitor\Facades\Janitor::class,
         'Theme' => \morningtrain\Themer\Facades\Theme::class,
+        'Stub' => \morningtrain\Stub\Facades\Stub::class
 
     ],
 
