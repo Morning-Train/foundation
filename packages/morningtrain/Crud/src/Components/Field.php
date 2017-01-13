@@ -6,7 +6,7 @@ use Illuminate\Config\Repository;
 use Illuminate\Http\Request;
 use morningtrain\Crud\Contracts\Model;
 
-abstract class Field {
+class Field {
 
     public static function create( array $options = [] ) {
         $class = static::class;
@@ -57,15 +57,27 @@ abstract class Field {
      */
 
     public function render( Model $resource ) {
-        // ...
+        $renderer = $this->render;
+
+        if (is_callable($renderer)) {
+            $renderer($resource);
+        }
     }
 
     public function getValue( Model $resource ) {
-        // ...
+        $getter = $this->options->get('value.get');
+
+        if (is_callable($getter)) {
+            return $getter($resource);
+        }
     }
 
     public function setValue( Model $resource, Request $request ) {
-        // ...
+        $setter = $this->options->get('value.set');
+
+        if (is_callable($setter)) {
+            return $setter($resource, $request);
+        }
     }
 
 }

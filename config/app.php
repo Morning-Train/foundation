@@ -240,7 +240,8 @@ return [
 
         'Janitor' => \morningtrain\Janitor\Facades\Janitor::class,
         'Theme' => \morningtrain\Themer\Facades\Theme::class,
-        'Stub' => \morningtrain\Stub\Facades\Stub::class
+        'Stub' => \morningtrain\Stub\Facades\Stub::class,
+        'Crud' => \morningtrain\Crud\Facades\Crud::class
 
     ],
 

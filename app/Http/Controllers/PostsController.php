@@ -1,7 +1,14 @@
-@extends('stubs::class')
+<?php
 
-@section('body')
+namespace App\Http\Controllers;
 
+use morningtrain\Crud\Contracts\Controller;
+
+
+class PostsController extends Controller {
+    
+
+    
     /*
     * ------------------------------------------------
     * 			    Store options
@@ -9,12 +16,12 @@
     */
 
     /**
-    * @var string
+    * @var  string
     */
-    protected $model = {!! $model !!};
+    protected $model = \App\Models\Post::class;
 
     /**
-    * @var int
+    * @var  int
     */
     protected $paginationLimit = 10;
 
@@ -27,7 +34,7 @@
     /**
     * Generates and returns the index columns
     *
-    * @return array
+    * @return  array
     */
     protected function generateIndexColumns() {
         return [
@@ -47,7 +54,7 @@
     /**
     * Generates and returns the form fields
     *
-    * @return array
+    * @return  array
     */
     protected function generateFormFields() {
         return [];
@@ -60,9 +67,9 @@
     */
 
     /**
-    * @param Request $request
-    * @param Model $resource
-    * @return array
+    * @param  Request $request
+    * @param  Model $resource
+    * @return  array
     */
     protected function rules(Request $request, Model $resource) {
         return [];
@@ -75,24 +82,24 @@
     */
 
     /**
-    * @param Model $resource
+    * @param  Model $resource
     */
     protected function beforeStore(Model $resource) {}
 
     /**
-    * @param Model $resource
+    * @param  Model $resource
     */
     protected function afterStore(Model $resource) {
         // notify here instead with session->put()
     }
 
     /**
-    * @param Model $resource
+    * @param  Model $resource
     */
     protected function beforeDestroy(Model $resource) {}
 
     /**
-    * @param Model $resource
+    * @param  Model $resource
     */
     protected function afterDestroy(Model $resource) {
         // notify here instead with session->put()
@@ -118,4 +125,4 @@
         });
     }
 
-@stop
+}

@@ -2,7 +2,11 @@
 
 namespace morningtrain\Crud;
 
+use App\Http\Controllers\Controller;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
+use morningtrain\Crud\Commands\NewCrud;
+use morningtrain\Crud\Services\Crud;
 
 class CrudServiceProvider extends ServiceProvider {
 
@@ -24,28 +28,27 @@ class CrudServiceProvider extends ServiceProvider {
      * @return void
      */
     public function register() {
+        // Register commands
+        $this->commands([
+            NewCrud::class
+        ]);
 
+        // Register service
+        $this->app->singleton('crud', function() {
+            return new Crud();
+        });
     }
 
     public function registerBaseClasses() {
         $janitor = $this->app->make('janitor');
-        $modelNamespace = config('janitor.namespaces.models', 'App\Models');
-        $controllerNamespace = config('janitor.namespaces.controllers', 'App\Http\Controllers');
+        $baseModel = config('crud.base-classes.model', Model::class);
+        $baseController = config('crud.base-classes.controller', Controller::class);
 
-        // Base model
-        if (!class_exists("$modelNamespace\\Model")) {
-            $janitor->registerModels([
-                 "$modelNamespace\\Model"   => \Illuminate\Database\Eloquent\Model::class
-            ]);
-        }
+        $janitor->registerClasses([
+            'Model'         => $baseModel,
+            'Controller'    => $baseController
 
-        // Base controller
-        if (!class_exists("$controllerNamespace\\Controller")) {
-            $janitor->registerControllers([
-                "$controllerNamespace\\Controller"  => \Illuminate\Routing\Controller::class
-            ]);
-        }
-
+        ], '\\morningtrain\\Crud\\Base\\');
     }
 
     /**
@@ -67,7 +70,7 @@ class CrudServiceProvider extends ServiceProvider {
 
         // Publish views
         $this->publishes([
-            __DIR__ . '/../resources/views' => base_path('resources/views/crud')
+            __DIR__ . '/../resources/views/crud' => base_path('resources/views/crud')
 
         ], 'views');
 
@@ -82,6 +85,12 @@ class CrudServiceProvider extends ServiceProvider {
             __DIR__ . '/../resources/stubs' => base_path('resources/stubs')
 
         ], 'stubs');
+
+        // Publish lang
+        $this->publishes([
+            __DIR__ . '/../resources/lang'  => base_path('resources/lang')
+
+        ], 'lang');
 
     }
 

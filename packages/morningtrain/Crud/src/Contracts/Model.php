@@ -2,7 +2,7 @@
 
 namespace morningtrain\Crud\Contracts;
 
-use App\Models\Model as BaseModel;
+use morningtrain\Crud\Base\Model as BaseModel;
 
 abstract class Model extends BaseModel {
 

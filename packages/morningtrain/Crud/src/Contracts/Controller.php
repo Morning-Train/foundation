@@ -2,9 +2,12 @@
 
 namespace morningtrain\Crud\Contracts;
 
-use App\Http\Controllers\Controller as BaseController;
+use morningtrain\Crud\Base\Controller as BaseController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use morningtrain\Crud\Components\Field;
 use morningtrain\Crud\Components\Store;
+use morningtrain\Crud\Components\ViewHelper;
 
 abstract class Controller extends BaseController {
 
@@ -17,14 +20,23 @@ abstract class Controller extends BaseController {
             ]
         ]);
 
+        // Guess namespace
+        if (!isset($this->namespace)) {
+            $this->namespace = $this->store->getPluralName();
+        }
+
+        // Guess current slug
+        if (!isset($this->currentSlug)) {
+            $currentRoute = request()->route()->getName();
+            $currentRouteParts = explode('.', $currentRoute);
+            $this->currentSlug = end($currentRouteParts);
+        }
+
         // Create index columns
         $this->indexColumns = collect($this->generateIndexColumns());
 
         // Create form fields
         $this->formFields = collect($this->generateFormFields());
-
-        // Share view data
-        $this->shareViewData();
 
         // Setup base route
         if (!isset($this->baseRoute)) {
@@ -32,10 +44,22 @@ abstract class Controller extends BaseController {
             $currentRoute = request()->route()->getName();
             $currentRouteParts = explode('.', $currentRoute);
             array_pop($currentRouteParts);
-            array_push($currentRouteParts, 'index');
 
             $this->baseRoute = implode('.', $currentRouteParts);
         }
+
+        // View helper
+        $this->viewHelper = new ViewHelper([
+            'namespace'     => $this->namespace,
+            'viewNamespace' => $this->viewNamespace,
+            'baseRoute'     => $this->baseRoute,
+            'slug'          => $this->currentSlug,
+            'columns'       => $this->indexColumns,
+            'fields'        => $this->formFields
+        ]);
+
+        // Share view data
+        $this->shareViewData();
 
         // Boot controller
         $this->boot();
@@ -62,6 +86,11 @@ abstract class Controller extends BaseController {
      * @var int
      */
     protected $paginationLimit = 10;
+
+    /**
+     * @var string
+     */
+    protected $namespace;
 
     /*
 	 * ------------------------------------------------
@@ -103,6 +132,25 @@ abstract class Controller extends BaseController {
         return [];
     }
 
+    /**
+     * Sets model attributes based on fields
+     *
+     * @param Request $request
+     * @param Model $resource
+     */
+    protected function setFields(Request $request, Model $resource) {
+        /**
+         * @var Field $field
+         */
+        foreach($this->formFields as $field) {
+            $status = $field->setValue($resource, $request);
+
+            if (!is_null($status)) {
+                return $status;
+            }
+        }
+    }
+
     /*
 	 * ------------------------------------------------
 	 * 			    View and response functionality
@@ -120,6 +168,16 @@ abstract class Controller extends BaseController {
     protected $baseRoute;
 
     /**
+     * @var string
+     */
+    protected $currentSlug;
+
+    /**
+     * @var ViewHelper
+     */
+    protected $viewHelper;
+
+    /**
      * @param $viewName
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
@@ -129,7 +187,7 @@ abstract class Controller extends BaseController {
 
     protected function shareViewData() {
         view()->share([
-            'namespace', $this->viewNamespace
+            'crud'  => $this->viewHelper
         ]);
     }
 
@@ -137,7 +195,7 @@ abstract class Controller extends BaseController {
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     protected function redirectToBaseRoute() {
-        return redirect(route($this->baseRoute));
+        return redirect(route($this->baseRoute.'.index'));
     }
 
     /**
@@ -171,10 +229,9 @@ abstract class Controller extends BaseController {
 	 */
 
     /**
-     * @param Request $request
      * @param Model $resource
      */
-    protected function setAttributes(Request $request, Model $resource) {}
+    protected function beforeStore(Model $resource) {}
 
     /**
      * @param Model $resource
@@ -246,8 +303,11 @@ abstract class Controller extends BaseController {
         // Validate request
         $this->validate($request, $this->rules($request, $resource));
 
+        // Before store hook
+        $this->beforeStore($resource);
+
         // Update attributes
-        $status = $this->setAttributes($request, $resource);
+        $status = $this->setFields($request, $resource);
 
         if (!is_null($status)) {
             return $status;
