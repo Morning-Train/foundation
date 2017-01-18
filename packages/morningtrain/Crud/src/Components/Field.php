@@ -13,6 +13,26 @@ class Field {
         return new $class($options);
     }
 
+    /*
+     * Helper to create blade rendering fields
+     */
+
+    public static function __callStatic( $name, $arguments ) {
+        return static::create(array_merge(
+            isset($arguments[0]) && is_array($arguments[0]) ? $arguments[0] : [],
+            [
+                'render'    => function( Field $field, Model $resource, ViewHelper $helper ) use( $name ) {
+                    return view($helper->view("fields.$name"))->with([
+                        'crud'  => $helper,
+                        'entry' => $resource,
+                        'field' => $field
+
+                    ])->render();
+                }
+            ]
+        ));
+    }
+
     /**
      * @var Repository
      */
@@ -23,10 +43,15 @@ class Field {
         $this->options = new Repository($options);
     }
 
+    function __isset( $name ) {
+        $value = $this->$name;
+        return isset($value);
+    }
+
     function __get( $name ) {
 
         // Try to look for method getter
-        $methodLink = [ $this, 'get' . ucfirst($name) ];
+        $methodLink = [$this, 'get' . ucfirst($name)];
 
         if (is_callable($methodLink)) {
             return $methodLink();
@@ -50,33 +75,49 @@ class Field {
 
         // Get value from options
         $this->options->set($name, $value);
+
+    }
+
+    /*
+     * Id generator
+     */
+
+    public function getId() {
+        if (!$this->options->has('id')) {
+            $this->options->set('id', md5($this->options->get('name', uniqid()).time()));
+        }
+
+        return $this->options->get('id');
     }
 
     /*
      * Extensions
      */
 
-    public function render( Model $resource ) {
+    public function render( Model $resource, ViewHelper $helper ) {
         $renderer = $this->render;
 
         if (is_callable($renderer)) {
-            $renderer($resource);
+            return $renderer($this, $resource, $helper);
         }
+
+        return '';
     }
 
-    public function getValue( Model $resource ) {
-        $getter = $this->options->get('value.get');
-
-        if (is_callable($getter)) {
-            return $getter($resource);
-        }
-    }
-
-    public function setValue( Model $resource, Request $request ) {
-        $setter = $this->options->get('value.set');
+    public function update( Model $resource, Request $request ) {
+        $setter = $this->options->get('update');
 
         if (is_callable($setter)) {
             return $setter($resource, $request);
+        }
+
+        // Set value by name
+        $name = $this->options->get('name');
+
+        if (is_string($name) && (strlen($name) > 0)) {
+            $value = $request->get($name);
+
+            $resource->$name = $value;
         }
     }
 

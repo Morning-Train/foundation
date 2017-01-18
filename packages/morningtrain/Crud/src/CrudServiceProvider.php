@@ -4,6 +4,7 @@ namespace morningtrain\Crud;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
 use morningtrain\Crud\Commands\NewCrud;
 use morningtrain\Crud\Services\Crud;
@@ -17,9 +18,6 @@ class CrudServiceProvider extends ServiceProvider {
      */
     public function boot() {
         $this->publish();
-
-        // Base classes
-        $this->registerBaseClasses();
     }
 
     /**
@@ -34,21 +32,9 @@ class CrudServiceProvider extends ServiceProvider {
         ]);
 
         // Register service
-        $this->app->singleton('crud', function() {
-            return new Crud();
+        $this->app->singleton('crud', function( $app ) {
+            return new Crud( $app->make(Router::class) );
         });
-    }
-
-    public function registerBaseClasses() {
-        $janitor = $this->app->make('janitor');
-        $baseModel = config('crud.base-classes.model', Model::class);
-        $baseController = config('crud.base-classes.controller', Controller::class);
-
-        $janitor->registerClasses([
-            'Model'         => $baseModel,
-            'Controller'    => $baseController
-
-        ], '\\morningtrain\\Crud\\Base\\');
     }
 
     /**

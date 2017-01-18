@@ -12,6 +12,26 @@ class Column {
         return new $class($options);
     }
 
+    /*
+     * Helper to create blade rendering columns
+     */
+
+    public static function __callStatic( $name, $arguments ) {
+        return static::create(array_merge(
+            isset($arguments[0]) && is_array($arguments[0]) ? $arguments[0] : [],
+            [
+                'render'    => function( Column $column, Model $resource, ViewHelper $helper ) use( $name ) {
+                    return view($helper->view("columns.$name"))->with([
+                        'crud'      => $helper,
+                        'entry'     => $resource,
+                        'column'    => $column
+
+                    ])->render();
+                }
+            ]
+        ));
+    }
+
     /**
      * @var Repository
      */
@@ -20,6 +40,11 @@ class Column {
 
     function __construct( array $options = [] ) {
         $this->options = new Repository($options);
+    }
+
+    function __isset( $name ) {
+        $value = $this->$name;
+        return isset($value);
     }
 
     function __get( $name ) {
@@ -50,12 +75,12 @@ class Column {
         $this->options->set($name, $value);
     }
 
-    public function render( Model $resource ) {
+    public function render( Model $resource, ViewHelper $helper ) {
         // Get renderer from options
         $renderer = $this->render;
 
         if (is_callable($renderer)) {
-            return $renderer($resource);
+            return $renderer($this, $resource, $helper);
         }
 
         // Get by name

@@ -32,7 +32,7 @@
                         @if(!$crud->columns->isEmpty())
                             @foreach($crud->columns as $column)
                                 <td class="{{ $column->class }}">
-                                    {!! $column->render($entry) !!}
+                                    {!! $column->render($entry, $crud) !!}
                                 </td>
                             @endforeach
                         @endif

@@ -97,11 +97,11 @@ class Store {
     protected function applyFilters( $query ) {
         $filters = $this->request->all();
 
-        foreach($filters as $name) {
+        foreach($filters as $name => $value) {
             $filter = $this->options->get("filters.$name");
 
             if (is_callable($filter)) {
-                $filter($query, $this->request->get($name));
+                $filter($query, $value);
             }
         }
 

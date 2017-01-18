@@ -2,14 +2,18 @@
 
 namespace morningtrain\Crud\Contracts;
 
-use morningtrain\Crud\Base\Controller as BaseController;
+use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use morningtrain\Crud\Components\Field;
 use morningtrain\Crud\Components\Store;
 use morningtrain\Crud\Components\ViewHelper;
+use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 abstract class Controller extends BaseController {
+    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     function __construct() {
 
@@ -143,7 +147,7 @@ abstract class Controller extends BaseController {
          * @var Field $field
          */
         foreach($this->formFields as $field) {
-            $status = $field->setValue($resource, $request);
+            $status = $field->update($resource, $request);
 
             if (!is_null($status)) {
                 return $status;
@@ -287,7 +291,7 @@ abstract class Controller extends BaseController {
      * @return string
      */
     public function create(Request $request) {
-        return $this->view('crud.form')->with('entry', $this->one())->render();
+        return $this->view('crud.form')->with('entry', $this->store->one())->render();
     }
 
     /**
@@ -298,7 +302,7 @@ abstract class Controller extends BaseController {
     public function store(Request $request, $id = null) {
 
         // Get resource
-        $resource = $this->one($id);
+        $resource = $this->store->one($id);
 
         // Validate request
         $this->validate($request, $this->rules($request, $resource));
@@ -328,7 +332,7 @@ abstract class Controller extends BaseController {
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function destroy(Request $request, $id) {
-        $this->one($id, function( $resource ) {
+        $this->store->one($id, function( $resource ) {
 
             // Call before hook
             $this->beforeDestroy($resource);

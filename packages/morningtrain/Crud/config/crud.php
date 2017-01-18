@@ -14,7 +14,7 @@ return [
     ],
 
     'base-classes'     => [
-        'model'         => \Illuminate\Database\Eloquent\Model::class,
-        'controller'    => \App\Http\Controllers\Controller::class
+        'model'         => \morningtrain\Crud\Contracts\Model::class,
+        'controller'    => \morningtrain\Crud\Contracts\Controller::class
     ]
 ];

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 
 class CreatePostsTable extends Migration {
     
-
+    
     
     /**
     * Run the migrations.
@@ -19,6 +19,8 @@ class CreatePostsTable extends Migration {
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('title');
+            $table->text('content');
             $table->timestamps();
 
         });

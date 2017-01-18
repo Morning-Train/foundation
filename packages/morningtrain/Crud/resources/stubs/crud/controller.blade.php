@@ -1,5 +1,11 @@
 @extends('stubs::class')
 
+@section('imports')
+    use Illuminate\Http\Request;
+    use morningtrain\Crud\Contracts\Model;
+    use morningtrain\Crud\Components\Filter;
+@stop
+
 @section('body')
 
     /*
@@ -102,20 +108,8 @@
     * After constructor
     */
     protected function boot() {
-        $columns = $this->indexColumns;
-
         // Register filters
-        $this->store->addFilter('order', function($query, $name) use($columns) {
-            // Find column
-            $column = $columns->where('name', $name)->first();
-
-            if (isset($column) && $column->sortable) {
-                $direction = request()->get('dir', 'asc');
-                $column->order = $direction;
-
-                $query->orderBy($name, $direction);
-            }
-        });
+        $this->store->addFilter('order', Filter::order($this->indexColumns));
     }
 
 @stop

@@ -41,10 +41,10 @@ class Crud {
         // Determine routes
         $options['routes'] = isset($options['routes']) && is_array($options['routes']) ?
             $options['routes'] :
-            $this->getDefaultRoutes();
+            array_keys($this->getDefaultRoutes());
 
         // Filter options
-        $options = $this->filterOptions($options);
+        $options = $this->filterOptions($modelClass, $options);
 
         // Fetch controller and routes from options
         $base = isset($options['base']) ? $options['base'] : null;
@@ -59,6 +59,16 @@ class Crud {
 
         if (!is_string($controller) || (strlen($controller) === 0)) {
             throw new CrudException('Invalid controller name!');
+        }
+
+        // Check and fix controller namespace
+        $namespace = isset($options['namespace']) ? $options['namespace'] : null;
+
+        if (is_string($namespace) && (strlen($namespace) > 0)) {
+            if (strpos($namespace, 'App\\Http\\Controllers') === 0) {
+                $namespace = substr($namespace, strlen('App\\Http\\Controllers'));
+                $options['namespace'] = strlen($namespace) > 0 ? $namespace : null;
+            }
         }
 
         $this->router->group($options, function( $router ) use($base, $controller, $routes) {
@@ -129,7 +139,7 @@ class Crud {
             'edit'      => [
                 'method'    => 'get',
                 'action'    => 'show',
-                'path'      => trans('crud.common.routes.edit') . '/{id}',
+                'path'      => trans('crud.common.routes.edit', [ 'id' => '{id}' ]),
                 'where'     => [
                     'id'    => '[0-9]+'
                 ]
@@ -138,7 +148,7 @@ class Crud {
             'store'     => [
                 'method'    => 'post',
                 'action'    => 'store',
-                'path'      => trans('crud.common.routes.store') . '/{id?}',
+                'path'      => trans('crud.common.routes.store', [ 'id' => '{id?}' ]),
                 'where'     => [
                     'id'    => '[0-9]+'
                 ]
@@ -147,7 +157,7 @@ class Crud {
             'delete'    => [
                 'method'    => 'get',
                 'action'    => 'destroy',
-                'path'      => trans('crud.common.routes.delete') . '/{id}',
+                'path'      => trans('crud.common.routes.delete', [ 'id' => '{id}' ]),
                 'where'     => [
                     'id'    => '[0-9]+'
                 ]

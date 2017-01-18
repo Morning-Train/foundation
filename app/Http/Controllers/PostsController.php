@@ -2,7 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
+use Collective\Html\FormFacade as Form;
+use morningtrain\Crud\Components\Field;
+use morningtrain\Crud\Components\Column;
+use morningtrain\Crud\Components\Filter;
 use morningtrain\Crud\Contracts\Controller;
+use Illuminate\Http\Request;
+use morningtrain\Crud\Contracts\Model;
 
 
 class PostsController extends Controller {
@@ -37,10 +44,21 @@ class PostsController extends Controller {
     * @return  array
     */
     protected function generateIndexColumns() {
+        $crud = $this->viewHelper;
+
         return [
             Column::create([
                 'name'      => 'id',
                 'label'     => '#'
+            ]),
+
+            Column::create([
+                'name'      => 'title',
+                'label'     => 'Title'
+            ]),
+
+            Column::actions([
+                'label'     => 'Actions'
             ])
         ];
     }
@@ -57,7 +75,26 @@ class PostsController extends Controller {
     * @return  array
     */
     protected function generateFormFields() {
-        return [];
+        return [
+
+            Field::text([
+                'name'          => 'title',
+                'attributes'    => [
+                    'placeholder'   => 'Enter the title'
+                ]
+            ]),
+
+            Field::text([
+                'name'          => 'content',
+                'attributes'    => [
+                    'placeholder'   => 'Enter the contents'
+                ],
+                'update'        => function( Post $post, Request $request ) {
+                    $post->content = nl2br($request->get('content'));
+                }
+            ])
+
+        ];
     }
 
     /*
@@ -72,7 +109,10 @@ class PostsController extends Controller {
     * @return  array
     */
     protected function rules(Request $request, Model $resource) {
-        return [];
+        return [
+            'title'     => 'required',
+            'content'   => 'required'
+        ];
     }
 
     /*
@@ -109,19 +149,11 @@ class PostsController extends Controller {
     * After constructor
     */
     protected function boot() {
-        $columns = $this->indexColumns;
-
         // Register filters
-        $this->store->addFilter('order', function($query, $name) use($columns) {
-            // Find column
-            $column = $columns->where('name', $name)->first();
+        $this->store->addFilter('order', Filter::order($this->indexColumns));
 
-            if (isset($column) && $column->sortable) {
-                $direction = request()->get('dir', 'asc');
-                $column->order = $direction;
-
-                $query->orderBy($name, $direction);
-            }
+        $this->store->addFilter('title', function( $query, $search ) {
+             $query->where('title', 'LIKE', "%$search%");
         });
     }
 
