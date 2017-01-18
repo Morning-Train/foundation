@@ -79,39 +79,35 @@ class PostsController extends Controller {
 
             Field::text([
                 'name'          => 'title',
+                'rules'         => 'required',
                 'attributes'    => [
                     'placeholder'   => 'Enter the title'
+                ],
+                'params'        => [
+                    'extraParam'       => 'myExtraParam'
                 ]
             ]),
 
             Field::text([
                 'name'          => 'content',
+
+                // Validation hook
+                'rules'         => function( Post $post, Request $request ) {
+                    return $post->isNew() ?
+                        [ 'content' => 'required' ] :
+                        [];
+                },
+
+                // Update hook
+                'update'        => function( Post $post, Request $request ) {
+                    $post->content = nl2br($request->get('content'));
+                },
+
                 'attributes'    => [
                     'placeholder'   => 'Enter the contents'
                 ],
-                'update'        => function( Post $post, Request $request ) {
-                    $post->content = nl2br($request->get('content'));
-                }
             ])
 
-        ];
-    }
-
-    /*
-    * ------------------------------------------------
-    * 			    Validation hook
-    * ------------------------------------------------
-    */
-
-    /**
-    * @param  Request $request
-    * @param  Model $resource
-    * @return  array
-    */
-    protected function rules(Request $request, Model $resource) {
-        return [
-            'title'     => 'required',
-            'content'   => 'required'
         ];
     }
 

@@ -61,21 +61,6 @@
 
     /*
     * ------------------------------------------------
-    * 			    Validation hook
-    * ------------------------------------------------
-    */
-
-    /**
-    * @param Request $request
-    * @param Model $resource
-    * @return array
-    */
-    protected function rules(Request $request, Model $resource) {
-        return [];
-    }
-
-    /*
-    * ------------------------------------------------
     * 			    Action hooks
     * ------------------------------------------------
     */

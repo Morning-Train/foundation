@@ -21,13 +21,13 @@ class Field {
         return static::create(array_merge(
             isset($arguments[0]) && is_array($arguments[0]) ? $arguments[0] : [],
             [
-                'render'    => function( Field $field, Model $resource, ViewHelper $helper ) use( $name ) {
-                    return view($helper->view("fields.$name"))->with([
+                'render'    => function( Field $field, Model $resource, ViewHelper $helper, array $params ) use( $name ) {
+                    return view($helper->view("fields.$name"))->with(array_merge($params, [
                         'crud'  => $helper,
                         'entry' => $resource,
                         'field' => $field
 
-                    ])->render();
+                    ]))->render();
                 }
             ]
         ));
@@ -91,6 +91,35 @@ class Field {
     }
 
     /*
+     * Rules
+     */
+
+    public function rules( Model $resource, Request $request ) {
+        $name = $this->options->get('name');
+        $rules = $this->options->get('rules');
+
+        // String rules
+        if (is_string($rules) && (strlen($rules) > 0)) {
+            return is_string($name) && (strlen($name) > 0) ?
+                [ $name => $rules ] : [];
+        }
+
+        // Array rules
+        if (is_array($rules)) {
+            return $rules;
+        }
+
+        // Callable
+        if ($rules instanceof \Closure) {
+            $dynamicRules = $rules($resource, $request);
+
+            return is_array($dynamicRules) ? $dynamicRules : [];
+        }
+
+        return [];
+    }
+
+    /*
      * Extensions
      */
 
@@ -98,7 +127,7 @@ class Field {
         $renderer = $this->render;
 
         if (is_callable($renderer)) {
-            return $renderer($this, $resource, $helper);
+            return $renderer($this, $resource, $helper, $this->options->get('params', []));
         }
 
         return '';

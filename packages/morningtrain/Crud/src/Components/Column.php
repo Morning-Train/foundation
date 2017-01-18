@@ -20,13 +20,13 @@ class Column {
         return static::create(array_merge(
             isset($arguments[0]) && is_array($arguments[0]) ? $arguments[0] : [],
             [
-                'render'    => function( Column $column, Model $resource, ViewHelper $helper ) use( $name ) {
-                    return view($helper->view("columns.$name"))->with([
+                'render'    => function( Column $column, Model $resource, ViewHelper $helper, array $params ) use( $name ) {
+                    return view($helper->view("columns.$name"))->with(array_merge($params, [
                         'crud'      => $helper,
                         'entry'     => $resource,
                         'column'    => $column
 
-                    ])->render();
+                    ]))->render();
                 }
             ]
         ));
@@ -80,7 +80,7 @@ class Column {
         $renderer = $this->render;
 
         if (is_callable($renderer)) {
-            return $renderer($this, $resource, $helper);
+            return $renderer($this, $resource, $helper, $this->options->get('params', []));
         }
 
         // Get by name

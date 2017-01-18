@@ -222,7 +222,13 @@ abstract class Controller extends BaseController {
      * @return array
      */
     protected function rules(Request $request, Model $resource) {
-        return [];
+        $rules = [];
+
+        foreach($this->formFields as $field) {
+            $rules = array_merge($rules, $field->rules($resource, $request));
+        }
+
+        return $rules;
     }
 
 
