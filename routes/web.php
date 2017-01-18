@@ -15,7 +15,7 @@ use morningtrain\Crud\Facades\Crud;
 use App\Models\Post;
 
 Route::group([ 'theme' => 'Base' ], function() {
-    
-     Crud::route(Post::class);
+
+    Crud::route(Post::class);
 
 });

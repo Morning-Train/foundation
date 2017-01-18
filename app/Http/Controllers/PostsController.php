@@ -58,7 +58,8 @@ class PostsController extends Controller {
             ]),
 
             Column::actions([
-                'label'     => 'Actions'
+                'label'     => 'Actions',
+                'sortable'  => false
             ])
         ];
     }

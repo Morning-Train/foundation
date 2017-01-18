@@ -8,31 +8,95 @@ use morningtrain\Janitor\Middleware\GlobalMiddleware;
 
 class Janitor {
 
+    function __construct( Router $router ) {
+        $this->router = $router;
+    }
+
     /*
-     * Class registration (aliases)
+     * Vendors
      */
 
-    public function registerClasses( array $originals, string $namespace = 'App' ) {
-        foreach($originals as $base => $original) {
-            $baseName = is_string($base) ? "$namespace\\$base" : $base;
-            $classNameParts = explode("\\", $original);
-            $className = end($classNameParts);
-            $alias = "$baseName\\$className";
+    /**
+     * @var Router
+     */
+    protected $router;
 
-            if (class_exists($alias)) {
-                throw new JanitorException("Class alias `$alias` already exists.");
+    /*
+     * Model registration
+     */
+
+    /**
+     * @var array
+     */
+    protected $models = [];
+
+    public function registerModels( array $models, string $namespace = '' ) {
+        foreach($models as $name => $class) {
+            if (is_int($name)) {
+                $classParts = explode('\\', $class);
+                $name = end($classParts);
             }
 
-            class_alias($original, $alias);
+            // Add namespace to name
+            if (strlen($namespace) > 0) {
+                $name = $namespace . '\\' . $name;
+            }
+
+            $this->models[$name] = $class;
         }
     }
 
-    public function registerModels( array $models ) {
-        return $this->registerClasses($models, config('janitor.namespaces.models', 'App\Models'));
+    public function getRegisteredModels() {
+        return $this->models;
     }
 
-    public function registerControllers( array $controllers ) {
-        return $this->registerClasses($controllers, config('janitor.namespaces.controllers', 'App\Http\Controllers'));
+    /*
+     * Controller registration
+     */
+
+    protected $controllers = [];
+
+    public function registerControllers( array $controllers, string $namespace = '' ) {
+        foreach($controllers as $name => $class) {
+            if (is_int($name)) {
+                $classParts = explode('\\', $class);
+                $name = end($classParts);
+            }
+
+            // Add namespace to name
+            if (strlen($namespace) > 0) {
+                $name = $namespace . '\\' . $name;
+            }
+
+            $this->controllers[$name] = $class;
+        }
+    }
+
+    public function getRegisteredControllers() {
+        return $this->controllers;
+    }
+
+    /*
+     * Middleware registration
+     */
+
+    public function registerMiddleware( array $middleware ) {
+        foreach($middleware as $key => $handler) {
+            // Global
+            if (is_int($key)) {
+                GlobalMiddleware::append($handler);
+            }
+
+            // Group
+            else if (is_array($handler)) {
+                $this->router->middlewareGroup($key, $handler);
+            }
+
+            // Named middleware
+            else {
+                $this->router->middleware($key, $handler);
+            }
+        }
     }
 
     /*
@@ -66,30 +130,7 @@ class Janitor {
         }
 
         // Register route group
-        $router = app()->make(Router::class);
-
-        $router->group($options, $callback);
-    }
-
-    public function registerMiddleware( array $middleware ) {
-        $router = app()->make(Router::class);
-
-        foreach($middleware as $key => $handler) {
-            // Global middleware
-            if (is_int($key)) {
-                GlobalMiddleware::append($handler);
-            }
-
-            // Group
-            else if (is_array($handler)) {
-                $router->middlewareGroup($key, $handler);
-            }
-
-            // Named middleware
-            else {
-                $router->middleware($key, $handler);
-            }
-        }
+        $this->router->group($options, $callback);
     }
 
     /*

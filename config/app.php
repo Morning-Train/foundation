@@ -183,6 +183,8 @@ return [
         morningtrain\Crud\CrudServiceProvider::class,
         morningtrain\Themer\ThemerServiceProvider::class,
 
+        \App\Providers\JanitorTestingProvider::class
+
     ],
 
     /*

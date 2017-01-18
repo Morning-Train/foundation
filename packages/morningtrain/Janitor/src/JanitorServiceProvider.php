@@ -2,7 +2,9 @@
 
 namespace morningtrain\Janitor;
 
+use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
+use morningtrain\Janitor\Commands\Publish;
 use morningtrain\Janitor\Services\Janitor;
 
 class JanitorServiceProvider extends ServiceProvider
@@ -12,8 +14,7 @@ class JanitorServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
-    {
+    public function boot() {
         // Publish config file
         $this->publishes([
             __DIR__ . '/../config/janitor.php'  => config_path('janitor.php')
@@ -21,8 +22,8 @@ class JanitorServiceProvider extends ServiceProvider
         ], 'config');
 
         // Register service
-        $this->app->singleton('janitor', function () {
-            return new Janitor();
+        $this->app->singleton('janitor', function ( $app ) {
+            return new Janitor($app->make(Router::class));
         });
     }
 
@@ -31,8 +32,9 @@ class JanitorServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
-    {
-        //
+    public function register() {
+        $this->commands([
+            Publish::class
+        ]);
     }
 }
