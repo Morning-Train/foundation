@@ -32,6 +32,12 @@ class Janitor {
 
     public function registerModels( array $models, string $namespace = '' ) {
         foreach($models as $name => $class) {
+            // Check if bundled into namespace
+            if (is_array($class)) {
+                $this->registerModels($class, strlen($namespace) > 0 ? $namespace . '\\' . $name : $name);
+                continue;
+            }
+
             if (is_int($name)) {
                 $classParts = explode('\\', $class);
                 $name = end($classParts);
@@ -58,6 +64,12 @@ class Janitor {
 
     public function registerControllers( array $controllers, string $namespace = '' ) {
         foreach($controllers as $name => $class) {
+            // Check if bundled into namespace
+            if (is_array($class)) {
+                $this->registerControllers($class, strlen($namespace) > 0 ? $namespace . '\\' . $name : $name);
+                continue;
+            }
+
             if (is_int($name)) {
                 $classParts = explode('\\', $class);
                 $name = end($classParts);
