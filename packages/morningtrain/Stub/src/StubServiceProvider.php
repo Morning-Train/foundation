@@ -13,8 +13,7 @@ class StubServiceProvider extends ServiceProvider
      * @return void
      */
     public function boot() {
-        $this->publish();
-        $this->app->singleton('stub', Stub::class);
+
     }
 
     /**
@@ -23,7 +22,13 @@ class StubServiceProvider extends ServiceProvider
      * @return void
      */
     public function register() {
-        //
+        // Publish files
+        $this->publish();
+
+        // Register service
+        $this->app->singleton(Stub::class, function() {
+            return new Stub();
+        });
     }
 
     /**

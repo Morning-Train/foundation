@@ -17,6 +17,14 @@ class Stub {
          * Setup compile arguments for class
          */
 
+        // class name
+        $class = isset($params['class']) && is_string($params['class']) ? $params['class'] : '';
+
+        if (strlen($class) === 0) {
+            // Generate an unique name for the class
+            $class = 'Class_' . uniqid();
+        }
+
         // namespace
         $namespace = isset($params['namespace']) && is_string($params['namespace']) ? $params['namespace'] : '';
         $params['namespace'] = '';
@@ -27,6 +35,7 @@ class Stub {
 
         // imports
         $imports = isset($params['imports']) && is_array($params['imports']) ? $params['imports'] : [];
+        $imports = $this->resolveImportConflicts($class, $imports);
         $params['imports'] = '';
 
         foreach($imports as $key => $import) {
@@ -91,6 +100,31 @@ class Stub {
         }
 
         return $normalizedClasses;
+    }
+
+    protected function resolveImportConflicts( $className, array $imports) {
+        $resolved = [];
+
+        foreach ($imports as $key => $import) {
+            $importSegments = explode('\\', $import);
+            $importClass = end($importSegments);
+
+            if ($className !== $importClass) {
+                $resolved[$key] = $import;
+                continue;
+            }
+
+            $importClass = "Base$importClass";
+
+            if (is_int($key)) {
+                $resolved[$import] = $importClass;
+            }
+            else {
+                $resolved[$key] = $importClass;
+            }
+        }
+
+        return $resolved;
     }
 
 }

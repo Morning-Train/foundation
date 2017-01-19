@@ -9,8 +9,7 @@ return [
 
     'paths'         => [
         'models'        => app_path('Models'),
-        'controllers'   => app_path('Http\\Controllers'),
-        'migrations'    => database_path('migrations')
+        'controllers'   => app_path('Http\\Controllers')
     ],
 
     'base-classes'     => [

@@ -17,13 +17,8 @@ class ThemerServiceProvider extends ServiceProvider
      * @return void
      */
     public function boot() {
-
-        // Publish files
-        $this->publish();
-
         // Register blade directives
         $this->registerBladeDirectives();
-
     }
 
     /**
@@ -33,8 +28,11 @@ class ThemerServiceProvider extends ServiceProvider
      */
     public function register() {
 
+        // Publish files
+        $this->publish();
+
         // Register themer service
-        $this->app->singleton('themer', function( $app ) {
+        $this->app->singleton(Themer::class, function( $app ) {
             return new Themer();
         });
 

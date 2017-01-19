@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use morningtrain\Acl\Extensions\Roleable;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable,
+        Roleable;
 
     /**
      * The attributes that are mass assignable.
@@ -26,4 +28,21 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    /**
+     * Extra permissionables relationships (besides roles)
+     *
+     * @var array
+     */
+    protected $permissionables = [
+        'companies.roles'
+    ];
+
+    /*
+     * Relationships
+     */
+
+    public function companies() {
+        return $this->belongsToMany(Company::class, 'user_company_relation');
+    }
 }

@@ -89,6 +89,34 @@ class Janitor {
     }
 
     /*
+     * Publish initializer registration (closures called before publish if option -init is passed)
+     */
+
+    protected $initializer = [];
+
+    public function registerInitializer( \Closure $closure ) {
+        $this->initializer[] = $closure;
+    }
+
+    public function getRegisteredInitializer() {
+        return $this->initializer;
+    }
+
+    /*
+     * Publish colosures (custom publish scripts)
+     */
+
+    protected $publishers = [];
+
+    public function registerPublisher( \Closure $closure ) {
+        $this->publishers[] = $closure;
+    }
+
+    public function getRegisteredPublishers() {
+        return $this->publishers;
+    }
+
+    /*
      * Middleware registration
      */
 
@@ -109,6 +137,26 @@ class Janitor {
                 $this->router->middleware($key, $handler);
             }
         }
+    }
+
+    /*
+     * Migration registration
+     */
+
+    protected $migrations = [];
+
+    public function registerMigrations( array $migrations ) {
+        foreach( $migrations as $migration ) {
+            if (!file_exists($migration)) {
+                throw new JanitorException("Migration `$migration` does not exist!");
+            }
+
+            $this->migrations[] = $migration;
+        }
+    }
+
+    public function getRegisteredMigrations() {
+        return $this->migrations;
     }
 
     /*

@@ -23,6 +23,11 @@ abstract class JanitorFeature {
     protected $middleware = [];
 
     /**
+     * @var array
+     */
+    protected $migrations = [];
+
+    /**
      * @var string
      */
     protected $routerGroup = '';
@@ -40,21 +45,85 @@ abstract class JanitorFeature {
     }
 
     /**
+     * Returns a closure called into janitor:publish when option --init is passed (before any publishing is made)
+     *
+     * @return Closure|null
+     */
+    protected function initializer() {
+        // Return a closure here
+    }
+
+    /**
+     * Returns a closure called in janitor:publish after all default publishing is done
+     */
+    protected function publisher() {
+        // Return a closure here
+    }
+
+    /*
+     * Accessors (or dynamic getters)
+     */
+
+    protected function models() {
+        return $this->models;
+    }
+
+    protected function controllers() {
+        return $this->controllers;
+    }
+
+    protected function migrations() {
+        return $this->migrations;
+    }
+
+    protected function middleware() {
+        return $this->middleware;
+    }
+
+    protected function routerGroup() {
+        return $this->routerGroup;
+    }
+
+    protected function routerOptions() {
+        return $this->routerOptions;
+    }
+
+    /**
      * @param Janitor $janitor
      */
     public function register( Janitor $janitor ) {
+
+        // Initializer
+        $initializer = $this->initializer();
+
+        if ($initializer instanceof \Closure) {
+            $janitor->registerInitializer($initializer);
+        }
+
+        // Publisher
+        $publisher = $this->publisher();
+
+        if ($publisher instanceof \Closure) {
+            $janitor->registerPublisher($publisher);
+        }
+
         // Models
-        $janitor->registerModels($this->models);
+        $janitor->registerModels($this->models());
 
         // Controllers
-        $janitor->registerControllers($this->controllers);
+        $janitor->registerControllers($this->controllers());
+
+        // Migration
+        $janitor->registerMigrations($this->migrations());
 
         // Middleware
-        $janitor->registerMiddleware($this->middleware);
+        $janitor->registerMiddleware($this->middleware());
 
         // Route group
-        if (is_string($this->routerGroup) && (strlen($this->routerGroup) > 0)) {
-            $janitor->registerRoutes($this->routerGroup, $this->routerOptions, [ $this, 'routes' ]);
+        $group = $this->routerGroup();
+
+        if (is_string($group) && (strlen($group) > 0)) {
+            $janitor->registerRoutes($group, $this->routerOptions(), [ $this, 'routes' ]);
         }
     }
 

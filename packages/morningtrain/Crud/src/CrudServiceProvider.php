@@ -16,8 +16,8 @@ class CrudServiceProvider extends ServiceProvider {
      *
      * @return void
      */
-    public function boot() {
-        $this->publish();
+    public function boot( Router $router ) {
+
     }
 
     /**
@@ -26,14 +26,17 @@ class CrudServiceProvider extends ServiceProvider {
      * @return void
      */
     public function register() {
+        // Publish files
+        $this->publish();
+
         // Register commands
         $this->commands([
             NewCrud::class
         ]);
 
         // Register service
-        $this->app->singleton('crud', function( $app ) {
-            return new Crud( $app->make(Router::class) );
+        $this->app->singleton(Crud::class, function( $app ) {
+            return new Crud($app->make(Router::class));
         });
     }
 

@@ -3,8 +3,18 @@
 namespace morningtrain\Themer\Middleware;
 
 use Closure;
+use morningtrain\Themer\Services\Themer;
 
 class LoadTheme {
+
+    /**
+     * @var Themer
+     */
+    protected $themer;
+
+    function __construct( Themer $themer ) {
+        $this->themer = $themer;
+    }
 
     public function handle($request, Closure $next) {
         $action = $request->route()->getAction();
@@ -21,7 +31,7 @@ class LoadTheme {
             config('themer.default', 'Base');
 
         // Load theme
-        app()->make('themer')->load($themeName);
+        $this->themer->load($themeName);
 
         return $next($request);
     }

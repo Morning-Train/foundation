@@ -178,12 +178,11 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        morningtrain\Acl\AclServiceProvider::class,
         morningtrain\Stub\StubServiceProvider::class,
         morningtrain\Janitor\JanitorServiceProvider::class,
         morningtrain\Crud\CrudServiceProvider::class,
-        morningtrain\Themer\ThemerServiceProvider::class,
-
-        \App\Providers\JanitorTestingProvider::class
+        morningtrain\Themer\ThemerServiceProvider::class
 
     ],
 

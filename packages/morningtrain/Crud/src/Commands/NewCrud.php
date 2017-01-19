@@ -8,6 +8,8 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use morningtrain\Crud\Contracts\Controller;
 use morningtrain\Crud\Contracts\Model;
+use morningtrain\Janitor\Helper\MigrationHelper;
+use morningtrain\Stub\Services\Stub;
 use Symfony\Component\Console\Input\InputArgument;
 
 class NewCrud extends Command
@@ -17,7 +19,7 @@ class NewCrud extends Command
      *
      * @var string
      */
-    protected $signature = 'crud:new {model} {--o}';
+    protected $signature = 'crud:new {model} {--o} {--config=} {--stubs=}';
 
     /**
      * The console command description.
@@ -41,11 +43,19 @@ class NewCrud extends Command
      *
      * @return void
      */
-    public function __construct() {
+    public function __construct( Stub $stub ) {
         parent::__construct();
 
-        $this->stub = app()->make('stub');
+        $this->stub = $stub;
+        $this->migrator = new MigrationHelper();
     }
+
+    /*
+     * Config
+     */
+
+    protected $config_path = 'crud';
+    protected $stubs_path = 'crud';
 
     /**
      * Execute the console command.
@@ -57,6 +67,19 @@ class NewCrud extends Command
         $controllerName = str_plural($modelName).'Controller';
         $migrationName = strtolower(str_plural($modelName));
 
+        // Determine options
+        $config = $this->option('config');
+        $stubs = $this->option('stubs');
+
+        if (is_string($config) && (strlen($config) > 0)) {
+            $this->config_path = $config;
+        }
+
+        if (is_string($stubs) && (strlen($stubs) > 0)) {
+            $this->stubs_path = $stubs;
+        }
+
+        // Run
         $migration = $this->createMigration($migrationName);
         $model = $this->createModel($modelName);
         $controller = $this->createController($controllerName, $model);
@@ -68,28 +91,37 @@ class NewCrud extends Command
      * Libraries
      */
 
+    /**
+     * @var Stub
+     */
     protected $stub;
+
+    /**
+     * @var MigrationHelper
+     */
+    protected $migrator;
 
     /*
      * Helpers
      */
 
     protected function createMigration( $name ) {
-        $prefix = date('Y_m_d_His_');
+        $stubs = $this->stubs_path;
+
         $migrationName = 'create_' . $name . '_table';
-        $filename = $prefix.$migrationName;
-        $destination = config('crud.paths.migrations', database_path('migrations')) . '/' . $filename . '.php';
+        $filename = $this->migrator->filename($migrationName);
+        $destination = $this->migrator->path($filename);
         $className = 'Create'.ucfirst($name).'Table';
-        $existingMigration = $this->existingMigration($migrationName);
+        $existingMigration = $this->migrator->exists($filename);
 
         if (($existingMigration === false) || $this->option('o')) {
 
             // Delete existing migration
             if ($existingMigration !== false) {
-                unlink(database_path("migrations/$existingMigration"));
+                unlink($this->migrator->path($existingMigration));
             }
 
-            $this->stub->create('crud.migration', $destination, [
+            $this->stub->create("$stubs.migration", $destination, [
                 'imports' => [
                     Migration::class,
                     Blueprint::class,
@@ -106,13 +138,16 @@ class NewCrud extends Command
     }
 
     protected function createModel( $name ) {
-        $namespace = config('crud.namespaces.models', 'App\\Models');
-        $destination = config('crud.paths.models', app_path('Models')) . '/' . $name . '.php';
-        $baseModel = config('crud.base-classes.model', Model::class);
+        $config = $this->config_path;
+        $stubs = $this->stubs_path;
+
+        $namespace = config("$config.namespaces.models", config('crud.namespaces.models', 'App\\Models'));
+        $destination = config("$config.paths.models", config('crud.paths.models', app_path('Models'))) . '/' . $name . '.php';
+        $baseModel = config("$config.base-classes.models", config('crud.base-classes.models', Model::class));
 
         if (!file_exists($destination) || $this->option('o')) {
 
-            $this->stub->create('crud.model', $destination, [
+            $this->stub->create("$stubs.model", $destination, [
                 'namespace' => $namespace,
                 'imports' => [
                     $baseModel
@@ -127,13 +162,16 @@ class NewCrud extends Command
     }
 
     protected function createController( $name, $model ) {
-        $namespace = config('crud.namespaces.controllers', 'App\\Http\\Controllers');
-        $destination = config('crud.paths.controllers', app_path('Http\\Controllers')) . '/' . $name . '.php';
-        $baseController = config('crud.base-classes.controller', Controller::class);
+        $config = $this->config_path;
+        $stubs = $this->stubs_path;
+
+        $namespace = config("$config.namespaces.controllers", config('crud.namespaces.controllers', 'App\\Http\\Controllers'));
+        $destination = config("$config.paths.controllers", config('crud.paths.controllers', app_path('Http\\Controllers'))) . '/' . $name . '.php';
+        $baseController = config("$config.base-classes.controllers", config('crud.base-classes.controllers', Controller::class));
 
         if (!file_exists($destination) || $this->option('o')) {
 
-            $this->stub->create('crud.controller', $destination, [
+            $this->stub->create("$stubs.controller", $destination, [
                 'namespace' => $namespace,
                 'imports' => [
                     $baseController
@@ -146,17 +184,5 @@ class NewCrud extends Command
         }
 
         return "$namespace\\$name";
-    }
-
-    protected function existingMigration( string $migrationName ) {
-        $dh = opendir(config('crud.paths.migrations', database_path('migrations')));
-
-        while(($filename = readdir($dh)) !== false) {
-            if (strpos($filename, $migrationName) !== false) {
-                return $filename;
-            }
-        }
-
-        return false;
     }
 }

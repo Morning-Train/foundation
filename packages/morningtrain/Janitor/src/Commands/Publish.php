@@ -8,6 +8,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use morningtrain\Crud\Contracts\Controller;
 use morningtrain\Crud\Contracts\Model;
+use morningtrain\Janitor\Helper\MigrationHelper;
 use morningtrain\Janitor\Services\Janitor;
 use morningtrain\Stub\Services\Stub;
 use Symfony\Component\Console\Input\InputArgument;
@@ -19,7 +20,7 @@ class Publish extends Command
      *
      * @var string
      */
-    protected $signature = 'janitor:publish {--o}';
+    protected $signature = 'janitor:publish {--o} {--init}';
 
     /**
      * The console command description.
@@ -33,11 +34,12 @@ class Publish extends Command
      *
      * @return void
      */
-    public function __construct() {
+    public function __construct( Janitor $janitor, Stub $stub ) {
         parent::__construct();
 
-        $this->stub = app()->make('stub');
-        $this->janitor = app()->make('janitor');
+        $this->janitor = $janitor;
+        $this->stub = $stub;
+        $this->migrator = new MigrationHelper();
     }
 
     /**
@@ -46,8 +48,26 @@ class Publish extends Command
      * @return mixed
      */
     public function handle() {
+        // Call initializer
+        if ($this->option('init')) {
+            $initializer = $this->janitor->getRegisteredInitializer();
+
+            foreach($initializer as $closure) {
+                $closure();
+            }
+        }
+
+        // Call vendor publish
+        $this->call('vendor:publish');
+
+        $this->publishMigrations($this->janitor->getRegisteredMigrations());
         $this->publishModels($this->janitor->getRegisteredModels());
         $this->publishControllers($this->janitor->getRegisteredControllers());
+
+        // Call custom publishers
+        foreach ($this->janitor->getRegisteredPublishers() as $publisher) {
+            $publisher();
+        }
 
         $this->info('Everything has been published!');
     }
@@ -66,9 +86,38 @@ class Publish extends Command
      */
     protected $janitor;
 
+    /**
+     * @var MigrationHelper
+     */
+    protected $migrator;
+
     /*
      * Publish helpers
      */
+
+    protected function publishMigrations( array $migrations ) {
+        foreach( $migrations as $source ) {
+            $sourceParts = explode('/', $source);
+            $filename = end($sourceParts);
+            $nameParts = explode('.', $filename);
+            $name = array_shift($nameParts);
+            $existingMigration = $this->migrator->exists($name);
+
+            if (($existingMigration === false) || ($this->option('o'))) {
+
+                // Remove existing migration
+                if ($existingMigration !== false) {
+                    unlink($this->migrator->path($existingMigration));
+                }
+
+                // Create new migration
+                $filename = $this->migrator->filename($name);
+                $path = $this->migrator->path($filename);
+
+                copy($source, $path);
+            }
+        }
+    }
 
     protected function publishModels( array $models ) {
         $baseNamespace = config('janitor.namespaces.models', 'App\\Models');
