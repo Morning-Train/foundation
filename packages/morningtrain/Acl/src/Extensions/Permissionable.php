@@ -3,6 +3,7 @@
 namespace morningtrain\Acl\Extensions;
 
 use morningtrain\Acl\Models\Permission;
+use morningtrain\Janitor\Services\Janitor;
 
 trait Permissionable {
 
@@ -11,7 +12,7 @@ trait Permissionable {
      */
 
     public function permissions() {
-        return $this->morphToMany(Permission::class, 'permissionable');
+        return $this->morphToMany(app()->make(Janitor::class)->getPublishedModelFor(Permission::class), 'permissionable');
     }
 
     /*

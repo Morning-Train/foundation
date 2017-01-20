@@ -14,12 +14,16 @@
 use morningtrain\Crud\Facades\Crud;
 use App\Models\Post;
 
-use morningtrain\Acl\Models\Role;
+use App\Models\Role;
 use App\Models\User;
 use App\Models\Company;
 use Illuminate\Support\Facades\Auth;
 
 Route::group([ 'prefix' => 'test' ], function() {
+
+    Route::get('morph', function() {
+        dd(\App\Models\Role::first()->permissions, Role::first()->permissions);
+    });
 
     Route::get('add-post', function () {
         $post = new Post();

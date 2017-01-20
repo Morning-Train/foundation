@@ -4,6 +4,7 @@ namespace morningtrain\Acl\Extensions;
 
 use morningtrain\Acl\Models\Permission;
 use morningtrain\Acl\Models\Role;
+use morningtrain\Janitor\Services\Janitor;
 
 trait Roleable {
     use Permissionable;
@@ -13,7 +14,7 @@ trait Roleable {
      */
 
     public function roles() {
-        return $this->morphToMany(Role::class, 'roleable');
+        return $this->morphToMany(app()->make(Janitor::class)->getPublishedModelFor(Role::class), 'roleable');
     }
 
     /*

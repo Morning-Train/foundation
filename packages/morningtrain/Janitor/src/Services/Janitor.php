@@ -56,6 +56,24 @@ class Janitor {
         return $this->models;
     }
 
+    public function getPublishedModelFor( $class ) {
+        $model = array_search($class, $this->models);
+
+        if ($model === false) {
+            throw new JanitorException("The class $class has no registered model!");
+        }
+
+        // Validate class
+        $namespace = config('janitor.namespaces.models', 'App\\Models');
+        $modelClass = "$namespace\\$model";
+
+        if (!class_exists($modelClass)) {
+            throw new JanitorException("The published model class for $class does not exist. Consider running `php artisan janitor:publish`.");
+        }
+
+        return $modelClass;
+    }
+
     /*
      * Controller registration
      */
@@ -82,6 +100,24 @@ class Janitor {
 
             $this->controllers[$name] = $class;
         }
+    }
+
+    public function getPublishedControllerFor( $class ) {
+        $controller = array_search($class, $this->controllers);
+
+        if ($controller === false) {
+            throw new JanitorException("The class $class has no registered controllers!");
+        }
+
+        // Validate class
+        $namespace = config('janitor.namespaces.controllers', 'App\\Http\\Controllers');
+        $controllerClass = "$namespace\\$controller";
+
+        if (!class_exists($controllerClass)) {
+            throw new JanitorException("The published controller class for $class does not exist. Consider running `php artisan janitor:publish`.");
+        }
+
+        return $controllerClass;
     }
 
     public function getRegisteredControllers() {

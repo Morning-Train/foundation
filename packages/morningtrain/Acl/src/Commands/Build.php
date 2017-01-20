@@ -5,6 +5,7 @@ namespace morningtrain\Acl\Commands;
 use Illuminate\Console\Command;
 use morningtrain\Acl\Models\Permission;
 use morningtrain\Acl\Models\Role;
+use morningtrain\Janitor\Services\Janitor;
 use Symfony\Component\Console\Input\InputArgument;
 
 class Build extends Command
@@ -28,9 +29,27 @@ class Build extends Command
      *
      * @return void
      */
-    public function __construct() {
+    public function __construct( Janitor $janitor ) {
         parent::__construct();
+
+        $this->permissionModel = $janitor->getPublishedModelFor(Permission::class);
+        $this->roleModel = $janitor->getPublishedModelFor(Role::class);
     }
+
+    /*
+     * Model classes
+     *
+     */
+
+    /**
+     * @var string
+     */
+    protected $permissionModel;
+
+    /**
+     * @var string
+     */
+    protected $roleModel;
 
     /**
      * Execute the console command.
@@ -48,6 +67,9 @@ class Build extends Command
     }
 
     protected function syncPermissions( array $permissions, string $namespace = '' ) {
+        $permissionModel = $this->permissionModel;
+        $roleModel = $this->roleModel;
+
         foreach ($permissions as $segment => $name) {
             // Nested permissions
             if (is_array($name)) {
@@ -65,11 +87,11 @@ class Build extends Command
             $slug = strlen($namespace) > 0 ? "$namespace.$segment" : $segment;
 
             // Check if it needs update
-            $permission = Permission::where('slug', $slug)->first();
+            $permission = $permissionModel::where('slug', $slug)->first();
 
             // Create the permission if missing
             if (is_null($permission)) {
-                $permission = new Permission();
+                $permission = new $permissionModel();
                 $permission->slug = $slug;
                 $permission->name = $name;
                 $permission->save();
@@ -84,16 +106,19 @@ class Build extends Command
     }
 
     protected function syncRoles( array $roles ) {
+        $permissionModel = $this->permissionModel;
+        $roleModel = $this->roleModel;
+
         foreach ($roles as $slug => $data) {
             // Check if it needs update
-            $role = Role::where('slug', $slug)->first();
+            $role = $roleModel::where('slug', $slug)->first();
             $name = isset($data['name']) ? $data['name'] : null;
             $super = isset($data['super']) && $data['super'] ? 1 : 0;
             $permissions = isset($data['permissions']) && is_array($data['permissions']) ? $data['permissions'] : [];
 
             // Create the role if missing
             if (is_null($role)) {
-                $role = new Role();
+                $role = new $roleModel();
                 $role->slug = $slug;
                 $role->name = $name;
                 $role->is_super = $super;

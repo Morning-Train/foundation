@@ -6,6 +6,6 @@ use morningtrain\Acl\Models\Role as BaseRole;
 
 
 class Role extends BaseRole {
+
     
-    
-    }
+}
