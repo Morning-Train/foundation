@@ -1,0 +1,29 @@
+/* COLORS */
+$primary: #132A3D;
+$primary-light: lighten($primary, 10%);
+$primary-lightest: #eaecef;
+$secondary: #242424;
+$secondary-light: lighten($secondary, 10%);
+$red: #e74c3c;
+$green: #44A725;
+$background-color: #fafafa;
+
+/* PADDING AND MARGIN */
+$padding-desktop: 20px 40px;
+$header-height: 60px;
+$main-sidebar-openwidth: 200px;
+$main-sidebar-closedwidth: 50px;
+$profile-sidebar-openwidth: 120px;
+$profile-sidebar-closedwidth: 0px;
+
+$header-bg: $primary;
+$sidebar-bg: #cacaca;
+$sidebar-textcolor: $primary;
+$sidebar-activebg: #ececec;
+
+/* TYPOGRAHPY */
+$font: 'Roboto', sans-serif;
+
+/* SCREEN */
+$bp-medium: 768px;
+$bp-large: 1200px;

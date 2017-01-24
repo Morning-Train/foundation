@@ -1,9 +1,11 @@
 @extends('stubs::class')
 
 @section('imports')
-    use Illuminate\Http\Request;
-    use morningtrain\Crud\Contracts\Model;
-    use morningtrain\Crud\Components\Filter;
+use Illuminate\Http\Request;
+use morningtrain\Crud\Contracts\Model;
+use morningtrain\Crud\Components\Filter;
+use morningtrain\Crud\Components\Column;
+use morningtrain\Crud\Components\Field;
 @stop
 
 @section('body')

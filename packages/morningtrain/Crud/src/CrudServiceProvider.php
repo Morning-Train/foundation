@@ -38,6 +38,9 @@ class CrudServiceProvider extends ServiceProvider {
         $this->app->singleton(Crud::class, function( $app ) {
             return new Crud($app->make(Router::class));
         });
+
+        // Register extensions
+        $this->registerAclAccess();
     }
 
     /**
@@ -81,6 +84,42 @@ class CrudServiceProvider extends ServiceProvider {
 
         ], 'lang');
 
+    }
+
+    /*
+     * ACL Access
+     */
+
+    protected function registerAclAccess() {
+        // Register acl access filter if the service is loaded
+        if (class_exists('\morningtrain\Acl\AclServiceProvider')) {
+            $this->app->make(Crud::class)->addFilter(function( $model, $options ) {
+
+                $middleware = isset($options['middleware']) ? $options['middleware'] : null;
+
+                if (is_string($middleware)) {
+                    $middleware = [ $middleware ];
+                }
+                else {
+                    $middleware = [];
+                }
+
+                $public = isset($options['public']) && ($options['public'] === true) ? true : false;
+
+                if (($public === false) && !in_array('auth.access', $middleware)) {
+                    $middleware[] = 'auth.access';
+                }
+
+                unset($options['public']);
+
+                if (count($middleware) > 0) {
+                    $options['middleware'] = $middleware;
+                }
+
+                return $options;
+
+            });
+        }
     }
 
 }

@@ -63,6 +63,7 @@ class Publish extends Command
         $this->publishMigrations($this->janitor->getRegisteredMigrations());
         $this->publishModels($this->janitor->getRegisteredModels());
         $this->publishControllers($this->janitor->getRegisteredControllers());
+        $this->publishClasses($this->janitor->getRegisteredClasses());
 
         // Call custom publishers
         foreach ($this->janitor->getRegisteredPublishers() as $publisher) {
@@ -168,6 +169,42 @@ class Publish extends Command
             if (count($controllerParts) > 0) {
                 $namespace .= '\\' . implode('\\', $controllerParts);
                 $path .= '/' . implode('/', $controllerParts);
+            }
+
+            // Resolve directory
+            if (!file_exists($path)) {
+                mkdir($path, 0755, true);
+            }
+
+            // Add filename
+            $path .= '/' . $className . '.php';
+
+            if (!file_exists($path) || $this->option('o')) {
+                $this->stub->create('class', $path, [
+                    'namespace' => $namespace,
+                    'imports'   => [
+                        $baseClass
+                    ],
+                    'class'     => $className,
+                    'extends'   => $baseClass
+                ]);
+            }
+        }
+    }
+
+    protected function publishClasses( array $classes ) {
+        $baseNamespace = 'App';
+        $basePath = app_path();
+
+        foreach($classes as $target => $baseClass) {
+            $targetParts = explode('\\', $target);
+            $className = array_pop($targetParts);
+            $namespace = $baseNamespace;
+            $path = $basePath;
+
+            if (count($targetParts) > 0) {
+                $namespace .= '\\' . implode('\\', $targetParts);
+                $path .= '/' . implode('/', $targetParts);
             }
 
             // Resolve directory

@@ -22,6 +22,7 @@
             "database"
         ],
         "psr-4": {
+            "morningtrain\\Admin\\": "packages/morningtrain/Admin/src",
             "morningtrain\\Acl\\": "packages/morningtrain/Acl/src",
             
             "morningtrain\\Stub\\": "packages/morningtrain/Stub/src",

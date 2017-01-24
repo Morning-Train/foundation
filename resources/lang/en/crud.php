@@ -2,6 +2,23 @@
 
 return [
 
+    'users'     => [
+
+        // Routing
+        'prefix'    => 'users',
+
+        // User friendly name
+        'label'     => 'Users',
+
+        // Page titles
+        'title'     => [
+            'index'     => 'Users',
+            'create'    => 'Create user',
+            'edit'      => 'Edit user'
+        ]
+
+    ],
+
     'common'    => [
 
         'routes'        => [

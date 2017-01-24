@@ -3,13 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use morningtrain\Acl\Models\User as Authenticatable;
 use morningtrain\Acl\Extensions\Roleable;
+use morningtrain\Admin\Extensions\HasAvatar;
 
 class User extends Authenticatable
 {
     use Notifiable,
-        Roleable;
+        Roleable,
+        HasAvatar;
 
     /**
      * The attributes that are mass assignable.

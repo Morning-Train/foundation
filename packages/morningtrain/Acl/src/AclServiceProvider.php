@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Support\ServiceProvider;
 use morningtrain\Acl\Commands\Build;
 use morningtrain\Acl\Commands\Seed;
+use morningtrain\Crud\Services\Crud;
 use morningtrain\Janitor\Services\Janitor;
 
 class AclServiceProvider extends ServiceProvider {
@@ -31,7 +32,6 @@ class AclServiceProvider extends ServiceProvider {
                     return true;
                 }
             }
-
         });
     }
 

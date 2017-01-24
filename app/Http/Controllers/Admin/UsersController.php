@@ -1,14 +1,17 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use morningtrain\Crud\Contracts\Controller;
 
-    use Illuminate\Http\Request;
-    use morningtrain\Crud\Contracts\Model;
-    use morningtrain\Crud\Components\Filter;
+use Illuminate\Http\Request;
+use morningtrain\Crud\Contracts\Model;
+use morningtrain\Crud\Components\Filter;
+use morningtrain\Crud\Components\Column;
+use morningtrain\Crud\Components\Field;
+use Illuminate\Support\Facades\Auth;
 
-class CompaniesController extends Controller {
+class UsersController extends Controller {
     
     
     
@@ -21,7 +24,7 @@ class CompaniesController extends Controller {
     /**
     * @var  string
     */
-    protected $model = \App\Models\Company::class;
+    protected $model = \App\Models\User::class;
 
     /**
     * @var  int
@@ -44,6 +47,17 @@ class CompaniesController extends Controller {
             Column::create([
                 'name'      => 'id',
                 'label'     => '#'
+            ]),
+
+            Column::create([
+                'name'      => 'name',
+                'label'     => 'Name'
+            ]),
+
+            Column::userActions([
+                'name'      => 'actions',
+                'label'     => 'Actions',
+                'class'     => 'align-right'
             ])
         ];
     }
@@ -60,7 +74,15 @@ class CompaniesController extends Controller {
     * @return  array
     */
     protected function generateFormFields() {
-        return [];
+        return [
+            Field::text([
+                'name'          => 'name',
+                'label'         => 'Name',
+                'attributes'    => [
+                    'placeholder'   => 'Enter the name'
+                ]
+            ])
+        ];
     }
 
     /*
@@ -84,7 +106,11 @@ class CompaniesController extends Controller {
     /**
     * @param  Model $resource
     */
-    protected function beforeDestroy(Model $resource) {}
+    protected function beforeDestroy(Model $resource) {
+        if ($resource->id === Auth::user()->id) {
+            return response()->make('Forbidden', 403);
+        }
+    }
 
     /**
     * @param  Model $resource

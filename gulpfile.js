@@ -26,12 +26,12 @@ elixir.config.watch.interval = true;
 Fetch all gulp tasks and run them
  */
 
-fs.readdirSync(__dirname + "/gulp/").forEach(function( filename ) {
+fs.readdirSync("./gulp/").forEach(function( filename ) {
     if (filename.match(/\.js$/) !== null) {
-        var task = require(__dirname + "/gulp/" + filename);
+        var task = require("./gulp/" + filename);
 
         if (typeof task === "function") {
-            task(__dirname);
+            task(".");
         }
     }
 });

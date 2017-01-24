@@ -2,10 +2,12 @@
 
 namespace morningtrain\Themer\Extensions;
 
+use Illuminate\Config\Repository;
+
 trait HasConfig {
 
     /**
-     * @var array
+     * @var Repository
      */
     protected $config;
 
@@ -13,56 +15,12 @@ trait HasConfig {
      * Config accessors and mutators
      */
 
-    public function get( $key = null, $default = null ) {
-        if (is_null($key)) {
-            return $this->config;
-        }
-
-        // Query the key
-        $query = explode('.', $key);
-        $current = $this->config;
-
-        while(count($query) > 0) {
-            $currentKey = array_shift($query);
-            $current = $current[$currentKey];
-
-            if (is_null($current)) {
-                return $default;
-            }
-        }
-
-        return $current;
+    public function get( $key, $default = null ) {
+        return $this->config->get($key, $default);
     }
 
     public function set( $key, $value = null ) {
-        if (is_array($key)) {
-            foreach($key as $keyName => $value) {
-                $this->set($keyName, $value);
-            }
-
-            return $this;
-        }
-
-        // Set the value by query
-        $query = explode('.', $key);
-        $current = $this->config;
-
-        while(count($query) > 0) {
-            $currentKey = array_shift($query);
-
-            if (count($query) === 0) {
-                $current[$currentKey] = $value;
-            }
-            else {
-                if (!is_array($current[$currentKey])) {
-                    $current[$currentKey] = [];
-                }
-
-                $current = $current[$currentKey];
-            }
-
-        }
-
+        $this->config->set($key, $value);
         return $this;
     }
 
@@ -73,7 +31,7 @@ trait HasConfig {
     protected function registerConfig() {
         // Initialization
         if (!isset($this->config)) {
-            $this->config = [];
+            $this->config = new Repository(config('themer.config.' . $this->name, []));
         }
     }
 

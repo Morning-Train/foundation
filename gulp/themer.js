@@ -8,7 +8,13 @@ module.exports = function( basepath ) {
         elixir = require("laravel-elixir");
 
     // Read all themes from the resources folder
-    var themes = fs.readdirSync(basepath + '/resources/themes');
+    var themesPath = basepath + '/resources/themes';
+
+    if (!fs.lstatSync(themesPath).isDirectory()) {
+        return;
+    }
+
+    var themes = fs.readdirSync(themesPath);
 
     //Loop over all themes to compile their assets
     if(themes.length > 0){
@@ -18,24 +24,30 @@ module.exports = function( basepath ) {
 
                 //If the current theme has a sass file, compile it
                 var sassPath = basepath + '/resources/themes/' + theme + '/assets/sass/app.scss';
-                try {
-                    fs.accessSync(sassPath, fs.F_OK);
-                    elixir(mix => {
-                        mix.sass(sassPath, basepath + '/public/themes/' + theme.toLowerCase() + '/app.css');
-                    });
-                } catch (e) {
-                    console.error(e);
+
+                if (fs.existsSync(sassPath)) {
+                    try {
+                        fs.accessSync(sassPath, fs.F_OK);
+                        elixir(mix => {
+                            mix.sass(sassPath, basepath + '/public/themes/' + theme.toLowerCase() + '/app.css');
+                        });
+                    } catch (e) {
+                        console.error(e);
+                    }
                 }
 
                 //If the current theme has a js file, compile it
                 var jsPath = basepath + '/resources/themes/' + theme + '/assets/js/app.js';
-                try {
-                    fs.accessSync(jsPath, fs.F_OK);
-                    elixir(mix => {
-                        mix.browserify(jsPath, basepath + '/public/themes/' + theme.toLowerCase() + '/app.js');
-                    });
-                } catch (e) {
-                    console.error(e);
+
+                if (fs.existsSync(jsPath)) {
+                    try {
+                        fs.accessSync(jsPath, fs.F_OK);
+                        elixir(mix => {
+                            mix.browserify(jsPath, basepath + '/public/themes/' + theme.toLowerCase() + '/app.js');
+                        });
+                    } catch (e) {
+                        console.error(e);
+                    }
                 }
 
             }

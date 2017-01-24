@@ -23,19 +23,24 @@ class Crud {
             $options['namespace'] = config('crud.namespaces.controllers', 'App\\Http\\Controllers');
         }
 
+        // Get slugs
+        $dummyModel = new $modelClass;
+        $singularName = $dummyModel->getShortName();
+        $pluralName = $dummyModel->getPluralName();
+
         // Determine prefix
         if (!isset($options['prefix'])) {
-            $options['prefix'] = $prefix = (new $modelClass)->getPluralName();
+            $options['prefix'] = $prefix = $pluralName;
         }
 
         // Determine base route
         if (!isset($options['base'])) {
-            $options['base'] = $options['prefix'];
+            $options['base'] = $pluralName;
         }
 
         // Determine controller
         if (!isset($options['controller'])) {
-            $options['controller'] = ucfirst($options['prefix']).'Controller';
+            $options['controller'] = ucfirst($pluralName).'Controller';
         }
 
         // Determine routes

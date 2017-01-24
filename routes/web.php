@@ -66,6 +66,6 @@ Route::group([ 'prefix' => 'test' ], function() {
 
 Route::group([ 'theme' => 'Base' ], function() {
 
-    Crud::route(Post::class);
+
 
 });

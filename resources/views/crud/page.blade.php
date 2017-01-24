@@ -1,4 +1,4 @@
-@extends(Theme::current()->viewPath('page'))
+@extends(Theme::view('page'))
 @section('title', $crud->title())
 
 @section('content')

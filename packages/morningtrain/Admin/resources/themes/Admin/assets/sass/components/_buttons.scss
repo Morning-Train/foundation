@@ -1,0 +1,157 @@
+.button {
+    display: inline-block;
+    // border-radius: 3px;
+    font-family: $font;
+    margin-right: 20px;
+
+    &:last-of-type {
+        margin-right: 0;
+    }
+
+    a {
+        display: inline-block;
+        width: auto;
+        height: 40px;
+        padding: 0 17px 0 0;
+        background: #E8E8E8;
+        text-decoration: none;
+        // border-radius: 3px;
+
+        @include break(1000px) {
+            padding: 0;
+        }
+
+        &:hover {
+            background: lighten(#E8E8E8, 5%);
+            .material-icons {
+                background: lighten($primary-light, 10%);
+            }
+        }
+    }
+
+    .material-icons {
+        display: inline-block;
+        vertical-align: top;
+        width: 40px;
+        height: 40px;
+        margin-right: 17px;
+        background: $primary-light;
+        // border-radius: 3px 0 0 3px;
+        font-size: 20px;
+        line-height: 40px;
+        text-align: center;
+        color: #fff;
+
+        @include break(1000px) {
+            margin-right: 0;
+            // border-radius: 3px;
+        }
+    }
+
+    span {
+        display: inline-block;
+        vertical-align: top;
+        width: auto;
+        height: 50px;
+        font-size: 14px;
+        line-height: 40px;
+        color: $primary;
+
+        @include break(1000px) {
+            display: none;
+        }
+    }
+}
+
+.btn, input[type=submit], input[type=button], button {
+
+  list-style: none outside none;
+  display: inline-block;
+  cursor: pointer;
+
+  border: medium none;
+  border-spacing: 0;
+
+
+  font-family: $font;
+  font-size: 16px;
+  font-weight: normal;
+  text-align: center;
+  text-decoration: none;
+  text-indent: 0;
+  text-transform: uppercase;
+
+  padding:0px 15px;
+  margin: 0;
+
+  height: 45px;
+  line-height: 45px;
+
+  &, &.primary {
+    background: $primary;
+    color: #fff;
+
+    &:hover {
+      background: lighten($primary, 5%);
+      .material-icons {
+        background: lighten($primary, 10%);
+      }
+    }
+  }
+
+  &.secondary {
+    background: $secondary;
+    color: #fff;
+
+    &:hover {
+      background: lighten($secondary, 5%);
+      .material-icons {
+        background: lighten($secondary, 10%);
+      }
+    }
+  }
+
+  &.red, &.danger {
+    background: $red;
+    color: #fff;
+
+    &:hover {
+      background: lighten($red, 5%);
+      .material-icons {
+        background: lighten($red, 10%);
+      }
+    }
+  }
+
+  &.green {
+    background: $green;
+    color: #fff;
+
+    &:hover {
+      background: lighten($green, 5%);
+      .material-icons {
+        background: lighten($green, 10%);
+      }
+    }
+  }
+
+  .material-icons {
+    display: inline-block;
+    vertical-align: top;
+    width: 40px;
+    height: 40px;
+    margin-right: 17px;
+    background: $primary;
+    // border-radius: 3px 0 0 3px;
+    font-size: 20px;
+    line-height: 40px;
+    text-align: center;
+    color: #fff;
+
+    @include break(1000px) {
+      margin-right: 0;
+      // border-radius: 3px;
+    }
+  }
+
+}

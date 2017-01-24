@@ -314,7 +314,11 @@ abstract class Controller extends BaseController {
         $this->validate($request, $this->rules($request, $resource));
 
         // Before store hook
-        $this->beforeStore($resource);
+        $status = $this->beforeStore($resource);
+
+        if (!is_null($status)) {
+            return $status;
+        }
 
         // Update attributes
         $status = $this->setFields($request, $resource);
@@ -338,17 +342,24 @@ abstract class Controller extends BaseController {
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function destroy(Request $request, $id) {
-        $this->store->one($id, function( $resource ) {
+        $resource = $this->store->one($id);
 
-            // Call before hook
-            $this->beforeDestroy($resource);
+        if (is_null($resource)) {
+            return response()->make('Not found', 404);
+        }
 
-            $resource->delete();
+        // Call before hook
+        $status = $this->beforeDestroy($resource);
 
-            // Call after hook
-            $this->afterDestroy($resource);
+        if (!is_null($status)) {
+            return $status;
+        }
 
-        });
+        // Delete the resource
+        $resource->delete();
+
+        // Call after hook
+        $this->afterDestroy($resource);
 
         return $this->redirectToBaseRoute();
     }

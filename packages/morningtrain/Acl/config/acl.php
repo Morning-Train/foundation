@@ -54,6 +54,11 @@ return [
 
     'permissions'   => [
 
+        // Access permissions
+        'access'    => [
+
+        ]
+
     ]
 
 ];

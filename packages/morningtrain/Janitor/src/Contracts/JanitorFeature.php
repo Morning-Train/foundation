@@ -20,6 +20,11 @@ abstract class JanitorFeature {
     /**
      * @var array
      */
+    protected $classes = [];
+
+    /**
+     * @var array
+     */
     protected $middleware = [];
 
     /**
@@ -72,6 +77,10 @@ abstract class JanitorFeature {
         return $this->controllers;
     }
 
+    protected function classes() {
+        return $this->classes;
+    }
+
     protected function migrations() {
         return $this->migrations;
     }
@@ -92,6 +101,7 @@ abstract class JanitorFeature {
      * @param Janitor $janitor
      */
     public function register( Janitor $janitor ) {
+        $feature = $this;
 
         // Initializer
         $initializer = $this->initializer();
@@ -113,6 +123,9 @@ abstract class JanitorFeature {
         // Controllers
         $janitor->registerControllers($this->controllers());
 
+        // Classes
+        $janitor->registerClasses($this->classes());
+
         // Migration
         $janitor->registerMigrations($this->migrations());
 
@@ -123,7 +136,9 @@ abstract class JanitorFeature {
         $group = $this->routerGroup();
 
         if (is_string($group) && (strlen($group) > 0)) {
-            $janitor->registerRoutes($group, $this->routerOptions(), [ $this, 'routes' ]);
+            $janitor->registerRoutes($group, $this->routerOptions(), function( Router $router ) use( $feature ) {
+                return $feature->routes($router);
+            });
         }
     }
 

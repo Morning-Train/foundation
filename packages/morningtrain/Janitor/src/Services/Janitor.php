@@ -125,6 +125,55 @@ class Janitor {
     }
 
     /*
+     * Classes (app classes with custom path)
+     */
+
+    protected $classes = [];
+
+    public function registerClasses( array $classes, string $namespace = '' ) {
+        foreach($classes as $name => $class) {
+            // Check if bundled into namespace
+            if (is_array($class)) {
+                $this->registerClasses($class, strlen($namespace) > 0 ? $namespace . '\\' . $name : $name);
+                continue;
+            }
+
+            if (is_int($name)) {
+                $classParts = explode('\\', $class);
+                $name = end($classParts);
+            }
+
+            // Add namespace to name
+            if (strlen($namespace) > 0) {
+                $name = $namespace . '\\' . $name;
+            }
+
+            $this->classes[$name] = $class;
+        }
+    }
+
+    public function getPublishedClassFor( $class ) {
+        $pubClass = array_search($class, $this->classes);
+
+        if ($pubClass === false) {
+            throw new JanitorException("The class $class has no registered class!");
+        }
+
+        // Validate class
+        $classPath = "App\\$pubClass";
+
+        if (!class_exists($classPath)) {
+            throw new JanitorException("The published class for $class does not exist. Consider running `php artisan janitor:publish`.");
+        }
+
+        return $classPath;
+    }
+
+    public function getRegisteredClasses() {
+        return $this->classes;
+    }
+
+    /*
      * Publish initializer registration (closures called before publish if option -init is passed)
      */
 

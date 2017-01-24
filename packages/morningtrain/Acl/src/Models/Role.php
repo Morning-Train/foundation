@@ -17,5 +17,13 @@ class Role extends Model {
     protected $appends = [
         'display_name'
     ];
+
+    /*
+     * Scopes
+     */
+
+    public function scopeWhereIsSuper( $query ) {
+        return $query->where('is_super', 1);
+    }
     
 }

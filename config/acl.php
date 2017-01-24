@@ -28,10 +28,9 @@ return [
 
         'developer' => [
             'name'          => 'Developer',
-            'super'         => false,
+            'super'         => true,
             'permissions'   => [
-                'test.withName',
-                'test.withoutName'
+
             ]
         ],
 
@@ -39,16 +38,7 @@ return [
             'name'          => 'Administrator',
             'super'         => true,
             'permissions'   => [
-                'test.withName',
-                'test.withoutName'
-            ]
-        ],
 
-        'company-admin' => [
-            'name'          => 'Company admin',
-            'super'         => false,
-            'permissions'   => [
-                'test.company'
             ]
         ]
     ],
@@ -63,11 +53,12 @@ return [
     */
 
     'permissions'   => [
-        'test'  => [
-            'withName'  => 'Permission name',
-            'withoutName',
-            'company'
+
+        // Access permissions
+        'access'    => [
+
         ]
+
     ]
 
 ];

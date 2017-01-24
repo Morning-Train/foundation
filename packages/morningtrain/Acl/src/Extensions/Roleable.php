@@ -58,4 +58,46 @@ trait Roleable {
             })->count() > 0;
     }
 
+    public function isSuper() {
+        return $this->roles()->whereIsSuper()->count() > 0;
+    }
+
+    public function assign( array $roles ) {
+        foreach ($roles as $role) {
+            if (!$role instanceof Role) {
+                $role = Role::where('slug', $role)->first();
+            }
+
+            if (!is_null($role)) {
+                $this->roles()->attach($role->id);
+            }
+        }
+    }
+
+    public function unassign( array $roles ) {
+        foreach ($roles as $role) {
+            if (!$role instanceof Role) {
+                $role = Role::where('slug', $role)->first();
+            }
+
+            if (!is_null($role)) {
+                $this->roles()->detach($role->id);
+            }
+        }
+    }
+
+    public function isAssigned( array $roles ) {
+        $query = $this->newQuery()->where('id', $this->id);
+
+        foreach ($roles as $role) {
+            $slug = $role instanceof Role ? $role->slug : $role;
+
+            $query->whereHas('roles', function( $query ) use( $slug ) {
+                $query->where('slug', $slug);
+            });
+        }
+
+        return $query->count() > 0;
+    }
+
 }

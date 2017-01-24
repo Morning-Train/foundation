@@ -17,6 +17,9 @@ class Column {
      */
 
     public static function __callStatic( $name, $arguments ) {
+        // Convert name to blade friendly name
+        $name = strtolower(preg_replace('/\B([A-Z])/', '-$1', $name));
+
         return static::create(array_merge(
             isset($arguments[0]) && is_array($arguments[0]) ? $arguments[0] : [],
             [

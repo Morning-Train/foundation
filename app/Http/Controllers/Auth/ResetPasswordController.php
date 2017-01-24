@@ -4,36 +4,37 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
+use morningtrain\Admin\Extensions\RedirectsAdmins;
 
-class ResetPasswordController extends Controller
-{
-    /*
-    |--------------------------------------------------------------------------
-    | Password Reset Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller is responsible for handling password reset requests
-    | and uses a simple trait to include this behavior. You're free to
-    | explore this trait and override any methods you wish to tweak.
-    |
+class ResetPasswordController extends Controller {
+    
+    use ResetsPasswords,
+        RedirectsAdmins;
+
+    /**
+     * Where to redirect users after login.
+     *
+     * @var  string
+     */
+
+    protected $redirectTo = '/';
+
+    /**
+     * @return string
+     */
+
+    public function redirectPath() {
+        return $this->redirectAdmin($this->guard()) ?: $this->redirectTo;
+    }
+
+    /**
+    * Create a new controller instance.
+    *
+    * @return  void
     */
 
-    use ResetsPasswords;
-
-    /**
-     * Where to redirect users after resetting their password.
-     *
-     * @var string
-     */
-    protected $redirectTo = '/home';
-
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
+    public function __construct() {
         $this->middleware('guest');
     }
+
 }

@@ -52,4 +52,16 @@ class Themer {
         $this->onload[] = $callback;
         return $this;
     }
+
+    /*
+     * Current theme call
+     */
+
+    function __call( $name, $arguments ) {
+        if (!isset($this->current)) {
+            throw new \Exception('No theme has been loaded!');
+        }
+
+        return call_user_func_array([ $this->current, $name ], $arguments);
+    }
 }

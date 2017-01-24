@@ -72,12 +72,12 @@ class Theme {
 	 * Blade views
 	 */
 
-	public function viewPath( $viewName ) {
+	public function view( $viewName ) {
         return strlen($this->name) > 0 ? $this->name . '::' . $viewName : $viewName;
     }
 
-	public function view( $viewName ) {
-		return view($this->viewPath($viewName));
+	public function render( $viewName ) {
+		return view($this->view($viewName));
 	}
 
 }
