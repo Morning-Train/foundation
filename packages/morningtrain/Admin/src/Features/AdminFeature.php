@@ -2,10 +2,13 @@
 
 namespace morningtrain\Admin\Features;
 
+use morningtrain\Admin\Helpers\Translation;
 use morningtrain\Admin\Themes\AdminTheme;
 use morningtrain\Crud\Services\Crud;
 use morningtrain\Janitor\Contracts\JanitorFeature;
 use Illuminate\Routing\Router;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 
 class AdminFeature extends JanitorFeature {
 
@@ -71,10 +74,36 @@ class AdminFeature extends JanitorFeature {
 
             $this->crud->route($model, [
                 'base'          => "admin.$slug",
-                'prefix'        => trans("crud.$slug.prefix"),
+                //'prefix'        => Translation::get("crud.$slug.prefix", [], $slug),
                 'namespace'     => config('admin.crud.namespaces.controllers', 'App\\Http\\Controllers\\Admin')
             ]);
         }
+    }
+
+    /*
+     * NPM Deps
+     */
+
+    protected $npm = [
+        'gulp',
+        'laravel-elixir',
+        'laravel-elixir-browserify-official',
+        'jquery',
+        'wrapper6',
+        'alert.js'
+    ];
+
+    protected function publisher() {
+        $dependencies = $this->npm;
+
+        return function() use ( $dependencies ) {
+            $npmProcess = new Process('npm install --save-dev ' . implode(' ', $dependencies));
+            $npmProcess->run();
+
+            if (!$npmProcess->isSuccessful()) {
+                throw new ProcessFailedException($npmProcess);
+            }
+        };
     }
 
 }

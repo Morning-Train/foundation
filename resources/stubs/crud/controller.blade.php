@@ -6,6 +6,7 @@ use morningtrain\Crud\Contracts\Model;
 use morningtrain\Crud\Components\Filter;
 use morningtrain\Crud\Components\Column;
 use morningtrain\Crud\Components\Field;
+use morningtrain\Crud\Components\ViewHelper;
 @stop
 
 @section('body')
@@ -34,14 +35,16 @@ use morningtrain\Crud\Components\Field;
 
     /**
     * Generates and returns the index columns
+    * @param ViewHelper $crud
     *
     * @return array
     */
-    protected function generateIndexColumns() {
+    protected function generateIndexColumns( ViewHelper $crud ) {
         return [
             Column::create([
                 'name'      => 'id',
-                'label'     => '#'
+                'label'     => '#',
+                'order'     => 'asc'    // default order on columns
             ])
         ];
     }
@@ -54,10 +57,11 @@ use morningtrain\Crud\Components\Field;
 
     /**
     * Generates and returns the form fields
+    * @param ViewHelper $crud
     *
     * @return array
     */
-    protected function generateFormFields() {
+    protected function generateFormFields( ViewHelper $crud ) {
         return [];
     }
 
@@ -76,7 +80,7 @@ use morningtrain\Crud\Components\Field;
     * @param Model $resource
     */
     protected function afterStore(Model $resource) {
-        // notify here instead with session->put()
+
     }
 
     /**
@@ -88,7 +92,7 @@ use morningtrain\Crud\Components\Field;
     * @param Model $resource
     */
     protected function afterDestroy(Model $resource) {
-        // notify here instead with session->put()
+
     }
 
     /**

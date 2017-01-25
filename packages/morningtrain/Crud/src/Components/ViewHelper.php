@@ -37,14 +37,43 @@ class ViewHelper {
      * Translations
      */
 
-    public function trans( $query, $namespace = null ) {
-        $namespace = isset($namespace) ? $namespace : $this->options->get('namespace', '');
-        return strlen($namespace) > 0 ? trans("crud.$namespace.$query") : trans($query);
+    public function trans( $query, $namespace = null, array $args = null, $default = null ) {
+        if (!isset($namespace)) {
+            $namespace = [
+                $this->options->get('namespace'),
+                'common'
+            ];
+        }
+
+        if (!is_array($namespace)) {
+            $namespace = [ $namespace ];
+        }
+
+        if (!is_array($args)) {
+            $args = [ 'type' => $this->options->get('singularName') ];
+        }
+
+        if (is_null($default)) {
+            $default = $query;
+        }
+
+        do {
+            $ns = array_shift($namespace);
+            $key = "crud.$ns.$query";
+            $trans = trans($key, $args);
+        }
+        while(($key === $trans) && (count($namespace) > 0));
+
+        return $key === $trans ? $default : $trans;
     }
 
     public function title( $route = null ) {
         $slug = isset($route) ? $route : $this->options->get('slug', '');
-        return strlen($slug) > 0 ? $this->trans("title.$slug") : '';
+
+        return $this->trans("title.$slug", null, $slug === 'index' ? [
+            'type'  => ucfirst($this->options->get('pluralName'))
+
+        ] : null);
     }
 
     /*

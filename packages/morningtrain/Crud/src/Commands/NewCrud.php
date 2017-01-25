@@ -112,7 +112,7 @@ class NewCrud extends Command
         $filename = $this->migrator->filename($migrationName);
         $destination = $this->migrator->path($filename);
         $className = 'Create'.ucfirst($name).'Table';
-        $existingMigration = $this->migrator->exists($filename);
+        $existingMigration = $this->migrator->exists($migrationName);
 
         if (($existingMigration === false) || $this->option('o')) {
 

@@ -10,7 +10,8 @@
     <a href="{{ $crud->route('delete', [ $entry-> id ]) }}"
        title="{{ $crud->trans('actions.delete') }}"
        data-type="action"
-       data-action="delete">
+       data-action="delete"
+       data-confirm="{{ $crud->trans('messages.delete-confirmation') }}">
 
         <i class="material-icons">&#xE92B;</i>
     </a>

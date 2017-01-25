@@ -30,7 +30,11 @@ class Crud {
 
         // Determine prefix
         if (!isset($options['prefix'])) {
-            $options['prefix'] = $prefix = $pluralName;
+            $transKey = "crud.$pluralName.prefix";
+            $prefix = trans($transKey);
+
+            $options['prefix'] = $transKey === $prefix ? $pluralName : $prefix;
+            $prefix = $options['prefix'];
         }
 
         // Determine base route

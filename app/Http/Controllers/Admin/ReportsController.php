@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Report;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use morningtrain\Crud\Components\ViewHelper;
 use morningtrain\Crud\Contracts\Controller;
 
 use Illuminate\Http\Request;
@@ -12,9 +11,9 @@ use morningtrain\Crud\Contracts\Model;
 use morningtrain\Crud\Components\Filter;
 use morningtrain\Crud\Components\Column;
 use morningtrain\Crud\Components\Field;
-use Illuminate\Support\Facades\Auth;
+use morningtrain\Crud\Components\ViewHelper;
 
-class UsersController extends Controller {
+class ReportsController extends Controller {
     
     
     
@@ -27,7 +26,7 @@ class UsersController extends Controller {
     /**
     * @var  string
     */
-    protected $model = \App\Models\User::class;
+    protected $model = \App\Models\Report::class;
 
     /**
     * @var  int
@@ -46,7 +45,7 @@ class UsersController extends Controller {
      *
      * @return array
      */
-    protected function generateIndexColumns( ViewHelper $crud ) {
+    protected function generateIndexColumns( ViewHelper $helper ) {
         return [
             Column::create([
                 'name'      => 'id',
@@ -59,7 +58,27 @@ class UsersController extends Controller {
                 'label'     => 'Name'
             ]),
 
-            Column::userActions([
+            Column::create([
+                'name'      => 'user',
+                'label'     => 'User',
+                'sortable'  => true,
+
+                'sort'      => function( $query, $name, $direction ) {
+                    $usersTable = (new User())->getTable();
+                    $reportsTable = (new Report())->getTable();
+
+                    $query
+                        ->join($usersTable, "$usersTable.id", '=', "$reportsTable.user_id")
+                        ->select("$reportsTable.*")
+                        ->orderBy("$usersTable.name", $direction);
+                },
+
+                'render'    => function( Column $column, Report $report ) {
+                    return $report->user->name;
+                }
+            ]),
+
+            Column::actions([
                 'name'      => 'actions',
                 'label'     => 'Actions',
                 'class'     => 'align-right',
@@ -83,28 +102,26 @@ class UsersController extends Controller {
     protected function generateFormFields( ViewHelper $crud ) {
         return [
             Field::input([
-                'name'          => 'name',
-                'label'         => 'Name',
-                'rules'         => 'required',
-                'attributes'    => [
-                    'placeholder'   => 'Enter the name'
-                ]
+                'name'      => 'name',
+                'label'     => 'Name',
+                'rules'     => 'required'
             ]),
 
-            Field::input([
-                'type'          => 'email',
-                'name'          => 'email',
-                'label'         => 'Email address',
+            Field::select([
+                'name'      => 'user_id',
+                'label'     => 'User',
+                'rules'     => 'required',
 
-                'rules'         => function( User $user, Request $request ) {
-                    return $user->isNew() ?
-                        'required|email|unique:users,email' :
-                        'required|email|unique:users,email,' . $user->id;
-                },
+                'options'   => function( Report $report ) {
+                    $users = User::get();
+                    $options = [];
 
-                'attributes'    => [
-                    'placeholder'   => 'Enter the email address'
-                ]
+                    $users->each(function( $user ) use( &$options ) {
+                        $options[$user->id] = $user->name;
+                    });
+
+                    return $options;
+                }
             ])
         ];
     }
@@ -118,11 +135,7 @@ class UsersController extends Controller {
     /**
     * @param  Model $resource
     */
-    protected function beforeStore(Model $resource) {
-        if ($resource->isNew()) {
-            $resource->password = Hash::make(strtolower(request()->get('name')));
-        }
-    }
+    protected function beforeStore(Model $resource) {}
 
     /**
     * @param  Model $resource
@@ -134,11 +147,7 @@ class UsersController extends Controller {
     /**
     * @param  Model $resource
     */
-    protected function beforeDestroy(Model $resource) {
-        if ($resource->id === Auth::user()->id) {
-            return response()->make('Forbidden', 403);
-        }
-    }
+    protected function beforeDestroy(Model $resource) {}
 
     /**
     * @param  Model $resource

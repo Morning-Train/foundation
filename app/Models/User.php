@@ -37,14 +37,11 @@ class User extends Authenticatable
      * @var array
      */
     protected $permissionables = [
-        'companies.roles'
+
     ];
 
     /*
      * Relationships
      */
 
-    public function companies() {
-        return $this->belongsToMany(Company::class, 'user_company_relation');
-    }
 }

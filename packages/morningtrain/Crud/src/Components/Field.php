@@ -14,21 +14,36 @@ class Field {
     }
 
     /*
+     * Custom fields constructors
+     */
+
+    protected static $customFields = [];
+
+    public static function registerCustomField( $type, \Closure $callback ) {
+        static::$customFields[$type] = $callback;
+    }
+
+    /*
      * Helper to create blade rendering fields
      */
 
     public static function __callStatic( $name, $arguments ) {
         // Convert name to blade friendly name
-        $name = strtolower(preg_replace('/\B([A-Z])/', '-$1', $name));
+        $type = strtolower(preg_replace('/\B([A-Z])/', '-$1', $name));
+        $callback = isset(static::$customFields[$type]) ? static::$customFields[$type] : null;
 
         return static::create(array_merge(
             isset($arguments[0]) && is_array($arguments[0]) ? $arguments[0] : [],
             [
-                'render'    => function( Field $field, Model $resource, ViewHelper $helper, array $params ) use( $name ) {
-                    return view($helper->view("fields.$name"))->with(array_merge($params, [
+                'render'    => function( Field $field, Model $resource, ViewHelper $helper, array $params ) use( $type, $callback ) {
+                    // Construct extra arguments
+                    $args = is_callable($callback) ? $callback($field, $resource, $helper, $params) : [];
+
+                    return view($helper->view("fields.$type"))->with(array_merge($params, $args, [
                         'crud'  => $helper,
                         'entry' => $resource,
-                        'field' => $field
+                        'field' => $field,
+                        'value' => $field->value($resource)
 
                     ]))->render();
                 }
@@ -94,6 +109,16 @@ class Field {
     }
 
     /*
+     * Attributes getter
+     */
+
+    public function getAttributes() {
+        return array_merge($this->options->get('attributes', []), [
+            'id'    => $this->id
+        ]);
+    }
+
+    /*
      * Rules
      */
 
@@ -151,6 +176,17 @@ class Field {
 
             $resource->$name = $value;
         }
+    }
+
+    public function value( Model $resource ) {
+        $name = $this->options->get('name');
+        $getter = $this->options->get('value');
+
+        if (is_callable($getter)) {
+            return $getter($this, $resource);
+        }
+
+        return $resource->$name;
     }
 
 }

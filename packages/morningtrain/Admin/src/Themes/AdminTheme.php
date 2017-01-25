@@ -2,6 +2,7 @@
 
 namespace morningtrain\Admin\Themes;
 
+use morningtrain\Admin\Helpers\Translation;
 use morningtrain\Themer\Contracts\Theme;
 
 class AdminTheme extends Theme {
@@ -45,7 +46,7 @@ class AdminTheme extends Theme {
                 $item->slug = (new $model)->getPluralName();
                 $item->basepath = route('admin.' . $item->slug . '.index');     // Have to fix this when index is not ''
                 $item->path = route('admin.' . $item->slug . '.index');
-                $item->label = trans('crud.' . $item->slug . '.label');
+                $item->label = Translation::get('crud.' . $item->slug . '.label', [], ucfirst($item->slug));
                 $item->params = $params;
 
                 $this->mainMenuItems[] = $item;

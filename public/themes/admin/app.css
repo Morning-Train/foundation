@@ -784,25 +784,34 @@ Components
   color: #132A3D;
 }
 
-[data-sortable] {
+[data-sortable=on] {
   cursor: pointer;
 }
 
-[data-sortable][data-order=asc] i.order-asc {
-  display: inline-block !important;
+[data-sortable=on] i {
+  display: none;
 }
 
-[data-sortable][data-order=desc] i.order-desc {
-  display: inline-block !important;
-}
-
-[data-sortable][data-order=none] i.order-asc {
-  display: inline-block !important;
+[data-sortable=on][data-order=none] i.order-icon {
+  display: inline-block;
   -webkit-transform: rotate(90deg);
   -moz-transform: rotate(90deg);
-  -o-transform: rotate(90deg);
   -ms-transform: rotate(90deg);
-  transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+     transform: rotate(90deg);
+}
+
+[data-sortable=on][data-order=asc] i.order-icon {
+  display: inline-block;
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+     transform: rotate(180deg);
+}
+
+[data-sortable=on][data-order=desc] i.order-icon {
+  display: inline-block;
 }
 
 .button {

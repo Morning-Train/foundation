@@ -5,7 +5,7 @@
         <div class="button">
             <a href="{{ $crud->route('create') }}">
                 <i class="material-icons">&#xE145;</i>
-                <span>{{ $crud->title('create') }}</span>
+                <span>{{ $crud->trans('actions.create') }}</span>
             </a>
         </div>
     </div>
@@ -16,10 +16,9 @@
                 <tr>
                     @if (!$crud->columns->isEmpty())
                         @foreach($crud->columns as $column)
-                            <th class="{{ $column->class }}" data-sortable="{{ $column->sortable ? '1' : '0' }}" data-order="{{ $column->order or 'none' }}">
+                            <th class="{{ $column->class }}" data-name="{{ $column->name }}" data-sortable="{{ $column->options->get('sortable', true) ? 'on' : 'off' }}" data-order="{{ $column->order or 'none' }}">
                                 {{ $column->label }}
-                                <i class="material-icons order-asc">&#xE5C7;</i>
-                                <i class="material-icons order-desc">&#xE5C5;</i>
+                                <i class="material-icons order-icon">&#xE5C7;</i>
                             </th>
                         @endforeach
                     @endif

@@ -5,11 +5,8 @@ namespace App\Models;
 use morningtrain\Crud\Contracts\Model;
 
 
-class Post extends Model {
-    
+class Report extends Model {
 
-    
-    
     /**
     * Dates
     *
@@ -19,5 +16,13 @@ class Post extends Model {
         'created_at',
         'updated_at'
     ];
+
+    /*
+     * Relationships
+     */
+
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
 
 }

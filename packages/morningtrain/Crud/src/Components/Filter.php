@@ -12,10 +12,25 @@ abstract class Filter {
             $column = $columns->where('name', $name)->first();
 
             if (isset($column) && $column->options->get('sortable', true)) {
-                $direction = request()->get('dir', 'asc');
+                // Remove order from already ordered columns
+                $columns->each(function( $column ) {
+                    if ($column->order !== 'none') {
+                        $column->order = 'none';
+                    }
+                });
+
+                $direction = request()->get('direction', 'asc');
                 $column->order = $direction;
 
-                $query->orderBy($name, $direction);
+                // Check if custom sorter
+                $sorter = $column->options->get('sort');
+
+                if (is_callable($sorter)) {
+                    $sorter($query, $name, $direction);
+                }
+                else {
+                    $query->orderBy($name, $direction);
+                }
             }
         };
     }

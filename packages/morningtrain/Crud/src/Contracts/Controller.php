@@ -36,12 +36,6 @@ abstract class Controller extends BaseController {
             $this->currentSlug = end($currentRouteParts);
         }
 
-        // Create index columns
-        $this->indexColumns = collect($this->generateIndexColumns());
-
-        // Create form fields
-        $this->formFields = collect($this->generateFormFields());
-
         // Setup base route
         if (!isset($this->baseRoute)) {
             // Guess base route
@@ -53,11 +47,26 @@ abstract class Controller extends BaseController {
         }
 
         // View helper
+        $model = $this->model;
+        $dummyModel = new $model;
+
         $this->viewHelper = new ViewHelper([
             'namespace'     => $this->namespace,
             'viewNamespace' => $this->viewNamespace,
             'baseRoute'     => $this->baseRoute,
             'slug'          => $this->currentSlug,
+            'singularName'  => $dummyModel->getShortName(),
+            'pluralName'    => $dummyModel->getPluralName()
+        ]);
+
+        // Create index columns
+        $this->indexColumns = collect($this->generateIndexColumns($this->viewHelper));
+
+        // Create form fields
+        $this->formFields = collect($this->generateFormFields($this->viewHelper));
+
+        // Assign index columns and fields to the view helper
+        $this->viewHelper->options->set([
             'columns'       => $this->indexColumns,
             'fields'        => $this->formFields
         ]);
@@ -109,10 +118,11 @@ abstract class Controller extends BaseController {
 
     /**
      * Generates and returns the index columns
+     * @param ViewHelper $crud
      *
      * @return array
      */
-    protected function generateIndexColumns() {
+    protected function generateIndexColumns( ViewHelper $crud ) {
         return [];
     }
 
@@ -129,10 +139,11 @@ abstract class Controller extends BaseController {
 
     /**
      * Generates and returns the form fields
+     * @param ViewHelper $crud
      *
      * @return array
      */
-    protected function generateFormFields() {
+    protected function generateFormFields( ViewHelper $crud ) {
         return [];
     }
 
@@ -180,6 +191,15 @@ abstract class Controller extends BaseController {
      * @var ViewHelper
      */
     protected $viewHelper;
+
+    /**
+     * @param string $messageKey
+     * @return $this
+     */
+    protected function notify( string $messageKey ) {
+        session()->flash('status', trans($this->viewHelper->trans("messages.$messageKey")));
+        return $this;
+    }
 
     /**
      * @param $viewName
@@ -333,6 +353,9 @@ abstract class Controller extends BaseController {
         // Call hook
         $this->afterStore($resource);
 
+        // Notify
+        $this->notify($resource->wasNew() ? 'created' : 'updated');
+
         return $this->redirectToBaseRoute();
     }
 
@@ -360,6 +383,9 @@ abstract class Controller extends BaseController {
 
         // Call after hook
         $this->afterDestroy($resource);
+
+        // Notify
+        $this->notify('deleted');
 
         return $this->redirectToBaseRoute();
     }
