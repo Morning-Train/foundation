@@ -5,23 +5,25 @@ namespace App\Models;
 use morningtrain\Crud\Contracts\Model;
 
 
-class Report extends Model {
+class Report extends Model
+{
 
     /**
-    * Dates
-    *
-    * @var  array
-    */
+     * Dates
+     *
+     * @var  array
+     */
     protected $dates = [
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 
     /*
      * Relationships
      */
 
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 

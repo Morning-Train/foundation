@@ -8,7 +8,7 @@
   background: $header-bg;
   font-size: 0;
   transition: padding 0.4s;
-  padding-right:$profile-sidebar-openwidth;
+  padding-right: $profile-sidebar-openwidth;
 
   &.sidebar-closed {
     padding-right: $profile-sidebar-closedwidth;
@@ -116,13 +116,13 @@
     }
 
     .avatar {
-      width:100%;
+      width: 100%;
     }
 
   }
 
   .header-content-wrapper {
-    width:100%;
+    width: 100%;
     position: relative;
   }
 }

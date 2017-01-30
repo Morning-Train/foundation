@@ -1,19 +1,19 @@
 /*
-Dependencies
+ Dependencies
  */
 
 import {Module} from "wrapper6";
 import $ from "jquery";
 
 /*
-Module
+ Module
  */
 
 export default class SortableModule extends Module {
 
     ready() {
 
-        $(".content").on("click", "[data-sortable=on]", function() {
+        $(".content").on("click", "[data-sortable=on]", function () {
 
             var trigger = $(this),
                 name = trigger.attr("data-name"),

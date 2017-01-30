@@ -1,19 +1,19 @@
 @extends('stubs::class')
 
 @section('imports')
-use Illuminate\Http\Request;
-use morningtrain\Crud\Contracts\Model;
-use morningtrain\Crud\Components\Filter;
-use morningtrain\Crud\Components\Column;
-use morningtrain\Crud\Components\Field;
-use morningtrain\Crud\Components\ViewHelper;
+    use Illuminate\Http\Request;
+    use morningtrain\Crud\Contracts\Model;
+    use morningtrain\Crud\Components\Filter;
+    use morningtrain\Crud\Components\Column;
+    use morningtrain\Crud\Components\Field;
+    use morningtrain\Crud\Components\ViewHelper;
 @stop
 
 @section('body')
 
     /*
     * ------------------------------------------------
-    * 			    Store options
+    *                Store options
     * ------------------------------------------------
     */
 
@@ -29,7 +29,7 @@ use morningtrain\Crud\Components\ViewHelper;
 
     /*
     * ------------------------------------------------
-    * 			    Index columns hooks
+    *                Index columns hooks
     * ------------------------------------------------
     */
 
@@ -40,18 +40,18 @@ use morningtrain\Crud\Components\ViewHelper;
     * @return array
     */
     protected function generateIndexColumns( ViewHelper $crud ) {
-        return [
-            Column::create([
-                'name'      => 'id',
-                'label'     => '#',
-                'order'     => 'asc'    // default order on columns
-            ])
-        ];
+    return [
+    Column::create([
+    'name'      => 'id',
+    'label'     => '#',
+    'order'     => 'asc'    // default order on columns
+    ])
+    ];
     }
 
     /*
     * ------------------------------------------------
-    * 			    Form fields hook
+    *                Form fields hook
     * ------------------------------------------------
     */
 
@@ -62,12 +62,12 @@ use morningtrain\Crud\Components\ViewHelper;
     * @return array
     */
     protected function generateFormFields( ViewHelper $crud ) {
-        return [];
+    return [];
     }
 
     /*
     * ------------------------------------------------
-    * 			    Action hooks
+    *                Action hooks
     * ------------------------------------------------
     */
 
@@ -99,8 +99,8 @@ use morningtrain\Crud\Components\ViewHelper;
     * After constructor
     */
     protected function boot() {
-        // Register filters
-        $this->store->addFilter('order', Filter::order($this->indexColumns));
+    // Register filters
+    $this->store->addFilter('order', Filter::order($this->indexColumns));
     }
 
 @stop

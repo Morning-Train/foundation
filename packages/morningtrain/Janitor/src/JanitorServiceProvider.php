@@ -14,7 +14,8 @@ class JanitorServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot() {
+    public function boot()
+    {
 
     }
 
@@ -23,18 +24,19 @@ class JanitorServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register() {
+    public function register()
+    {
 
         // Publish config file
         $this->publish();
 
         // Register commands
         $this->commands([
-            Publish::class
+            Publish::class,
         ]);
 
         // Register service
-        $this->app->singleton(Janitor::class, function( $app ) {
+        $this->app->singleton(Janitor::class, function ($app) {
             return new Janitor($app->make(Router::class));
         });
     }
@@ -43,9 +45,10 @@ class JanitorServiceProvider extends ServiceProvider
      * Publish files
      */
 
-    protected function publish() {
+    protected function publish()
+    {
         $this->publishes([
-            __DIR__ . '/../config/janitor.php'  => config_path('janitor.php')
+            __DIR__ . '/../config/janitor.php' => config_path('janitor.php'),
 
         ], 'config');
     }

@@ -1,7 +1,7 @@
 @extends($crud->view('page'))
 
 @section('content-inner')
-    <div class="controls" >
+    <div class="controls">
         <div class="button">
             <a href="{{ $crud->route('create') }}">
                 <i class="material-icons">&#xE145;</i>
@@ -9,20 +9,20 @@
             </a>
         </div>
     </div>
-    <div class="tight" >
+    <div class="tight">
         {{ Form::open([ 'route' => $crud->routeName() ]) }}
         <table class="table-small">
             <thead>
-                <tr>
-                    @if (!$crud->columns->isEmpty())
-                        @foreach($crud->columns as $column)
-                            <th class="{{ $column->class }}" data-name="{{ $column->name }}" data-sortable="{{ $column->options->get('sortable', true) ? 'on' : 'off' }}" data-order="{{ $column->order or 'none' }}">
-                                {{ $column->label }}
-                                <i class="material-icons order-icon">&#xE5C7;</i>
-                            </th>
-                        @endforeach
-                    @endif
-                </tr>
+            <tr>
+                @if (!$crud->columns->isEmpty())
+                    @foreach($crud->columns as $column)
+                        <th class="{{ $column->class }}" data-name="{{ $column->name }}" data-sortable="{{ $column->options->get('sortable', true) ? 'on' : 'off' }}" data-order="{{ $column->order or 'none' }}">
+                            {{ $column->label }}
+                            <i class="material-icons order-icon">&#xE5C7;</i>
+                        </th>
+                    @endforeach
+                @endif
+            </tr>
             </thead>
             <tbody>
             @if(!$entries->isEmpty())

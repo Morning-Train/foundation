@@ -4,9 +4,11 @@ namespace morningtrain\Crud\Components;
 
 use Illuminate\Config\Repository;
 
-class ViewHelper {
+class ViewHelper
+{
 
-    function __construct( array $options = [] ) {
+    function __construct(array $options = [])
+    {
         $this->options = new Repository($options);
     }
 
@@ -15,7 +17,8 @@ class ViewHelper {
      */
     public $options;
 
-    function __get( $name ) {
+    function __get($name)
+    {
 
         // Get value from options
         if ($this->options->has($name)) {
@@ -28,8 +31,10 @@ class ViewHelper {
      * Views
      */
 
-    public function view( $name ) {
+    public function view($name)
+    {
         $namespace = $this->options->get('viewNamespace', '');
+
         return strlen($namespace) > 0 ? "$namespace.crud.$name" : "crud.$name";
     }
 
@@ -37,20 +42,21 @@ class ViewHelper {
      * Translations
      */
 
-    public function trans( $query, $namespace = null, array $args = null, $default = null ) {
+    public function trans($query, $namespace = null, array $args = null, $default = null)
+    {
         if (!isset($namespace)) {
             $namespace = [
                 $this->options->get('namespace'),
-                'common'
+                'common',
             ];
         }
 
         if (!is_array($namespace)) {
-            $namespace = [ $namespace ];
+            $namespace = [$namespace];
         }
 
         if (!is_array($args)) {
-            $args = [ 'type' => $this->options->get('singularName') ];
+            $args = ['type' => $this->options->get('singularName')];
         }
 
         if (is_null($default)) {
@@ -61,17 +67,17 @@ class ViewHelper {
             $ns = array_shift($namespace);
             $key = "crud.$ns.$query";
             $trans = trans($key, $args);
-        }
-        while(($key === $trans) && (count($namespace) > 0));
+        } while (($key === $trans) && (count($namespace) > 0));
 
         return $key === $trans ? $default : $trans;
     }
 
-    public function title( $route = null ) {
+    public function title($route = null)
+    {
         $slug = isset($route) ? $route : $this->options->get('slug', '');
 
         return $this->trans("title.$slug", null, $slug === 'index' ? [
-            'type'  => ucfirst($this->options->get('pluralName'))
+            'type' => ucfirst($this->options->get('pluralName')),
 
         ] : null);
     }
@@ -80,14 +86,16 @@ class ViewHelper {
      * Routing
      */
 
-    public function routeName( $slug = null ) {
+    public function routeName($slug = null)
+    {
         $baseRoute = $this->options->get('baseRoute', '');
         $slug = isset($slug) ? $slug : $this->options->get('slug', '');
 
         return strlen($baseRoute) > 0 ? "$baseRoute.$slug" : $slug;
     }
 
-    public function route( $slug = null, array $args = [] ) {
+    public function route($slug = null, array $args = [])
+    {
         return route($this->routeName($slug), $args);
     }
 

@@ -4,7 +4,8 @@ namespace morningtrain\Themer\Extensions;
 
 use Illuminate\Config\Repository;
 
-trait HasConfig {
+trait HasConfig
+{
 
     /**
      * @var Repository
@@ -15,12 +16,15 @@ trait HasConfig {
      * Config accessors and mutators
      */
 
-    public function get( $key, $default = null ) {
+    public function get($key, $default = null)
+    {
         return $this->config->get($key, $default);
     }
 
-    public function set( $key, $value = null ) {
+    public function set($key, $value = null)
+    {
         $this->config->set($key, $value);
+
         return $this;
     }
 
@@ -28,7 +32,8 @@ trait HasConfig {
      * Registration
      */
 
-    protected function registerConfig() {
+    protected function registerConfig()
+    {
         // Initialization
         if (!isset($this->config)) {
             $this->config = new Repository(config('themer.config.' . $this->name, []));

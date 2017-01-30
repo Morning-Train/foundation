@@ -2,7 +2,8 @@
 
 namespace morningtrain\Themer\Extensions;
 
-trait HasAssets {
+trait HasAssets
+{
 
     /**
      * @var array
@@ -23,8 +24,10 @@ trait HasAssets {
      * Scripts
      */
 
-    public function addScript( $script ) {
+    public function addScript($script)
+    {
         $this->scripts[] = $script;
+
         return $this;
     }
 
@@ -32,8 +35,10 @@ trait HasAssets {
      * Stylesheets
      */
 
-    public function addStylesheet( $style ) {
+    public function addStylesheet($style)
+    {
         $this->stylesheets[] = $style;
+
         return $this;
     }
 
@@ -41,8 +46,10 @@ trait HasAssets {
      * Localization
      */
 
-    public function localize( array $data ) {
+    public function localize(array $data)
+    {
         $this->localization = array_merge_recursive($this->localization, $data);
+
         return $this;
     }
 
@@ -50,7 +57,8 @@ trait HasAssets {
      * Registration
      */
 
-    protected function registerAssets() {
+    protected function registerAssets()
+    {
         // Initialization
         if (!isset($this->scripts)) {
             $this->scripts = [];
@@ -72,37 +80,38 @@ trait HasAssets {
         $this->addScript(asset('assets/js/fields.js'));
 
         // Register actions
-        $this->addAction('head', [ $this, 'printStylesheets' ]);
-        $this->addAction('footer', [ $this, 'printLocalization' ]);
-        $this->addAction('footer', [ $this, 'printScripts' ]);
+        $this->addAction('head', [$this, 'printStylesheets']);
+        $this->addAction('footer', [$this, 'printLocalization']);
+        $this->addAction('footer', [$this, 'printScripts']);
     }
 
     /*
      * Action callbacks
      */
 
-    protected function printStylesheets() {
-        foreach($this->stylesheets as $src) {
+    protected function printStylesheets()
+    {
+        foreach ($this->stylesheets as $src) {
             echo '<link rel="stylesheet" href="' . $src . '"/>';
         }
     }
 
-    protected function printScripts() {
-        foreach($this->scripts as $src) {
+    protected function printScripts()
+    {
+        foreach ($this->scripts as $src) {
             echo '<script type="text/javascript" src="' . $src . '"></script>';
         }
     }
 
-    protected function printLocalization() {
-        if (count($this->localization) === 0)
-        {
+    protected function printLocalization()
+    {
+        if (count($this->localization) === 0) {
             return '';
         }
 
         $html = '<script type="text/javascript">';
 
-        foreach ($this->localization as $key => $value)
-        {
+        foreach ($this->localization as $key => $value) {
             $html .= "window.$key=" . json_encode($value) . ";";
         }
 

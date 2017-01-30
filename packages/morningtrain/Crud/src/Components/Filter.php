@@ -4,16 +4,18 @@ namespace morningtrain\Crud\Components;
 
 use Illuminate\Support\Collection;
 
-abstract class Filter {
+abstract class Filter
+{
 
-    public static function order( Collection $columns ) {
-        return function($query, $name) use($columns) {
+    public static function order(Collection $columns)
+    {
+        return function ($query, $name) use ($columns) {
             // Find column
             $column = $columns->where('name', $name)->first();
 
             if (isset($column) && $column->options->get('sortable', true)) {
                 // Remove order from already ordered columns
-                $columns->each(function( $column ) {
+                $columns->each(function ($column) {
                     if ($column->order !== 'none') {
                         $column->order = 'none';
                     }
@@ -27,8 +29,7 @@ abstract class Filter {
 
                 if (is_callable($sorter)) {
                     $sorter($query, $name, $direction);
-                }
-                else {
+                } else {
                     $query->orderBy($name, $direction);
                 }
             }

@@ -1,4 +1,4 @@
-module.exports = function( basepath ) {
+module.exports = function (basepath) {
 
     var elixir = require("laravel-elixir"),
         fs = require("fs"),
@@ -13,7 +13,7 @@ module.exports = function( basepath ) {
 
     var fields = fs.readdirSync(fieldsPath);
 
-    fields.forEach(function( field ) {
+    fields.forEach(function (field) {
         var sassPath = basepath + "/resources/fields/" + field + "/field.scss",
             jsPath = basepath + "/resources/fields/" + field + "/field.js";
 
@@ -42,14 +42,17 @@ module.exports = function( basepath ) {
     });
 
     // Add files to elixir
-    elixir(mix => {
-        if (sass.length > 0) {
-            mix.sass(sass, "public/assets/css/fields.css");
-        }
+    elixir(mix = > {
+        if (sass.length > 0
+    )
+    {
+        mix.sass(sass, "public/assets/css/fields.css");
+    }
 
-        if (js.length > 0) {
-            mis.browserify(js, "public/assets/js/fields.js");
-        }
-    });
+    if (js.length > 0) {
+        mis.browserify(js, "public/assets/js/fields.js");
+    }
+})
+    ;
 
 };

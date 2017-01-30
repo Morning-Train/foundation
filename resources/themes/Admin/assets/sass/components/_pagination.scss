@@ -1,8 +1,8 @@
 .pagination {
   width: 100%;
   text-align: center;
-  padding:40px 0px;
-  
+  padding: 40px 0px;
+
   li {
     display: inline-block;
 
@@ -10,7 +10,7 @@
       background: $primary;
       color: #fff;
     }
-    
+
     &.active > * {
       background-color: $primary;
       color: #fff;
@@ -24,9 +24,9 @@
     }
 
   }
-  
+
   .disabled {
     display: none;
   }
-  
+
 }

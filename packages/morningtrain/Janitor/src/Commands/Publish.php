@@ -34,7 +34,8 @@ class Publish extends Command
      *
      * @return void
      */
-    public function __construct( Janitor $janitor, Stub $stub ) {
+    public function __construct(Janitor $janitor, Stub $stub)
+    {
         parent::__construct();
 
         $this->janitor = $janitor;
@@ -47,12 +48,13 @@ class Publish extends Command
      *
      * @return mixed
      */
-    public function handle() {
+    public function handle()
+    {
         // Call initializer
         if ($this->option('init')) {
             $initializer = $this->janitor->getRegisteredInitializer();
 
-            foreach($initializer as $closure) {
+            foreach ($initializer as $closure) {
                 $closure();
             }
         }
@@ -96,8 +98,9 @@ class Publish extends Command
      * Publish helpers
      */
 
-    protected function publishMigrations( array $migrations ) {
-        foreach( $migrations as $source ) {
+    protected function publishMigrations(array $migrations)
+    {
+        foreach ($migrations as $source) {
             $sourceParts = explode('/', $source);
             $filename = end($sourceParts);
             $nameParts = explode('.', $filename);
@@ -120,11 +123,12 @@ class Publish extends Command
         }
     }
 
-    protected function publishModels( array $models ) {
+    protected function publishModels(array $models)
+    {
         $baseNamespace = config('janitor.namespaces.models', 'App\\Models');
         $basePath = config('janitor.paths.models', app_path('Models'));
 
-        foreach($models as $model => $baseClass) {
+        foreach ($models as $model => $baseClass) {
             $modelParts = explode('\\', $model);
             $className = array_pop($modelParts);
             $namespace = $baseNamespace;
@@ -147,20 +151,21 @@ class Publish extends Command
                 $this->stub->create('class', $path, [
                     'namespace' => $namespace,
                     'imports'   => [
-                        $baseClass
+                        $baseClass,
                     ],
                     'class'     => $className,
-                    'extends'   => $baseClass
+                    'extends'   => $baseClass,
                 ]);
             }
         }
     }
 
-    protected function publishControllers( array $controllers ) {
+    protected function publishControllers(array $controllers)
+    {
         $baseNamespace = config('janitor.namespaces.controllers', 'App\\Http\\Controllers');
         $basePath = config('janitor.paths.controllers', app_path('Http/Controllers'));
 
-        foreach($controllers as $controller => $baseClass) {
+        foreach ($controllers as $controller => $baseClass) {
             $controllerParts = explode('\\', $controller);
             $className = array_pop($controllerParts);
             $namespace = $baseNamespace;
@@ -183,20 +188,21 @@ class Publish extends Command
                 $this->stub->create('class', $path, [
                     'namespace' => $namespace,
                     'imports'   => [
-                        $baseClass
+                        $baseClass,
                     ],
                     'class'     => $className,
-                    'extends'   => $baseClass
+                    'extends'   => $baseClass,
                 ]);
             }
         }
     }
 
-    protected function publishClasses( array $classes ) {
+    protected function publishClasses(array $classes)
+    {
         $baseNamespace = 'App';
         $basePath = app_path();
 
-        foreach($classes as $target => $baseClass) {
+        foreach ($classes as $target => $baseClass) {
             $targetParts = explode('\\', $target);
             $className = array_pop($targetParts);
             $namespace = $baseNamespace;
@@ -219,10 +225,10 @@ class Publish extends Command
                 $this->stub->create('class', $path, [
                     'namespace' => $namespace,
                     'imports'   => [
-                        $baseClass
+                        $baseClass,
                     ],
                     'class'     => $className,
-                    'extends'   => $baseClass
+                    'extends'   => $baseClass,
                 ]);
             }
         }

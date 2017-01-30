@@ -12,16 +12,18 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
-abstract class Controller extends BaseController {
+abstract class Controller extends BaseController
+{
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    function __construct() {
+    function __construct()
+    {
 
         // Create store
         $this->store = new Store($this->model, [
-            'pagination'    => [
-                'limit'     => $this->paginationLimit
-            ]
+            'pagination' => [
+                'limit' => $this->paginationLimit,
+            ],
         ]);
 
         // Guess namespace
@@ -56,7 +58,7 @@ abstract class Controller extends BaseController {
             'baseRoute'     => $this->baseRoute,
             'slug'          => $this->currentSlug,
             'singularName'  => $dummyModel->getShortName(),
-            'pluralName'    => $dummyModel->getPluralName()
+            'pluralName'    => $dummyModel->getPluralName(),
         ]);
 
         // Create index columns
@@ -67,8 +69,8 @@ abstract class Controller extends BaseController {
 
         // Assign index columns and fields to the view helper
         $this->viewHelper->options->set([
-            'columns'       => $this->indexColumns,
-            'fields'        => $this->formFields
+            'columns' => $this->indexColumns,
+            'fields'  => $this->formFields,
         ]);
 
         // Share view data
@@ -122,7 +124,8 @@ abstract class Controller extends BaseController {
      *
      * @return array
      */
-    protected function generateIndexColumns( ViewHelper $crud ) {
+    protected function generateIndexColumns(ViewHelper $crud)
+    {
         return [];
     }
 
@@ -143,7 +146,8 @@ abstract class Controller extends BaseController {
      *
      * @return array
      */
-    protected function generateFormFields( ViewHelper $crud ) {
+    protected function generateFormFields(ViewHelper $crud)
+    {
         return [];
     }
 
@@ -153,11 +157,12 @@ abstract class Controller extends BaseController {
      * @param Request $request
      * @param Model $resource
      */
-    protected function setFields(Request $request, Model $resource) {
+    protected function setFields(Request $request, Model $resource)
+    {
         /**
          * @var Field $field
          */
-        foreach($this->formFields as $field) {
+        foreach ($this->formFields as $field) {
             $status = $field->update($resource, $request);
 
             if (!is_null($status)) {
@@ -196,8 +201,10 @@ abstract class Controller extends BaseController {
      * @param string $messageKey
      * @return $this
      */
-    protected function notify( string $messageKey ) {
+    protected function notify(string $messageKey)
+    {
         session()->flash('status', trans($this->viewHelper->trans("messages.$messageKey")));
+
         return $this;
     }
 
@@ -205,28 +212,32 @@ abstract class Controller extends BaseController {
      * @param $viewName
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    protected function view(string $viewName) {
+    protected function view(string $viewName)
+    {
         return view(strlen($this->viewNamespace) > 0 ? $this->viewNamespace . '.' . $viewName : $viewName);
     }
 
-    protected function shareViewData() {
+    protected function shareViewData()
+    {
         view()->share([
-            'crud'  => $this->viewHelper
+            'crud' => $this->viewHelper,
         ]);
     }
 
     /**
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    protected function redirectToBaseRoute() {
-        return redirect(route($this->baseRoute.'.index'));
+    protected function redirectToBaseRoute()
+    {
+        return redirect(route($this->baseRoute . '.index'));
     }
 
     /**
      * @param $message
      * @return \Illuminate\Http\RedirectResponse
      */
-    protected function redirectToBaseRouteWithError($message) {
+    protected function redirectToBaseRouteWithError($message)
+    {
         return $this->redirectToBaseRoute()->with('errors', collect($message));
     }
 
@@ -241,10 +252,11 @@ abstract class Controller extends BaseController {
      * @param Model $resource
      * @return array
      */
-    protected function rules(Request $request, Model $resource) {
+    protected function rules(Request $request, Model $resource)
+    {
         $rules = [];
 
-        foreach($this->formFields as $field) {
+        foreach ($this->formFields as $field) {
             $rules = array_merge($rules, $field->rules($resource, $request));
         }
 
@@ -261,27 +273,37 @@ abstract class Controller extends BaseController {
     /**
      * @param Model $resource
      */
-    protected function beforeStore(Model $resource) {}
+    protected function beforeStore(Model $resource)
+    {
+    }
 
     /**
      * @param Model $resource
      */
-    protected function afterStore(Model $resource) {}
+    protected function afterStore(Model $resource)
+    {
+    }
 
     /**
      * @param Model $resource
      */
-    protected function beforeDestroy(Model $resource) {}
+    protected function beforeDestroy(Model $resource)
+    {
+    }
 
     /**
      * @param Model $resource
      */
-    protected function afterDestroy(Model $resource) {}
+    protected function afterDestroy(Model $resource)
+    {
+    }
 
     /**
      * After constructor
      */
-    protected function boot() {}
+    protected function boot()
+    {
+    }
 
     /*
 	 * ------------------------------------------------
@@ -293,7 +315,8 @@ abstract class Controller extends BaseController {
      * @param Request $request
      * @return string
      */
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         return $this->view('crud.index')->with('entries', $this->store->all())->render();
     }
 
@@ -302,7 +325,8 @@ abstract class Controller extends BaseController {
      * @param $id
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|string
      */
-    public function show(Request $request, $id) {
+    public function show(Request $request, $id)
+    {
         $resource = $this->store->one($id);
 
         if ($resource->isNew()) {
@@ -316,7 +340,8 @@ abstract class Controller extends BaseController {
      * @param Request $request
      * @return string
      */
-    public function create(Request $request) {
+    public function create(Request $request)
+    {
         return $this->view('crud.form')->with('entry', $this->store->one())->render();
     }
 
@@ -325,7 +350,8 @@ abstract class Controller extends BaseController {
      * @param null $id
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|void
      */
-    public function store(Request $request, $id = null) {
+    public function store(Request $request, $id = null)
+    {
 
         // Get resource
         $resource = $this->store->one($id);
@@ -364,7 +390,8 @@ abstract class Controller extends BaseController {
      * @param $id
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function destroy(Request $request, $id) {
+    public function destroy(Request $request, $id)
+    {
         $resource = $this->store->one($id);
 
         if (is_null($resource)) {

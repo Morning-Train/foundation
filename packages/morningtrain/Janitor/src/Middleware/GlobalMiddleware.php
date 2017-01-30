@@ -5,7 +5,8 @@ namespace morningtrain\Janitor\Middleware;
 use Illuminate\Http\Request;
 use morningtrain\Janitor\Exceptions\JanitorException;
 
-class GlobalMiddleware {
+class GlobalMiddleware
+{
 
     /**
      * @var array
@@ -17,9 +18,10 @@ class GlobalMiddleware {
      *
      * @param $middleware
      */
-    public static function append( $middleware ) {
+    public static function append($middleware)
+    {
         if (is_array($middleware)) {
-            foreach($middleware as $mw) {
+            foreach ($middleware as $mw) {
                 static::append($mw);
             }
 
@@ -36,9 +38,10 @@ class GlobalMiddleware {
      *
      * @param $middleware
      */
-    public static function prepend( $middleware ) {
+    public static function prepend($middleware)
+    {
         if (is_array($middleware)) {
-            foreach($middleware as $mw) {
+            foreach ($middleware as $mw) {
                 static::prepend($mw);
             }
         }
@@ -52,7 +55,8 @@ class GlobalMiddleware {
      * Stack handler
      */
 
-    public function handle( Request $request, \Closure $next ) {
+    public function handle(Request $request, \Closure $next)
+    {
         $this->index = -1;
         $this->terminate = $next;
 
@@ -73,22 +77,24 @@ class GlobalMiddleware {
      */
     protected $index;
 
-    protected function next( $request ) {
+    protected function next($request)
+    {
         $this->index++;
 
         if ($this->index === count(static::$middleware)) {
             $terminate = $this->terminate;
+
             return $terminate($request);
         }
 
-        $middlewareClass = static::$middleware[ $this->index ];
+        $middlewareClass = static::$middleware[$this->index];
         $middleware = new $middlewareClass();
 
-        if (!is_callable([ $middleware, 'handle' ])) {
+        if (!is_callable([$middleware, 'handle'])) {
             throw new JanitorException("Global middleware `$middlewareClass` is invalid.");
         }
 
-        return $middleware->handle($request, \Closure::bind(function( $request ) {
+        return $middleware->handle($request, \Closure::bind(function ($request) {
             return $this->next($request);
 
         }, $this, static::class));

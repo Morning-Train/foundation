@@ -10,39 +10,43 @@ use Illuminate\Routing\Router;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
-class AdminFeature extends JanitorFeature {
+class AdminFeature extends JanitorFeature
+{
 
     /**
      * @var Crud
      */
     protected $crud;
 
-    function __construct() {
+    function __construct()
+    {
         $this->crud = app()->make(Crud::class);
     }
 
     protected $classes = [
-        'Themes\\AdminTheme'    => AdminTheme::class
+        'Themes\\AdminTheme' => AdminTheme::class,
     ];
 
     protected $routerGroup = 'admin';
 
-    protected function routerOptions() {
+    protected function routerOptions()
+    {
         return [
-            'prefix'        => trans('admin.prefix'),
-            'middleware'    => 'web',
-            'theme'         => 'Admin',
-            'namespace'     => 'App\Http\Controllers'
+            'prefix'     => trans('admin.prefix'),
+            'middleware' => 'web',
+            'theme'      => 'Admin',
+            'namespace'  => 'App\Http\Controllers',
         ];
     }
 
-    protected function routes( Router $router ) {
+    protected function routes(Router $router)
+    {
         $items = config('admin.items', []);
 
         // Define base admin route
         $router->get('', [
-            'as'    => 'admin',
-            'uses'  => function() use( $items ) {
+            'as'   => 'admin',
+            'uses' => function () use ($items) {
                 if (count($items) === 0) {
                     return redirect('/');
                 }
@@ -50,7 +54,7 @@ class AdminFeature extends JanitorFeature {
                 // Find first model
                 $firstModel = null;
 
-                foreach( $items as $model => $params ) {
+                foreach ($items as $model => $params) {
                     $firstModel = is_int($model) ? $params : $model;
                     break;
                 }
@@ -59,11 +63,11 @@ class AdminFeature extends JanitorFeature {
                 $slug = (new $firstModel)->getPluralName();
 
                 return redirect(route("admin.$slug.index"));
-            }
+            },
         ]);
 
         // Define CRUD routes
-        foreach($items as $model => $params) {
+        foreach ($items as $model => $params) {
             if (is_int($model)) {
                 $model = $params;
                 $params = [];
@@ -73,9 +77,9 @@ class AdminFeature extends JanitorFeature {
             $slug = (new $model)->getPluralName();
 
             $this->crud->route($model, [
-                'base'          => "admin.$slug",
+                'base'      => "admin.$slug",
                 //'prefix'        => Translation::get("crud.$slug.prefix", [], $slug),
-                'namespace'     => config('admin.crud.namespaces.controllers', 'App\\Http\\Controllers\\Admin')
+                'namespace' => config('admin.crud.namespaces.controllers', 'App\\Http\\Controllers\\Admin'),
             ]);
         }
     }
@@ -90,13 +94,14 @@ class AdminFeature extends JanitorFeature {
         'laravel-elixir-browserify-official',
         'jquery',
         'wrapper6',
-        'alert.js'
+        'alert.js',
     ];
 
-    protected function publisher() {
+    protected function publisher()
+    {
         $dependencies = $this->npm;
 
-        return function() use ( $dependencies ) {
+        return function () use ($dependencies) {
             $npmProcess = new Process('npm install --save-dev ' . implode(' ', $dependencies));
             $npmProcess->run();
 

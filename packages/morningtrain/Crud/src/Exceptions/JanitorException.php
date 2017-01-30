@@ -2,6 +2,7 @@
 
 namespace morningtrain\Crud\Exceptions;
 
-class CrudException extends \Exception {
+class CrudException extends \Exception
+{
 
 }

@@ -4,18 +4,21 @@ namespace morningtrain\Acl\Middleware;
 
 use Illuminate\Contracts\Auth\Access\Gate;
 
-class HasPermissions {
+class HasPermissions
+{
 
     /**
      * @var Gate
      */
     protected $gate;
 
-    function __construct() {
+    function __construct()
+    {
         $this->gate = app()->make(Gate::class);
     }
 
-    public function handle($request, \Closure $next) {
+    public function handle($request, \Closure $next)
+    {
         $action = $request->route()->getAction();
 
         if (isset($action['permissions']) && is_array($action['permissions'])) {

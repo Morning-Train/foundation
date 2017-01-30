@@ -10,11 +10,11 @@
 
     public function up()
     {
-        Schema::create('{!! $table !!}', function (Blueprint $table) {
-            $table->increments('id');
-            $table->timestamps();
+    Schema::create('{!! $table !!}', function (Blueprint $table) {
+    $table->increments('id');
+    $table->timestamps();
 
-        });
+    });
     }
 
     /**
@@ -25,7 +25,7 @@
 
     public function down()
     {
-        Schema::dropIfExists('{!! $table !!}');
+    Schema::dropIfExists('{!! $table !!}');
     }
 
 @stop

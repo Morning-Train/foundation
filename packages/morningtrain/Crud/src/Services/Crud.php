@@ -6,18 +6,21 @@ use Illuminate\Routing\Router;
 use morningtrain\Crud\Contracts\Model;
 use morningtrain\Crud\Exceptions\CrudException;
 
-class Crud {
+class Crud
+{
 
     /**
      * @var Router
      */
     protected $router;
 
-    function __construct( Router $router ) {
+    function __construct(Router $router)
+    {
         $this->router = $router;
     }
 
-    public function route( $modelClass, array $options = [] ) {
+    public function route($modelClass, array $options = [])
+    {
         // Determine namespace
         if (!isset($options['namespace'])) {
             $options['namespace'] = config('crud.namespaces.controllers', 'App\\Http\\Controllers');
@@ -44,13 +47,11 @@ class Crud {
 
         // Determine controller
         if (!isset($options['controller'])) {
-            $options['controller'] = ucfirst($pluralName).'Controller';
+            $options['controller'] = ucfirst($pluralName) . 'Controller';
         }
 
         // Determine routes
-        $options['routes'] = isset($options['routes']) && is_array($options['routes']) ?
-            $options['routes'] :
-            array_keys($this->getDefaultRoutes());
+        $options['routes'] = isset($options['routes']) && is_array($options['routes']) ? $options['routes'] : array_keys($this->getDefaultRoutes());
 
         // Filter options
         $options = $this->filterOptions($modelClass, $options);
@@ -80,16 +81,16 @@ class Crud {
             }
         }
 
-        $this->router->group($options, function( $router ) use($base, $controller, $routes) {
-            foreach ( $routes as $name => $params ) {
+        $this->router->group($options, function ($router) use ($base, $controller, $routes) {
+            foreach ($routes as $name => $params) {
                 $method = $params['method'];
                 $action = $params['action'];
                 $path = $params['path'];
                 $where = isset($params['where']) ? $params['where'] : null;
 
                 $route = $router->$method($path, [
-                    'as'    => "$base.$name",
-                    'uses'  => "$controller@$action"
+                    'as'   => "$base.$name",
+                    'uses' => "$controller@$action",
                 ]);
 
                 if (is_array($where)) {
@@ -114,13 +115,16 @@ class Crud {
      * @param callable $callback
      * @return $this
      */
-    public function addFilter( callable $callback ) {
+    public function addFilter(callable $callback)
+    {
         $this->filters[] = $callback;
+
         return $this;
     }
 
-    protected function filterOptions( $model, array $options ) {
-        foreach($this->filters as $filter) {
+    protected function filterOptions($model, array $options)
+    {
+        foreach ($this->filters as $filter) {
             $options = $filter($model, $options);
         }
 
@@ -131,50 +135,52 @@ class Crud {
      * Helpers
      */
 
-    protected function getDefaultRoutes() {
+    protected function getDefaultRoutes()
+    {
         return [
-            'index'     => [
-                'method'    => 'get',
-                'action'    => 'index',
-                'path'      => trans('crud.common.routes.index')
+            'index' => [
+                'method' => 'get',
+                'action' => 'index',
+                'path'   => trans('crud.common.routes.index'),
             ],
 
-            'create'    => [
-                'method'    => 'get',
-                'action'    => 'create',
-                'path'      => trans('crud.common.routes.create')
+            'create' => [
+                'method' => 'get',
+                'action' => 'create',
+                'path'   => trans('crud.common.routes.create'),
             ],
 
-            'edit'      => [
-                'method'    => 'get',
-                'action'    => 'show',
-                'path'      => trans('crud.common.routes.edit', [ 'id' => '{id}' ]),
-                'where'     => [
-                    'id'    => '[0-9]+'
-                ]
+            'edit' => [
+                'method' => 'get',
+                'action' => 'show',
+                'path'   => trans('crud.common.routes.edit', ['id' => '{id}']),
+                'where'  => [
+                    'id' => '[0-9]+',
+                ],
             ],
 
-            'store'     => [
-                'method'    => 'post',
-                'action'    => 'store',
-                'path'      => trans('crud.common.routes.store', [ 'id' => '{id?}' ]),
-                'where'     => [
-                    'id'    => '[0-9]+'
-                ]
+            'store' => [
+                'method' => 'post',
+                'action' => 'store',
+                'path'   => trans('crud.common.routes.store', ['id' => '{id?}']),
+                'where'  => [
+                    'id' => '[0-9]+',
+                ],
             ],
 
-            'delete'    => [
-                'method'    => 'get',
-                'action'    => 'destroy',
-                'path'      => trans('crud.common.routes.delete', [ 'id' => '{id}' ]),
-                'where'     => [
-                    'id'    => '[0-9]+'
-                ]
-            ]
+            'delete' => [
+                'method' => 'get',
+                'action' => 'destroy',
+                'path'   => trans('crud.common.routes.delete', ['id' => '{id}']),
+                'where'  => [
+                    'id' => '[0-9]+',
+                ],
+            ],
         ];
     }
 
-    protected function determineRoutes( array $onlyRoutes = null ) {
+    protected function determineRoutes(array $onlyRoutes = null)
+    {
         $default = $this->getDefaultRoutes();
 
         if (is_null($onlyRoutes)) {
@@ -183,7 +189,7 @@ class Crud {
 
         $routes = [];
 
-        foreach($onlyRoutes as $routeName) {
+        foreach ($onlyRoutes as $routeName) {
             if (isset($default[$routeName])) {
                 $routes[$routeName] = $default[$routeName];
             }

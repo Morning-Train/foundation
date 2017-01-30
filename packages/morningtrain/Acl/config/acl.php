@@ -11,8 +11,8 @@ return [
     |
     */
 
-    'routes'    => [
-        'no-access'         => 'auth.logout'
+    'routes' => [
+        'no-access' => 'auth.logout',
     ],
 
     /*
@@ -24,23 +24,23 @@ return [
     |
     */
 
-    'roles'     => [
+    'roles' => [
 
         'developer' => [
-            'name'          => 'Developer',
-            'super'         => true,
-            'permissions'   => [
+            'name'        => 'Developer',
+            'super'       => true,
+            'permissions' => [
 
-            ]
+            ],
         ],
 
         'admin' => [
-            'name'          => 'Administrator',
-            'super'         => true,
-            'permissions'   => [
+            'name'        => 'Administrator',
+            'super'       => true,
+            'permissions' => [
 
-            ]
-        ]
+            ],
+        ],
     ],
 
     /*
@@ -52,13 +52,13 @@ return [
     |
     */
 
-    'permissions'   => [
+    'permissions' => [
 
         // Access permissions
-        'access'    => [
+        'access' => [
 
-        ]
+        ],
 
-    ]
+    ],
 
 ];

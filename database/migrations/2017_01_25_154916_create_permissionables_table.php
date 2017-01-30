@@ -13,7 +13,7 @@ class CreatePermissionablesTable extends Migration
      */
     public function up()
     {
-        Schema::create('permissionables', function ( Blueprint $table ) {
+        Schema::create('permissionables', function (Blueprint $table) {
 
             $table->integer('permission_id')->unsigned();
             $table->integer('permissionable_id')->unsigned();

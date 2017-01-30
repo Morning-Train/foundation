@@ -8,7 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use morningtrain\Crud\Contracts\Model;
 
-class Store {
+class Store
+{
 
     /**
      * @var string
@@ -25,7 +26,8 @@ class Store {
      */
     protected $options;
 
-    function __construct( $model, array $options = [] ) {
+    function __construct($model, array $options = [])
+    {
         $this->model = $model;
         $this->request = request();
         $this->options = new Repository($options);
@@ -35,7 +37,8 @@ class Store {
      * @param null $id
      * @return Model
      */
-    public function one( $id = null, callable $callback = null ) {
+    public function one($id = null, callable $callback = null)
+    {
         $model = $this->model;
         $resource = is_null($id) ? new $model() : $model::where('id', $id)->first();
 
@@ -45,7 +48,8 @@ class Store {
     /**
      * @return Collection
      */
-    public function all( callable $callback = null ) {
+    public function all(callable $callback = null)
+    {
         $query = $this->query();
         $appliedFilters = $this->applyFilters($query);
         $resources = $this->applyPagination($query);
@@ -56,21 +60,24 @@ class Store {
     /**
      * @return Builder
      */
-    public function query() {
+    public function query()
+    {
         return (new $this->model)->newQuery();
     }
 
     /**
      * @return mixed
      */
-    public function getSingularName() {
+    public function getSingularName()
+    {
         return $this->one()->getSingularName();
     }
 
     /**
      * @return mixed|string
      */
-    public function getPluralName() {
+    public function getPluralName()
+    {
         return $this->one()->getPluralName();
     }
 
@@ -85,8 +92,10 @@ class Store {
      * @param callable $callback
      * @return $this
      */
-    public function addFilter( string $name, callable $callback ) {
+    public function addFilter(string $name, callable $callback)
+    {
         $this->options->set("filters.$name", $callback);
+
         return $this;
     }
 
@@ -94,10 +103,11 @@ class Store {
      * @param $query
      * @return mixed
      */
-    protected function applyFilters( $query ) {
+    protected function applyFilters($query)
+    {
         $filters = $this->request->all();
 
-        foreach($filters as $name => $value) {
+        foreach ($filters as $name => $value) {
             $filter = $this->options->get("filters.$name");
 
             if (is_callable($filter)) {
@@ -112,7 +122,8 @@ class Store {
      * Pagination
      */
 
-    protected function applyPagination( $query ) {
+    protected function applyPagination($query)
+    {
         return $query->paginate($this->options->get('pagination.limit', 10));
     }
 

@@ -1,16 +1,16 @@
 
 [data-type=action] {
   display: inline-block;
-  width:24px;
-  margin:0px;
-  line-height:100%;
+  width: 24px;
+  margin: 0px;
+  line-height: 100%;
 
   &:hover {
-    opacity:0.8;
+    opacity: 0.8;
   }
 
   &[data-action=delete] {
-    color:$red;
+    color: $red;
   }
 
 }

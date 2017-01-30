@@ -12,7 +12,8 @@ class StubServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot() {
+    public function boot()
+    {
 
     }
 
@@ -21,12 +22,13 @@ class StubServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register() {
+    public function register()
+    {
         // Publish files
         $this->publish();
 
         // Register service
-        $this->app->singleton(Stub::class, function() {
+        $this->app->singleton(Stub::class, function () {
             return new Stub();
         });
     }
@@ -34,11 +36,12 @@ class StubServiceProvider extends ServiceProvider
     /**
      * Files to publish
      */
-    public function publish() {
+    public function publish()
+    {
 
         // Publish stubs
         $this->publishes([
-            __DIR__ . '/../resources/stubs' => base_path('resources/stubs')
+            __DIR__ . '/../resources/stubs' => base_path('resources/stubs'),
 
         ], 'stubs');
 

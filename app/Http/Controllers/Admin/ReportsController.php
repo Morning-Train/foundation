@@ -13,8 +13,8 @@ use morningtrain\Crud\Components\Column;
 use morningtrain\Crud\Components\Field;
 use morningtrain\Crud\Components\ViewHelper;
 
-class ReportsController extends Controller {
-    
+class ReportsController extends Controller
+{
     
     
     /*
@@ -24,13 +24,13 @@ class ReportsController extends Controller {
     */
 
     /**
-    * @var  string
-    */
+     * @var  string
+     */
     protected $model = \App\Models\Report::class;
 
     /**
-    * @var  int
-    */
+     * @var  int
+     */
     protected $paginationLimit = 10;
 
     /*
@@ -45,45 +45,44 @@ class ReportsController extends Controller {
      *
      * @return array
      */
-    protected function generateIndexColumns( ViewHelper $helper ) {
+    protected function generateIndexColumns(ViewHelper $helper)
+    {
         return [
             Column::create([
-                'name'      => 'id',
-                'label'     => '#',
-                'order'     => 'asc'    // default order on columns
+                'name'  => 'id',
+                'label' => '#',
+                'order' => 'asc'    // default order on columns
             ]),
 
             Column::create([
-                'name'      => 'name',
-                'label'     => 'Name'
+                'name'  => 'name',
+                'label' => 'Name',
             ]),
 
             Column::create([
-                'name'      => 'user',
-                'label'     => 'User',
-                'sortable'  => true,
+                'name'     => 'user',
+                'label'    => 'User',
+                'sortable' => true,
 
-                'sort'      => function( $query, $name, $direction ) {
+                'sort' => function ($query, $name, $direction) {
                     $usersTable = (new User())->getTable();
                     $reportsTable = (new Report())->getTable();
 
-                    $query
-                        ->join($usersTable, "$usersTable.id", '=', "$reportsTable.user_id")
-                        ->select("$reportsTable.*")
-                        ->orderBy("$usersTable.name", $direction);
+                    $query->join($usersTable, "$usersTable.id", '=',
+                        "$reportsTable.user_id")->select("$reportsTable.*")->orderBy("$usersTable.name", $direction);
                 },
 
-                'render'    => function( Column $column, Report $report ) {
+                'render' => function (Column $column, Report $report) {
                     return $report->user->name;
-                }
+                },
             ]),
 
             Column::actions([
-                'name'      => 'actions',
-                'label'     => 'Actions',
-                'class'     => 'align-right',
-                'sortable'  => false
-            ])
+                'name'     => 'actions',
+                'label'    => 'Actions',
+                'class'    => 'align-right',
+                'sortable' => false,
+            ]),
         ];
     }
 
@@ -99,30 +98,31 @@ class ReportsController extends Controller {
      *
      * @return array
      */
-    protected function generateFormFields( ViewHelper $crud ) {
+    protected function generateFormFields(ViewHelper $crud)
+    {
         return [
             Field::input([
-                'name'      => 'name',
-                'label'     => 'Name',
-                'rules'     => 'required'
+                'name'  => 'name',
+                'label' => 'Name',
+                'rules' => 'required',
             ]),
 
             Field::select([
-                'name'      => 'user_id',
-                'label'     => 'User',
-                'rules'     => 'required',
+                'name'  => 'user_id',
+                'label' => 'User',
+                'rules' => 'required',
 
-                'options'   => function( Report $report ) {
+                'options' => function (Report $report) {
                     $users = User::get();
                     $options = [];
 
-                    $users->each(function( $user ) use( &$options ) {
+                    $users->each(function ($user) use (&$options) {
                         $options[$user->id] = $user->name;
                     });
 
                     return $options;
-                }
-            ])
+                },
+            ]),
         ];
     }
 
@@ -133,33 +133,40 @@ class ReportsController extends Controller {
     */
 
     /**
-    * @param  Model $resource
-    */
-    protected function beforeStore(Model $resource) {}
+     * @param  Model $resource
+     */
+    protected function beforeStore(Model $resource)
+    {
+    }
 
     /**
-    * @param  Model $resource
-    */
-    protected function afterStore(Model $resource) {
+     * @param  Model $resource
+     */
+    protected function afterStore(Model $resource)
+    {
 
     }
 
     /**
-    * @param  Model $resource
-    */
-    protected function beforeDestroy(Model $resource) {}
+     * @param  Model $resource
+     */
+    protected function beforeDestroy(Model $resource)
+    {
+    }
 
     /**
-    * @param  Model $resource
-    */
-    protected function afterDestroy(Model $resource) {
+     * @param  Model $resource
+     */
+    protected function afterDestroy(Model $resource)
+    {
 
     }
 
     /**
-    * After constructor
-    */
-    protected function boot() {
+     * After constructor
+     */
+    protected function boot()
+    {
         // Register filters
         $this->store->addFilter('order', Filter::order($this->indexColumns));
     }

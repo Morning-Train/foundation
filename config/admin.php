@@ -6,8 +6,8 @@ return [
      * Authentication configuration
      */
 
-    'auth'  => [
-        'registration'  => true
+    'auth' => [
+        'registration' => true,
     ],
 
     /*
@@ -15,11 +15,11 @@ return [
      * and shown in the menu. (the order reflects in the menu as well)
      */
 
-    'items'  => [
+    'items' => [
 
-        \App\Models\User::class     => [
-            'icon'  => '&#xE7FB;'
-        ]
+        \App\Models\User::class => [
+            'icon' => '&#xE7FB;',
+        ],
 
     ],
 
@@ -29,16 +29,16 @@ return [
      * e.g. php artisan crud:new MyModel --config=admin.crud
      */
 
-    'crud'  => [
+    'crud' => [
 
-        'namespaces'    => [
-            'controllers'   => 'App\\Http\\Controllers\\Admin'
+        'namespaces' => [
+            'controllers' => 'App\\Http\\Controllers\\Admin',
         ],
 
-        'paths'         => [
-            'controllers'   => app_path('Http/Controllers/Admin')
-        ]
+        'paths' => [
+            'controllers' => app_path('Http/Controllers/Admin'),
+        ],
 
-    ]
+    ],
 
 ];

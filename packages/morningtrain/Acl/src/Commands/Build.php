@@ -29,7 +29,8 @@ class Build extends Command
      *
      * @return void
      */
-    public function __construct( Janitor $janitor ) {
+    public function __construct(Janitor $janitor)
+    {
         parent::__construct();
 
         $this->permissionModel = $janitor->getPublishedModelFor(Permission::class);
@@ -56,7 +57,8 @@ class Build extends Command
      *
      * @return mixed
      */
-    public function handle() {
+    public function handle()
+    {
         // Recache config
         $this->call('config:cache');
 
@@ -66,7 +68,8 @@ class Build extends Command
         $this->info('ACL has been built.');
     }
 
-    protected function syncPermissions( array $permissions, string $namespace = '' ) {
+    protected function syncPermissions(array $permissions, string $namespace = '')
+    {
         $permissionModel = $this->permissionModel;
         $roleModel = $this->roleModel;
 
@@ -95,17 +98,18 @@ class Build extends Command
                 $permission->slug = $slug;
                 $permission->name = $name;
                 $permission->save();
-            }
-
-            // Check if the name needs update
-            else if ($permission->name !== $name) {
-                $permission->name = $name;
-                $permission->save();
+            } // Check if the name needs update
+            else {
+                if ($permission->name !== $name) {
+                    $permission->name = $name;
+                    $permission->save();
+                }
             }
         }
     }
 
-    protected function syncRoles( array $roles ) {
+    protected function syncRoles(array $roles)
+    {
         $permissionModel = $this->permissionModel;
         $roleModel = $this->roleModel;
 
@@ -123,16 +127,13 @@ class Build extends Command
                 $role->name = $name;
                 $role->is_super = $super;
                 $role->save();
-            }
-
-            // Check if the fields need update
-            else if (
-                ($role->name !== $name) ||
-                ($role->is_super !== $super)
-            ) {
-                $role->name = $name;
-                $role->is_super = $super;
-                $role->save();
+            } // Check if the fields need update
+            else {
+                if (($role->name !== $name) || ($role->is_super !== $super)) {
+                    $role->name = $name;
+                    $role->is_super = $super;
+                    $role->save();
+                }
             }
 
             // Check if any permissions needs to be refused

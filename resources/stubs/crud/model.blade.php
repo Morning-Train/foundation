@@ -3,12 +3,12 @@
 @section('body')
 
     @if(isset($table))
-    /**
-    * Table name
-    *
-    * @var string
-    */
-    protected $table = '{!! $table !!}';
+        /**
+        * Table name
+        *
+        * @var string
+        */
+        protected $table = '{!! $table !!}';
     @endif
 
     /**
@@ -17,8 +17,8 @@
     * @var array
     */
     protected $dates = [
-        'created_at',
-        'updated_at'
+    'created_at',
+    'updated_at'
     ];
 
 @stop

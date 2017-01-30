@@ -6,9 +6,11 @@ use Illuminate\Routing\Router;
 use morningtrain\Janitor\Exceptions\JanitorException;
 use morningtrain\Janitor\Middleware\GlobalMiddleware;
 
-class Janitor {
+class Janitor
+{
 
-    function __construct( Router $router ) {
+    function __construct(Router $router)
+    {
         $this->router = $router;
     }
 
@@ -30,8 +32,9 @@ class Janitor {
      */
     protected $models = [];
 
-    public function registerModels( array $models, string $namespace = '' ) {
-        foreach($models as $name => $class) {
+    public function registerModels(array $models, string $namespace = '')
+    {
+        foreach ($models as $name => $class) {
             // Check if bundled into namespace
             if (is_array($class)) {
                 $this->registerModels($class, strlen($namespace) > 0 ? $namespace . '\\' . $name : $name);
@@ -52,11 +55,13 @@ class Janitor {
         }
     }
 
-    public function getRegisteredModels() {
+    public function getRegisteredModels()
+    {
         return $this->models;
     }
 
-    public function getPublishedModelFor( $class ) {
+    public function getPublishedModelFor($class)
+    {
         $model = array_search($class, $this->models);
 
         if ($model === false) {
@@ -80,8 +85,9 @@ class Janitor {
 
     protected $controllers = [];
 
-    public function registerControllers( array $controllers, string $namespace = '' ) {
-        foreach($controllers as $name => $class) {
+    public function registerControllers(array $controllers, string $namespace = '')
+    {
+        foreach ($controllers as $name => $class) {
             // Check if bundled into namespace
             if (is_array($class)) {
                 $this->registerControllers($class, strlen($namespace) > 0 ? $namespace . '\\' . $name : $name);
@@ -102,7 +108,8 @@ class Janitor {
         }
     }
 
-    public function getPublishedControllerFor( $class ) {
+    public function getPublishedControllerFor($class)
+    {
         $controller = array_search($class, $this->controllers);
 
         if ($controller === false) {
@@ -120,7 +127,8 @@ class Janitor {
         return $controllerClass;
     }
 
-    public function getRegisteredControllers() {
+    public function getRegisteredControllers()
+    {
         return $this->controllers;
     }
 
@@ -130,8 +138,9 @@ class Janitor {
 
     protected $classes = [];
 
-    public function registerClasses( array $classes, string $namespace = '' ) {
-        foreach($classes as $name => $class) {
+    public function registerClasses(array $classes, string $namespace = '')
+    {
+        foreach ($classes as $name => $class) {
             // Check if bundled into namespace
             if (is_array($class)) {
                 $this->registerClasses($class, strlen($namespace) > 0 ? $namespace . '\\' . $name : $name);
@@ -152,7 +161,8 @@ class Janitor {
         }
     }
 
-    public function getPublishedClassFor( $class ) {
+    public function getPublishedClassFor($class)
+    {
         $pubClass = array_search($class, $this->classes);
 
         if ($pubClass === false) {
@@ -169,7 +179,8 @@ class Janitor {
         return $classPath;
     }
 
-    public function getRegisteredClasses() {
+    public function getRegisteredClasses()
+    {
         return $this->classes;
     }
 
@@ -179,11 +190,13 @@ class Janitor {
 
     protected $initializer = [];
 
-    public function registerInitializer( \Closure $closure ) {
+    public function registerInitializer(\Closure $closure)
+    {
         $this->initializer[] = $closure;
     }
 
-    public function getRegisteredInitializer() {
+    public function getRegisteredInitializer()
+    {
         return $this->initializer;
     }
 
@@ -193,11 +206,13 @@ class Janitor {
 
     protected $publishers = [];
 
-    public function registerPublisher( \Closure $closure ) {
+    public function registerPublisher(\Closure $closure)
+    {
         $this->publishers[] = $closure;
     }
 
-    public function getRegisteredPublishers() {
+    public function getRegisteredPublishers()
+    {
         return $this->publishers;
     }
 
@@ -205,21 +220,20 @@ class Janitor {
      * Middleware registration
      */
 
-    public function registerMiddleware( array $middleware ) {
-        foreach($middleware as $key => $handler) {
+    public function registerMiddleware(array $middleware)
+    {
+        foreach ($middleware as $key => $handler) {
             // Global
             if (is_int($key)) {
                 GlobalMiddleware::append($handler);
-            }
-
-            // Group
-            else if (is_array($handler)) {
-                $this->router->middlewareGroup($key, $handler);
-            }
-
-            // Named middleware
+            } // Group
             else {
-                $this->router->middleware($key, $handler);
+                if (is_array($handler)) {
+                    $this->router->middlewareGroup($key, $handler);
+                } // Named middleware
+                else {
+                    $this->router->middleware($key, $handler);
+                }
             }
         }
     }
@@ -230,8 +244,9 @@ class Janitor {
 
     protected $migrations = [];
 
-    public function registerMigrations( array $migrations ) {
-        foreach( $migrations as $migration ) {
+    public function registerMigrations(array $migrations)
+    {
+        foreach ($migrations as $migration) {
             if (!file_exists($migration)) {
                 throw new JanitorException("Migration `$migration` does not exist!");
             }
@@ -240,7 +255,8 @@ class Janitor {
         }
     }
 
-    public function getRegisteredMigrations() {
+    public function getRegisteredMigrations()
+    {
         return $this->migrations;
     }
 
@@ -248,7 +264,8 @@ class Janitor {
      * Route registration
      */
 
-    public function registerRoutes( string $groupName, array $options, callable $callback ) {
+    public function registerRoutes(string $groupName, array $options, callable $callback)
+    {
         $options = array_merge($options, config("janitor.routing.groups.$groupName", []));
         $controllerNamespace = config('janitor.namespaces.controllers');
 
@@ -266,7 +283,7 @@ class Janitor {
 
         // assign default namespace
         if (!isset($options['namespace'])) {
-            $options['namespace'] = $controllerNamespace. '\\' . ucfirst($groupSlug);
+            $options['namespace'] = $controllerNamespace . '\\' . ucfirst($groupSlug);
         }
 
         // assign default theme
@@ -282,8 +299,9 @@ class Janitor {
      * Feature registration (packages)
      */
 
-    public function provide( array $features ) {
-        foreach( $features as $featureClass ) {
+    public function provide(array $features)
+    {
+        foreach ($features as $featureClass) {
             if (!class_exists($featureClass)) {
                 throw new JanitorException("Feature `$featureClass` does not exist.");
             }

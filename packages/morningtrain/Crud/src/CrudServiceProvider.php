@@ -9,14 +9,16 @@ use Illuminate\Support\ServiceProvider;
 use morningtrain\Crud\Commands\NewCrud;
 use morningtrain\Crud\Services\Crud;
 
-class CrudServiceProvider extends ServiceProvider {
+class CrudServiceProvider extends ServiceProvider
+{
 
     /**
      * Perform post-registration booting of services.
      *
      * @return void
      */
-    public function boot( Router $router ) {
+    public function boot(Router $router)
+    {
 
     }
 
@@ -25,17 +27,18 @@ class CrudServiceProvider extends ServiceProvider {
      *
      * @return void
      */
-    public function register() {
+    public function register()
+    {
         // Publish files
         $this->publish();
 
         // Register commands
         $this->commands([
-            NewCrud::class
+            NewCrud::class,
         ]);
 
         // Register service
-        $this->app->singleton(Crud::class, function( $app ) {
+        $this->app->singleton(Crud::class, function ($app) {
             return new Crud($app->make(Router::class));
         });
 
@@ -46,41 +49,42 @@ class CrudServiceProvider extends ServiceProvider {
     /**
      * Files to publish
      */
-    public function publish() {
+    public function publish()
+    {
 
         // Publish config file
         $this->publishes([
-            __DIR__ . '/../config/crud.php'  => config_path('crud.php')
+            __DIR__ . '/../config/crud.php' => config_path('crud.php'),
 
         ], 'config');
 
         // Publish gulp file
         $this->publishes([
-            __DIR__ . '/../gulp/fields.js'  => base_path('gulp/fields.js')
+            __DIR__ . '/../gulp/fields.js' => base_path('gulp/fields.js'),
 
         ], 'gulp');
 
         // Publish views
         $this->publishes([
-            __DIR__ . '/../resources/views/crud' => base_path('resources/views/crud')
+            __DIR__ . '/../resources/views/crud' => base_path('resources/views/crud'),
 
         ], 'views');
 
         // Publish fields
         $this->publishes([
-            __DIR__ . '/../resources/fields' => base_path('resources/fields')
+            __DIR__ . '/../resources/fields' => base_path('resources/fields'),
 
         ], 'fields');
 
         // Publish stubs
         $this->publishes([
-            __DIR__ . '/../resources/stubs' => base_path('resources/stubs')
+            __DIR__ . '/../resources/stubs' => base_path('resources/stubs'),
 
         ], 'stubs');
 
         // Publish lang
         $this->publishes([
-            __DIR__ . '/../resources/lang'  => base_path('resources/lang')
+            __DIR__ . '/../resources/lang' => base_path('resources/lang'),
 
         ], 'lang');
 
@@ -90,17 +94,17 @@ class CrudServiceProvider extends ServiceProvider {
      * ACL Access
      */
 
-    protected function registerAclAccess() {
+    protected function registerAclAccess()
+    {
         // Register acl access filter if the service is loaded
         if (class_exists('\morningtrain\Acl\AclServiceProvider')) {
-            $this->app->make(Crud::class)->addFilter(function( $model, $options ) {
+            $this->app->make(Crud::class)->addFilter(function ($model, $options) {
 
                 $middleware = isset($options['middleware']) ? $options['middleware'] : null;
 
                 if (is_string($middleware)) {
-                    $middleware = [ $middleware ];
-                }
-                else {
+                    $middleware = [$middleware];
+                } else {
                     $middleware = [];
                 }
 
