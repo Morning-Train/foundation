@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use morningtrain\Admin\Commands\Update;
 use morningtrain\Admin\Features\AdminFeature;
 use morningtrain\Admin\Features\AuthFeature;
+use morningtrain\Crud\Components\Column;
 use morningtrain\Crud\Components\Field;
 use morningtrain\Crud\Components\ViewHelper;
 use morningtrain\Crud\Contracts\Model;
@@ -78,20 +79,39 @@ class AdminServiceProvider extends ServiceProvider
     public function registerCustomFields() {
 
         // Select field
-        Field::registerCustomField('select', function( Field $field, Model $resource ) {
-            $optionsConstructor = $field->options->get('options', []);
-            $options = [];
+        Field::registerCustomField('select', function( array $args ) {
+            $render = $args['render'];
 
-            if (is_callable($optionsConstructor)) {
-                $options = $optionsConstructor($resource);
-            }
-            else if (is_array($optionsConstructor)) {
-                $options = $optionsConstructor;
-            }
+            $args['render'] = function( Field $field, Model $resource, ViewHelper $helper, array $params ) use ( $render ) {
+                $optionsConstructor = $field->options->get('options', []);
+                $options = [];
 
-            return [
-                'options'   => $options
-            ];
+                if (is_callable($optionsConstructor)) {
+                    $options = $optionsConstructor($resource);
+                }
+                else if (is_array($optionsConstructor)) {
+                    $options = $optionsConstructor;
+                }
+
+                return $render($field, $resource, $helper, array_merge($params, [
+                    'options'   => $options
+                ]));
+            };
+
+            return $args;
+        });
+
+    }
+
+    public function registerCustomColumns() {
+
+        // Actions
+        Column::registerCustomColumn('actions', function( array $args ) {
+            return array_merge([
+                'sortable'  => false,
+                'class'     => 'align-right'
+
+            ], $args);
         });
 
     }

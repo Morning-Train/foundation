@@ -43,7 +43,7 @@ use morningtrain\Crud\Components\ViewHelper;
         return [
             Column::create([
                 'name'      => 'id',
-                'label'     => '#',
+                'label'     => $crud->trans('columns.id'),
                 'order'     => 'asc'    // default order on columns
             ])
         ];

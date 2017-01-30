@@ -37,7 +37,7 @@ class ViewHelper {
      * Translations
      */
 
-    public function trans( $query, $namespace = null, array $args = null, $default = null ) {
+    public function trans( $query, array $args = null, $namespace = null, $default = null ) {
         if (!isset($namespace)) {
             $namespace = [
                 $this->options->get('namespace'),
@@ -70,7 +70,7 @@ class ViewHelper {
     public function title( $route = null ) {
         $slug = isset($route) ? $route : $this->options->get('slug', '');
 
-        return $this->trans("title.$slug", null, $slug === 'index' ? [
+        return $this->trans("title.$slug", $slug === 'index' ? [
             'type'  => ucfirst($this->options->get('pluralName'))
 
         ] : null);

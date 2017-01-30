@@ -13,18 +13,28 @@ class Column {
     }
 
     /*
+     * Custom columns
+     */
+
+    protected static $customColumns = [];
+
+    public static function registerCustomColumn( $type, \Closure $callback ) {
+        static::$customColumns[] = $callback;
+    }
+
+    /*
      * Helper to create blade rendering columns
      */
 
     public static function __callStatic( $name, $arguments ) {
         // Convert name to blade friendly name
-        $name = strtolower(preg_replace('/\B([A-Z])/', '-$1', $name));
-
-        return static::create(array_merge(
+        $type = strtolower(preg_replace('/\B([A-Z])/', '-$1', $name));
+        $callback = isset(static::$customColumns[$type]) ? static::$customColumns[$type] : null;
+        $args = array_merge(
             isset($arguments[0]) && is_array($arguments[0]) ? $arguments[0] : [],
             [
-                'render'    => function( Column $column, Model $resource, ViewHelper $helper, array $params ) use( $name ) {
-                    return view($helper->view("columns.$name"))->with(array_merge($params, [
+                'render'    => function( Column $column, Model $resource, ViewHelper $helper, array $params ) use( $type ) {
+                    return view($helper->view("columns.$type"))->with(array_merge($params, [
                         'crud'      => $helper,
                         'entry'     => $resource,
                         'column'    => $column
@@ -32,7 +42,13 @@ class Column {
                     ]))->render();
                 }
             ]
-        ));
+        );
+
+        if (is_callable($callback)) {
+            $args = $callback($args);
+        }
+
+        return static::create($args);
     }
 
     /**

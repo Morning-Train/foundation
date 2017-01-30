@@ -50,7 +50,7 @@ class UsersController extends Controller {
         return [
             Column::create([
                 'name'      => 'id',
-                'label'     => '#',
+                'label'     => $crud->trans('columns.id'),
                 'order'     => 'asc'    // default order on columns
             ]),
 
@@ -61,7 +61,7 @@ class UsersController extends Controller {
 
             Column::userActions([
                 'name'      => 'actions',
-                'label'     => 'Actions',
+                'label'     => $crud->trans('columns.actions'),
                 'class'     => 'align-right',
                 'sortable'  => false
             ])

@@ -41,6 +41,20 @@ return [
             'created'               => 'The :type was created!',
             'updated'               => 'The :type was updated!',
             'deleted'               => 'The :type was deleted!'
+        ],
+
+        // Fields
+        'fields'    => [
+            'sample'    => [
+                'label'         => 'Sample',
+                'placeholder'   => 'Sample placeholder'
+            ]
+        ],
+
+        // Columns
+        'columns'   => [
+            'id'        => '#',
+            'actions'   => 'Actions'
         ]
     ],
 
