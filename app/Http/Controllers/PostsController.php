@@ -14,7 +14,7 @@ use morningtrain\Crud\Contracts\Model;
 
 class PostsController extends Controller
 {
-    
+
 
     /*
     * ------------------------------------------------
@@ -49,17 +49,17 @@ class PostsController extends Controller
 
         return [
             Column::create([
-                'name'  => 'id',
+                'name' => 'id',
                 'label' => '#',
             ]),
 
             Column::create([
-                'name'  => 'title',
+                'name' => 'title',
                 'label' => 'Title',
             ]),
 
             Column::actions([
-                'label'    => 'Actions',
+                'label' => 'Actions',
                 'sortable' => false,
             ]),
         ];
@@ -81,21 +81,21 @@ class PostsController extends Controller
         return [
 
             Field::text([
-                'name'       => 'title',
-                'rules'      => 'required',
+                'name' => 'title',
+                'rules' => 'required',
                 'attributes' => [
                     'placeholder' => 'Enter the title',
                 ],
-                'params'     => [
+                'params' => [
                     'extraParam' => 'myExtraParam',
                 ],
             ]),
 
             Field::text([
-                'name'   => 'content',
+                'name' => 'content',
 
                 // Validation hook
-                'rules'  => function (Post $post, Request $request) {
+                'rules' => function (Post $post, Request $request) {
                     return $post->isNew() ? ['content' => 'required'] : [];
                 },
 

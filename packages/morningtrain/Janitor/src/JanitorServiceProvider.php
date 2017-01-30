@@ -16,7 +16,16 @@ class JanitorServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // Register initializer to publish gulpfile
+        $this->app->make(Janitor::class)->registerInitializer(function () {
+            $path = base_path('gulpfile.js');
 
+            if (file_exists($path)) {
+                unlink($path);
+            }
+
+            copy(__DIR__ . '/../gulpfile/gulpfile.js', $path);
+        });
     }
 
     /**

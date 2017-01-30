@@ -32,10 +32,10 @@ class AdminFeature extends JanitorFeature
     protected function routerOptions()
     {
         return [
-            'prefix'     => trans('admin.prefix'),
+            'prefix' => trans('admin.prefix'),
             'middleware' => 'web',
-            'theme'      => 'Admin',
-            'namespace'  => 'App\Http\Controllers',
+            'theme' => 'Admin',
+            'namespace' => 'App\Http\Controllers',
         ];
     }
 
@@ -45,7 +45,7 @@ class AdminFeature extends JanitorFeature
 
         // Define base admin route
         $router->get('', [
-            'as'   => 'admin',
+            'as' => 'admin',
             'uses' => function () use ($items) {
                 if (count($items) === 0) {
                     return redirect('/');
@@ -77,7 +77,7 @@ class AdminFeature extends JanitorFeature
             $slug = (new $model)->getPluralName();
 
             $this->crud->route($model, [
-                'base'      => "admin.$slug",
+                'base' => "admin.$slug",
                 //'prefix'        => Translation::get("crud.$slug.prefix", [], $slug),
                 'namespace' => config('admin.crud.namespaces.controllers', 'App\\Http\\Controllers\\Admin'),
             ]);
@@ -97,7 +97,7 @@ class AdminFeature extends JanitorFeature
         'alert.js',
     ];
 
-    protected function publisher()
+    protected function initializer()
     {
         $dependencies = $this->npm;
 

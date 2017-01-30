@@ -16,8 +16,8 @@ use Illuminate\Support\Facades\Auth;
 
 class UsersController extends Controller
 {
-    
-    
+
+
     /*
     * ------------------------------------------------
     * 			    Store options
@@ -50,21 +50,21 @@ class UsersController extends Controller
     {
         return [
             Column::create([
-                'name'      => 'id',
-                'label'     => $crud->trans('columns.id'),
-                'order'     => 'asc'    // default order on columns
+                'name' => 'id',
+                'label' => $crud->trans('columns.id'),
+                'order' => 'asc'    // default order on columns
             ]),
 
             Column::create([
-                'name'  => 'name',
+                'name' => 'name',
                 'label' => 'Name',
             ]),
 
             Column::userActions([
-                'name'      => 'actions',
-                'label'     => $crud->trans('columns.actions'),
-                'class'     => 'align-right',
-                'sortable'  => false
+                'name' => 'actions',
+                'label' => $crud->trans('columns.actions'),
+                'class' => 'align-right',
+                'sortable' => false
             ])
         ];
     }
@@ -85,17 +85,17 @@ class UsersController extends Controller
     {
         return [
             Field::input([
-                'name'       => 'name',
-                'label'      => 'Name',
-                'rules'      => 'required',
+                'name' => 'name',
+                'label' => 'Name',
+                'rules' => 'required',
                 'attributes' => [
                     'placeholder' => 'Enter the name',
                 ],
             ]),
 
             Field::input([
-                'type'  => 'email',
-                'name'  => 'email',
+                'type' => 'email',
+                'name' => 'email',
                 'label' => 'Email address',
 
                 'rules' => function (User $user, Request $request) {
