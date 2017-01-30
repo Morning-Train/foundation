@@ -19,11 +19,12 @@ class AdminServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot( Janitor $janitor ) {
+    public function boot(Janitor $janitor)
+    {
         // Register features
         $janitor->provide([
             AuthFeature::class,
-            AdminFeature::class
+            AdminFeature::class,
         ]);
     }
 
@@ -32,14 +33,18 @@ class AdminServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register() {
+    public function register()
+    {
         // Publish files
         $this->publish();
 
         // Register commands
         $this->commands([
-            Update::class
+            Update::class,
         ]);
+
+        // Register custom columns
+        $this->registerCustomColumns();
 
         // Register custom fields
         $this->registerCustomFields();
@@ -48,35 +53,37 @@ class AdminServiceProvider extends ServiceProvider
     /**
      * Files to publish
      */
-    public function publish() {
+    public function publish()
+    {
 
         // Publish config file
         $this->publishes([
-            __DIR__ . '/../config/admin.php'  => config_path('admin.php')
+            __DIR__ . '/../config/admin.php' => config_path('admin.php'),
 
         ], 'config');
 
         // Publish lang
         $this->publishes([
-            __DIR__ . '/../resources/lang' => base_path('resources/lang')
+            __DIR__ . '/../resources/lang' => base_path('resources/lang'),
 
         ], 'language');
 
         // Publish views
         $this->publishes([
-            __DIR__ . '/../resources/views' => base_path('resources/views')
+            __DIR__ . '/../resources/views' => base_path('resources/views'),
 
         ], 'views');
 
         // Publish themes
         $this->publishes([
-            __DIR__ . '/../resources/themes' => base_path('resources/themes')
+            __DIR__ . '/../resources/themes' => base_path('resources/themes'),
 
         ], 'themes');
 
     }
 
-    public function registerCustomFields() {
+    public function registerCustomFields()
+    {
 
         // Select field
         Field::registerCustomField('select', function( array $args ) {
@@ -103,16 +110,15 @@ class AdminServiceProvider extends ServiceProvider
 
     }
 
-    public function registerCustomColumns() {
-
+    public function registerCustomColumns()
+    {
         // Actions
         Column::registerCustomColumn('actions', function( array $args ) {
             return array_merge([
-                'sortable'  => false,
-                'class'     => 'align-right'
+                'sortable' => false,
+                'class' => 'align-right'
 
             ], $args);
         });
-
     }
 }

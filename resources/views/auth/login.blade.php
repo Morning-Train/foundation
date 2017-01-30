@@ -5,23 +5,23 @@
         <h1>@yield('title')</h1>
         {!! Form::open([ 'route' => 'auth.login.do' ]) !!}
 
-            <div class="input-100">
-                {!! Form::email('email', old('email'), [
-                        'placeholder'   => trans('admin.auth.fields.email'),
-                        'required'      => true
-                ]) !!}
-            </div>
+        <div class="input-100">
+            {!! Form::email('email', old('email'), [
+                    'placeholder'   => trans('admin.auth.fields.email'),
+                    'required'      => true
+            ]) !!}
+        </div>
 
-            <div class="input-100">
-                {!! Form::password('password', [
-                        'placeholder'   => trans('admin.auth.fields.password'),
-                        'required'      => true
-                ]) !!}
-            </div>
+        <div class="input-100">
+            {!! Form::password('password', [
+                    'placeholder'   => trans('admin.auth.fields.password'),
+                    'required'      => true
+            ]) !!}
+        </div>
 
-            <div class="submission">
-                {!! Form::submit(trans('admin.auth.routes.login.submit')) !!}
-            </div>
+        <div class="submission">
+            {!! Form::submit(trans('admin.auth.routes.login.submit')) !!}
+        </div>
 
         {!! Form::close() !!}
 

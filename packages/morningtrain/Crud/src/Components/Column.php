@@ -5,10 +5,13 @@ namespace morningtrain\Crud\Components;
 use Illuminate\Config\Repository;
 use morningtrain\Crud\Contracts\Model;
 
-class Column {
+class Column
+{
 
-    public static function create( array $options = [] ) {
+    public static function create(array $options = [])
+    {
         $class = static::class;
+
         return new $class($options);
     }
 
@@ -26,7 +29,8 @@ class Column {
      * Helper to create blade rendering columns
      */
 
-    public static function __callStatic( $name, $arguments ) {
+    public static function __callStatic($name, $arguments)
+    {
         // Convert name to blade friendly name
         $type = strtolower(preg_replace('/\B([A-Z])/', '-$1', $name));
         $callback = isset(static::$customColumns[$type]) ? static::$customColumns[$type] : null;
@@ -57,19 +61,23 @@ class Column {
 
     public $options;
 
-    function __construct( array $options = [] ) {
+    function __construct(array $options = [])
+    {
         $this->options = new Repository($options);
     }
 
-    function __isset( $name ) {
+    function __isset($name)
+    {
         $value = $this->$name;
+
         return isset($value);
     }
 
-    function __get( $name ) {
+    function __get($name)
+    {
 
         // Try to look for method getter
-        $methodLink = [ $this, 'get' . ucfirst($name) ];
+        $methodLink = [$this, 'get' . ucfirst($name)];
 
         if (is_callable($methodLink)) {
             return $methodLink();
@@ -81,10 +89,11 @@ class Column {
         }
     }
 
-    function __set( $name, $value ) {
+    function __set($name, $value)
+    {
 
         // Try to look for method getter
-        $methodLink = [ $this, 'set' . ucfirst($name) ];
+        $methodLink = [$this, 'set' . ucfirst($name)];
 
         if (is_callable($methodLink)) {
             return $methodLink($value);
@@ -94,7 +103,8 @@ class Column {
         $this->options->set($name, $value);
     }
 
-    public function render( Model $resource, ViewHelper $helper ) {
+    public function render(Model $resource, ViewHelper $helper)
+    {
         // Get renderer from options
         $renderer = $this->render;
 

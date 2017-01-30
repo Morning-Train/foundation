@@ -19,9 +19,9 @@ use App\Models\User;
 use App\Models\Company;
 use Illuminate\Support\Facades\Auth;
 
-Route::group([ 'prefix' => 'test' ], function() {
+Route::group(['prefix' => 'test'], function () {
 
-    Route::get('morph', function() {
+    Route::get('morph', function () {
         dd(\App\Models\Role::first()->permissions, Role::first()->permissions);
     });
 
@@ -33,7 +33,7 @@ Route::group([ 'prefix' => 'test' ], function() {
     });
 
     Route::get('login', function () {
-       Auth::login(User::first());
+        Auth::login(User::first());
     });
 
     Route::get('gate', function () {
@@ -64,8 +64,7 @@ Route::group([ 'prefix' => 'test' ], function() {
 
 });
 
-Route::group([ 'theme' => 'Base' ], function() {
-
+Route::group(['theme' => 'Base'], function () {
 
 
 });

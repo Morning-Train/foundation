@@ -2,6 +2,7 @@
 
 namespace morningtrain\Janitor\Exceptions;
 
-class JanitorException extends \Exception {
+class JanitorException extends \Exception
+{
 
 }

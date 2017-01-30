@@ -4,8 +4,8 @@
 @yield('imports')
 
 class {!! $class !!}{!! $extends !!}{!! $implements !!} {
-    {!! $uses !!}
-    @yield('uses')
+{!! $uses !!}
+@yield('uses')
 
-    @yield('body')
+@yield('body')
 }

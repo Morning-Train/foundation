@@ -5,7 +5,7 @@ import alert from "alert.js";
 
 export default class ModalModule extends Module {
 
-    alert( contents, options ) {
+    alert(contents, options) {
         return alert(contents, options);
     }
 
@@ -14,29 +14,35 @@ export default class ModalModule extends Module {
     //
     // app.modal.confirm("Are you sure?").then(function() { // pressed Yes }, function() { // pressed No })
 
-    confirm( contents, options ) {
-        return new Promise(( resolve, reject ) => {
-            alert(contents, Object.assign({}, options, {
+    confirm(contents, options) {
+        return new Promise(( resolve, reject ) = > {
+                alert(contents, Object.assign({}, options, {
                 buttons: {
-                    "Yes": (dialog) => {
-                        dialog.close();
-                        resolve();
-                    },
+                    "Yes": (dialog) = > {
+                    dialog.close();
+        resolve();
+    },
 
-                    "No": (dialog) => {
-                        dialog.close();
-                        reject();
-                    }
-                }
-            }));
-        });
+        "No"
+    :
+        (dialog) =
+    >
+        {
+            dialog.close();
+            reject();
+        }
+    }
+    }))
+        ;
+    })
+        ;
     }
 
     ready() {
         var _ = this;
 
         /*
-        Auto bind events which have to be confirmed
+         Auto bind events which have to be confirmed
          */
 
         $("a[data-confirm]").each(function () {
@@ -53,13 +59,15 @@ export default class ModalModule extends Module {
                         e.stopPropagation();
 
                         return _.confirm(message)
-                            .then(() => {
-                                confirmed = true;
-                                target.trigger(event);
-                            })
-                            .catch(() => {
-                                confirmed = false;
-                            });
+                            .then(() = > {
+                            confirmed = true;
+                        target.trigger(event);
+                    })
+                    .
+                        catch(() = > {
+                            confirmed = false;
+                    })
+                        ;
                     }
 
                     // reset flag

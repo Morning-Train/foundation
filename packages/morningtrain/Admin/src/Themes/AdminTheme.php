@@ -5,9 +5,11 @@ namespace morningtrain\Admin\Themes;
 use morningtrain\Admin\Helpers\Translation;
 use morningtrain\Themer\Contracts\Theme;
 
-class AdminTheme extends Theme {
+class AdminTheme extends Theme
+{
 
-    protected function register() {
+    protected function register()
+    {
         parent::register();
     }
 
@@ -15,8 +17,10 @@ class AdminTheme extends Theme {
      * Menu status
      */
 
-    public function getMenuStatus( string $slug, $default = null ) {
+    public function getMenuStatus(string $slug, $default = null)
+    {
         $cookie = $slug . '_menu_status';
+
         return isset($_COOKIE[$cookie]) ? $_COOKIE[$cookie] : $default;
     }
 
@@ -26,7 +30,8 @@ class AdminTheme extends Theme {
 
     protected $mainMenuItems;
 
-    public function getMainMenuItems() {
+    public function getMainMenuItems()
+    {
 
         if (!isset($this->mainMenuItems)) {
             // Get registered crud models

@@ -16,7 +16,8 @@ class ThemerServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot() {
+    public function boot()
+    {
         // Register blade directives
         $this->registerBladeDirectives();
     }
@@ -26,13 +27,14 @@ class ThemerServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register() {
+    public function register()
+    {
 
         // Publish files
         $this->publish();
 
         // Register themer service
-        $this->app->singleton(Themer::class, function( $app ) {
+        $this->app->singleton(Themer::class, function ($app) {
             return new Themer();
         });
 
@@ -41,17 +43,18 @@ class ThemerServiceProvider extends ServiceProvider
     /**
      * Files to publish
      */
-    public function publish() {
+    public function publish()
+    {
 
         // Publish config file
         $this->publishes([
-            __DIR__ . '/../config/themer.php'  => config_path('themer.php')
+            __DIR__ . '/../config/themer.php' => config_path('themer.php'),
 
         ], 'config');
 
         // Publish gulp file
         $this->publishes([
-            __DIR__ . '/../gulp/themer.js'  => base_path('gulp/themer.js')
+            __DIR__ . '/../gulp/themer.js' => base_path('gulp/themer.js'),
 
         ], 'gulp');
 
@@ -60,21 +63,18 @@ class ThemerServiceProvider extends ServiceProvider
     /**
      * Blade directives
      */
-    public function registerBladeDirectives() {
+    public function registerBladeDirectives()
+    {
         $app = $this->app;
         $blade = $this->app->make('blade.compiler');
 
         // @act
-        $blade->directive('do', function( $expression ) use( $app ) {
+        $blade->directive('do', function ($expression) use ($app) {
 
             // Fetch arguments
             $arguments = explode(',', str_replace(['(', ')', ' '], '', $expression));
 
-            if (
-                (count($arguments) === 0) ||
-                !is_string($arguments[0]) ||
-                (strlen($arguments[0]) === 0)
-            ) {
+            if ((count($arguments) === 0) || !is_string($arguments[0]) || (strlen($arguments[0]) === 0)) {
                 throw new JanitorException('Invalid action name passed to blade @act.');
             }
 

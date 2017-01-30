@@ -2,9 +2,11 @@
 
 namespace morningtrain\Acl\Extensions;
 
-trait HasDisplayName {
+trait HasDisplayName
+{
 
-    protected function getDisplayNameAttribute() {
+    protected function getDisplayNameAttribute()
+    {
         if (isset($this->name) && is_string($this->name) && (strlen($this->name) > 0)) {
             return $this->name;
         }

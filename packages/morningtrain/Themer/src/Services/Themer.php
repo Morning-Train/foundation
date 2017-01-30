@@ -4,7 +4,8 @@ namespace morningtrain\Themer\Services;
 
 use morningtrain\Themer\Contracts\Theme;
 
-class Themer {
+class Themer
+{
 
     /**
      * @var Theme
@@ -16,7 +17,8 @@ class Themer {
      *
      * @return Theme
      */
-    public function current() {
+    public function current()
+    {
         return $this->current;
     }
 
@@ -26,7 +28,8 @@ class Themer {
      * @param $name
      * @return Theme
      */
-    public function load( $name ) {
+    public function load($name)
+    {
         $namespace = config('themer.namespace', 'App\Themes');
         $name = ucfirst($name);
         $className = $namespace . '\\' . $name . 'Theme';
@@ -35,7 +38,7 @@ class Themer {
         $this->current = class_exists($className) ? new $className($name) : new Theme($name);
 
         // Trigger onLoad
-        foreach($this->onload as $callback) {
+        foreach ($this->onload as $callback) {
             $callback($this->current);
         }
 
@@ -48,8 +51,10 @@ class Themer {
 
     protected $onload = [];
 
-    public function onLoad( callable $callback ) {
+    public function onLoad(callable $callback)
+    {
         $this->onload[] = $callback;
+
         return $this;
     }
 
@@ -57,11 +62,12 @@ class Themer {
      * Current theme call
      */
 
-    function __call( $name, $arguments ) {
+    function __call($name, $arguments)
+    {
         if (!isset($this->current)) {
             throw new \Exception('No theme has been loaded!');
         }
 
-        return call_user_func_array([ $this->current, $name ], $arguments);
+        return call_user_func_array([$this->current, $name], $arguments);
     }
 }

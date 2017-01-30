@@ -3,7 +3,7 @@ import {Module} from "wrapper6";
 import $ from "jquery";
 
 // Helpers
-function createNotification( message, type = null, icon = null ) {
+function createNotification(message, type = null, icon = null) {
     var element = $("<div>").addClass("alert");
 
     // Type
@@ -22,27 +22,34 @@ function createNotification( message, type = null, icon = null ) {
     return element;
 }
 
-function showNotification( module, notification ) {
+function showNotification(module, notification) {
     // Show new message
-    setTimeout(() => {
+    setTimeout(() = > {
         notification.addClass("show");
 
-        // Hide after a while
-        setTimeout(() => {
-            notification.removeClass("show");
-            notification.on("transitionend", () => {
-                notification.remove();
-            });
+    // Hide after a while
+    setTimeout(() = > {
+        notification.removeClass("show");
+    notification.on("transitionend", () = > {
+        notification.remove();
+})
+    ;
 
-        }, module.app.options.get("notifications.showDuration", 5000));
+},
+    module.app.options.get("notifications.showDuration", 5000)
+)
+    ;
 
-    }, 100);
+},
+    100
+)
+    ;
 }
 
 // Class
 export default class NotificationModule extends Module {
 
-    boot( app ) {
+    boot(app) {
         // Get the container
         this.container = $(".notifications");
 
@@ -51,7 +58,7 @@ export default class NotificationModule extends Module {
         }
     }
 
-    ready( app ) {
+    ready(app) {
         // Show blade-queued notifications
         showNotification(this, this.container.find(".alert:first"));
     }
@@ -60,14 +67,15 @@ export default class NotificationModule extends Module {
         var hidden = this.container.find(".alert.show").removeClass("show");
 
         // Remove after transition is done
-        hidden.on("transitionend", () => {
+        hidden.on("transitionend", () = > {
             hidden.remove();
-        });
+    })
+        ;
 
         return this;
     }
 
-    show( message, type = null, icon = null ) {
+    show(message, type = null, icon = null) {
         var module = this;
 
         // Hide old messages

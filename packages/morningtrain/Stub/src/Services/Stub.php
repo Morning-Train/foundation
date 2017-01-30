@@ -5,14 +5,17 @@ namespace morningtrain\Stub\Services;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\View\Compilers\BladeCompiler;
 
-class Stub {
+class Stub
+{
 
-    function __construct() {
+    function __construct()
+    {
         // Add stub namespace to view
         view()->addNamespace('stubs', base_path('resources/stubs'));
     }
 
-    public function create( string $stub, string $destination, array $params = [] ) {
+    public function create(string $stub, string $destination, array $params = [])
+    {
         /*
          * Setup compile arguments for class
          */
@@ -38,7 +41,7 @@ class Stub {
         $imports = $this->resolveImportConflicts($class, $imports);
         $params['imports'] = '';
 
-        foreach($imports as $key => $import) {
+        foreach ($imports as $key => $import) {
             $params['imports'] .= 'use ' . (is_string($key) ? "$key as $import" : "$import") . ';' . PHP_EOL;
         }
 
@@ -47,7 +50,7 @@ class Stub {
         $params['extends'] = '';
 
         if (strlen($extends) > 0) {
-            $params['extends'] .= ' extends ' . implode('', $this->getNormalizedImportClasses([ $extends ], $imports));
+            $params['extends'] .= ' extends ' . implode('', $this->getNormalizedImportClasses([$extends], $imports));
         }
 
         // implements
@@ -55,7 +58,8 @@ class Stub {
         $params['implements'] = '';
 
         if (count($implements) > 0) {
-            $params['implements'] = ' implements ' . implode(', ', $this->getNormalizedImportClasses($implements, $imports));
+            $params['implements'] = ' implements ' . implode(', ',
+                    $this->getNormalizedImportClasses($implements, $imports));
         }
 
         // traits
@@ -78,31 +82,31 @@ class Stub {
      * Helpers
      */
 
-    protected function getNormalizedImportClasses(array $classes, array $imports) {
+    protected function getNormalizedImportClasses(array $classes, array $imports)
+    {
         $normalizedClasses = [];
 
-        foreach($classes as $class) {
+        foreach ($classes as $class) {
             // Class has an alias
             if (isset($imports[$class])) {
                 $normalizedClasses[] = $imports[$class];
-            }
-
-            // Class is imported
-            else if (in_array($class, $imports)) {
-                $classParts = explode('\\', $class);
-                $normalizedClasses[] = end($classParts);
-            }
-
-            // Class as raw class name
+            } // Class is imported
             else {
-                $normalizedClasses[] = $class;
+                if (in_array($class, $imports)) {
+                    $classParts = explode('\\', $class);
+                    $normalizedClasses[] = end($classParts);
+                } // Class as raw class name
+                else {
+                    $normalizedClasses[] = $class;
+                }
             }
         }
 
         return $normalizedClasses;
     }
 
-    protected function resolveImportConflicts( $className, array $imports) {
+    protected function resolveImportConflicts($className, array $imports)
+    {
         $resolved = [];
 
         foreach ($imports as $key => $import) {
@@ -118,8 +122,7 @@ class Stub {
 
             if (is_int($key)) {
                 $resolved[$import] = $importClass;
-            }
-            else {
+            } else {
                 $resolved[$key] = $importClass;
             }
         }

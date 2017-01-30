@@ -13,7 +13,6 @@
         Schema::create('{!! $table !!}', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
-
         });
     }
 

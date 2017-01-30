@@ -10,30 +10,32 @@ use morningtrain\Acl\Models\Role;
 use morningtrain\Janitor\Contracts\JanitorFeature;
 use morningtrain\Janitor\Helper\MigrationHelper;
 
-class AclFeature extends JanitorFeature {
+class AclFeature extends JanitorFeature
+{
 
     protected $migrations = [
         __DIR__ . '/Migrations/create_permissions_table.php',
         __DIR__ . '/Migrations/create_roles_table.php',
         __DIR__ . '/Migrations/create_permissionables_table.php',
-        __DIR__ . '/Migrations/create_roleables_table.php'
+        __DIR__ . '/Migrations/create_roleables_table.php',
     ];
 
     protected $models = [
         Permission::class,
-        Role::class
+        Role::class,
     ];
 
     protected $middleware = [
-        'auth.access'   => HasAccess::class,
-        'auth.can'      => HasPermissions::class
+        'auth.access' => HasAccess::class,
+        'auth.can'    => HasPermissions::class,
     ];
 
     /*
      * Publisher
      */
 
-    protected function publisher() {
+    protected function publisher()
+    {
         return function () {
             $artisan = app()->make(ConsoleKernel::class);
 

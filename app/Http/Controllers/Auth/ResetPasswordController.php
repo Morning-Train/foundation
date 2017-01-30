@@ -6,10 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use morningtrain\Admin\Extensions\RedirectsAdmins;
 
-class ResetPasswordController extends Controller {
+class ResetPasswordController extends Controller
+{
     
-    use ResetsPasswords,
-        RedirectsAdmins;
+    use ResetsPasswords, RedirectsAdmins;
 
     /**
      * Where to redirect users after login.
@@ -23,17 +23,19 @@ class ResetPasswordController extends Controller {
      * @return string
      */
 
-    public function redirectPath() {
+    public function redirectPath()
+    {
         return $this->redirectAdmin($this->guard()) ?: $this->redirectTo;
     }
 
     /**
-    * Create a new controller instance.
-    *
-    * @return  void
-    */
+     * Create a new controller instance.
+     *
+     * @return  void
+     */
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->middleware('guest');
     }
 

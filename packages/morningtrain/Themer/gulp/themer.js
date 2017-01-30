@@ -1,7 +1,7 @@
-module.exports = function( basepath ) {
+module.exports = function (basepath) {
 
     /*
-    Dependencies
+     Dependencies
      */
 
     var fs = require("fs"),
@@ -17,10 +17,10 @@ module.exports = function( basepath ) {
     var themes = fs.readdirSync(themesPath);
 
     //Loop over all themes to compile their assets
-    if(themes.length > 0){
-        themes.forEach(function(theme){
+    if (themes.length > 0) {
+        themes.forEach(function (theme) {
 
-            if(fs.lstatSync(basepath + '/resources/themes/' + theme).isDirectory()) {
+            if (fs.lstatSync(basepath + '/resources/themes/' + theme).isDirectory()) {
 
                 //If the current theme has a sass file, compile it
                 var sassPath = basepath + '/resources/themes/' + theme + '/assets/sass/app.scss';
@@ -28,9 +28,10 @@ module.exports = function( basepath ) {
                 if (fs.existsSync(sassPath)) {
                     try {
                         fs.accessSync(sassPath, fs.F_OK);
-                        elixir(mix => {
+                        elixir(mix = > {
                             mix.sass(sassPath, basepath + '/public/themes/' + theme.toLowerCase() + '/app.css');
-                        });
+                    })
+                        ;
                     } catch (e) {
                         console.error(e);
                     }
@@ -42,9 +43,10 @@ module.exports = function( basepath ) {
                 if (fs.existsSync(jsPath)) {
                     try {
                         fs.accessSync(jsPath, fs.F_OK);
-                        elixir(mix => {
+                        elixir(mix = > {
                             mix.browserify(jsPath, basepath + '/public/themes/' + theme.toLowerCase() + '/app.js');
-                        });
+                    })
+                        ;
                     } catch (e) {
                         console.error(e);
                     }

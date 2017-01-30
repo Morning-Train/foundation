@@ -1,3 +1,5 @@
 @mixin break($point) {
-    @media screen and (max-width: $point) { @content; }
+  @media screen and (max-width: $point) {
+    @content;
+  }
 }

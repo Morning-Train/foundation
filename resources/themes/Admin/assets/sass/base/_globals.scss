@@ -12,10 +12,10 @@ body {
   width: 100%;
   height: auto;
   transition: padding 0.4s;
-  padding-right:$profile-sidebar-openwidth;
+  padding-right: $profile-sidebar-openwidth;
   top: $header-height;
 
   &.sidebar-closed {
-      padding-right: $profile-sidebar-closedwidth;
+    padding-right: $profile-sidebar-closedwidth;
   }
 }

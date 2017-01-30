@@ -6,14 +6,16 @@ use morningtrain\Acl\Models\Permission;
 use morningtrain\Acl\Models\Role;
 use morningtrain\Janitor\Services\Janitor;
 
-trait Roleable {
+trait Roleable
+{
     use Permissionable;
 
     /*
      * Relationships
      */
 
-    public function roles() {
+    public function roles()
+    {
         return $this->morphToMany(app()->make(Janitor::class)->getPublishedModelFor(Role::class), 'roleable');
     }
 
@@ -21,35 +23,33 @@ trait Roleable {
      * Helpers
      */
 
-    public function allowed( $permission ) {
+    public function allowed($permission)
+    {
         if ($permission instanceof Permission) {
             $permission = $permission->slug;
         }
 
-        $permissionables = [ 'roles' ];
+        $permissionables = ['roles'];
 
         // Append new permissionables if set
         if (isset($this->permissionables) && is_array($this->permissionables)) {
             $permissionables = array_merge($permissionables, $this->permissionables);
         }
 
-        return $this->newQuery()
-            ->where('id', $this->id)
-            ->where(function( $query ) use( $permission, $permissionables ) {
+        return $this->newQuery()->where('id', $this->id)->where(function ($query) use ($permission, $permissionables) {
 
                 // Check assigned permissions
-                $query->whereHas('permissions', function( $query ) use( $permission ) {
+                $query->whereHas('permissions', function ($query) use ($permission) {
                     return $query->where('slug', $permission);
                 });
 
                 // Check permissionables
-                foreach( $permissionables as $relation ) {
-                    $query->orWhereHas($relation, function( $query ) use( $permission ) {
-                        return $query
-                            ->where('is_super', 1)
-                            ->orWhereHas('permissions', function( $query ) use ( $permission ) {
-                                $query->where('slug', $permission);
-                            });
+                foreach ($permissionables as $relation) {
+                    $query->orWhereHas($relation, function ($query) use ($permission) {
+                        return $query->where('is_super', 1)->orWhereHas('permissions',
+                                function ($query) use ($permission) {
+                                    $query->where('slug', $permission);
+                                });
                     });
                 }
 
@@ -58,11 +58,13 @@ trait Roleable {
             })->count() > 0;
     }
 
-    public function isSuper() {
+    public function isSuper()
+    {
         return $this->roles()->whereIsSuper()->count() > 0;
     }
 
-    public function assign( array $roles ) {
+    public function assign(array $roles)
+    {
         foreach ($roles as $role) {
             if (!$role instanceof Role) {
                 $role = Role::where('slug', $role)->first();
@@ -74,7 +76,8 @@ trait Roleable {
         }
     }
 
-    public function unassign( array $roles ) {
+    public function unassign(array $roles)
+    {
         foreach ($roles as $role) {
             if (!$role instanceof Role) {
                 $role = Role::where('slug', $role)->first();
@@ -86,13 +89,14 @@ trait Roleable {
         }
     }
 
-    public function isAssigned( array $roles ) {
+    public function isAssigned(array $roles)
+    {
         $query = $this->newQuery()->where('id', $this->id);
 
         foreach ($roles as $role) {
             $slug = $role instanceof Role ? $role->slug : $role;
 
-            $query->whereHas('roles', function( $query ) use( $slug ) {
+            $query->whereHas('roles', function ($query) use ($slug) {
                 $query->where('slug', $slug);
             });
         }

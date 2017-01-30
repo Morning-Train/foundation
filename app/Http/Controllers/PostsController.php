@@ -12,10 +12,10 @@ use Illuminate\Http\Request;
 use morningtrain\Crud\Contracts\Model;
 
 
-class PostsController extends Controller {
+class PostsController extends Controller
+{
     
 
-    
     /*
     * ------------------------------------------------
     * 			    Store options
@@ -23,13 +23,13 @@ class PostsController extends Controller {
     */
 
     /**
-    * @var  string
-    */
+     * @var  string
+     */
     protected $model = \App\Models\Post::class;
 
     /**
-    * @var  int
-    */
+     * @var  int
+     */
     protected $paginationLimit = 10;
 
     /*
@@ -39,28 +39,29 @@ class PostsController extends Controller {
     */
 
     /**
-    * Generates and returns the index columns
-    *
-    * @return  array
-    */
-    protected function generateIndexColumns() {
+     * Generates and returns the index columns
+     *
+     * @return  array
+     */
+    protected function generateIndexColumns()
+    {
         $crud = $this->viewHelper;
 
         return [
             Column::create([
-                'name'      => 'id',
-                'label'     => '#'
+                'name'  => 'id',
+                'label' => '#',
             ]),
 
             Column::create([
-                'name'      => 'title',
-                'label'     => 'Title'
+                'name'  => 'title',
+                'label' => 'Title',
             ]),
 
             Column::actions([
-                'label'     => 'Actions',
-                'sortable'  => false
-            ])
+                'label'    => 'Actions',
+                'sortable' => false,
+            ]),
         ];
     }
 
@@ -71,43 +72,42 @@ class PostsController extends Controller {
     */
 
     /**
-    * Generates and returns the form fields
-    *
-    * @return  array
-    */
-    protected function generateFormFields() {
+     * Generates and returns the form fields
+     *
+     * @return  array
+     */
+    protected function generateFormFields()
+    {
         return [
 
             Field::text([
-                'name'          => 'title',
-                'rules'         => 'required',
-                'attributes'    => [
-                    'placeholder'   => 'Enter the title'
+                'name'       => 'title',
+                'rules'      => 'required',
+                'attributes' => [
+                    'placeholder' => 'Enter the title',
                 ],
-                'params'        => [
-                    'extraParam'       => 'myExtraParam'
-                ]
+                'params'     => [
+                    'extraParam' => 'myExtraParam',
+                ],
             ]),
 
             Field::text([
-                'name'          => 'content',
+                'name'   => 'content',
 
                 // Validation hook
-                'rules'         => function( Post $post, Request $request ) {
-                    return $post->isNew() ?
-                        [ 'content' => 'required' ] :
-                        [];
+                'rules'  => function (Post $post, Request $request) {
+                    return $post->isNew() ? ['content' => 'required'] : [];
                 },
 
                 // Update hook
-                'update'        => function( Post $post, Request $request ) {
+                'update' => function (Post $post, Request $request) {
                     $post->content = nl2br($request->get('content'));
                 },
 
-                'attributes'    => [
-                    'placeholder'   => 'Enter the contents'
+                'attributes' => [
+                    'placeholder' => 'Enter the contents',
                 ],
-            ])
+            ]),
 
         ];
     }
@@ -119,38 +119,45 @@ class PostsController extends Controller {
     */
 
     /**
-    * @param  Model $resource
-    */
-    protected function beforeStore(Model $resource) {}
+     * @param  Model $resource
+     */
+    protected function beforeStore(Model $resource)
+    {
+    }
 
     /**
-    * @param  Model $resource
-    */
-    protected function afterStore(Model $resource) {
+     * @param  Model $resource
+     */
+    protected function afterStore(Model $resource)
+    {
         // notify here instead with session->put()
     }
 
     /**
-    * @param  Model $resource
-    */
-    protected function beforeDestroy(Model $resource) {}
+     * @param  Model $resource
+     */
+    protected function beforeDestroy(Model $resource)
+    {
+    }
 
     /**
-    * @param  Model $resource
-    */
-    protected function afterDestroy(Model $resource) {
+     * @param  Model $resource
+     */
+    protected function afterDestroy(Model $resource)
+    {
         // notify here instead with session->put()
     }
 
     /**
-    * After constructor
-    */
-    protected function boot() {
+     * After constructor
+     */
+    protected function boot()
+    {
         // Register filters
         $this->store->addFilter('order', Filter::order($this->indexColumns));
 
-        $this->store->addFilter('title', function( $query, $search ) {
-             $query->where('title', 'LIKE', "%$search%");
+        $this->store->addFilter('title', function ($query, $search) {
+            $query->where('title', 'LIKE', "%$search%");
         });
     }
 

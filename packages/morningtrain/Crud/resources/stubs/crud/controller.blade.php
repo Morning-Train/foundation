@@ -13,7 +13,7 @@ use morningtrain\Crud\Components\ViewHelper;
 
     /*
     * ------------------------------------------------
-    * 			    Store options
+    *                Store options
     * ------------------------------------------------
     */
 
@@ -29,7 +29,7 @@ use morningtrain\Crud\Components\ViewHelper;
 
     /*
     * ------------------------------------------------
-    * 			    Index columns hooks
+    *                Index columns hooks
     * ------------------------------------------------
     */
 
@@ -39,7 +39,8 @@ use morningtrain\Crud\Components\ViewHelper;
     *
     * @return array
     */
-    protected function generateIndexColumns( ViewHelper $crud ) {
+    protected function generateIndexColumns(ViewHelper $crud)
+    {
         return [
             Column::create([
                 'name'      => 'id',
@@ -51,7 +52,7 @@ use morningtrain\Crud\Components\ViewHelper;
 
     /*
     * ------------------------------------------------
-    * 			    Form fields hook
+    *                Form fields hook
     * ------------------------------------------------
     */
 
@@ -61,13 +62,14 @@ use morningtrain\Crud\Components\ViewHelper;
     *
     * @return array
     */
-    protected function generateFormFields( ViewHelper $crud ) {
+    protected function generateFormFields(ViewHelper $crud)
+    {
         return [];
     }
 
     /*
     * ------------------------------------------------
-    * 			    Action hooks
+    *                Action hooks
     * ------------------------------------------------
     */
 
@@ -79,9 +81,7 @@ use morningtrain\Crud\Components\ViewHelper;
     /**
     * @param Model $resource
     */
-    protected function afterStore(Model $resource) {
-
-    }
+    protected function afterStore(Model $resource) {}
 
     /**
     * @param Model $resource
@@ -91,14 +91,13 @@ use morningtrain\Crud\Components\ViewHelper;
     /**
     * @param Model $resource
     */
-    protected function afterDestroy(Model $resource) {
-
-    }
+    protected function afterDestroy(Model $resource) {}
 
     /**
     * After constructor
     */
-    protected function boot() {
+    protected function boot()
+    {
         // Register filters
         $this->store->addFilter('order', Filter::order($this->indexColumns));
     }

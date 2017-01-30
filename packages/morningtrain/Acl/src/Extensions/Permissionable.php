@@ -5,21 +5,25 @@ namespace morningtrain\Acl\Extensions;
 use morningtrain\Acl\Models\Permission;
 use morningtrain\Janitor\Services\Janitor;
 
-trait Permissionable {
+trait Permissionable
+{
 
     /*
      * Relationships
      */
 
-    public function permissions() {
-        return $this->morphToMany(app()->make(Janitor::class)->getPublishedModelFor(Permission::class), 'permissionable');
+    public function permissions()
+    {
+        return $this->morphToMany(app()->make(Janitor::class)->getPublishedModelFor(Permission::class),
+            'permissionable');
     }
 
     /*
      * Helpers
      */
 
-    public function allowed( $permission ) {
+    public function allowed($permission)
+    {
         if ($permission instanceof Permission) {
             $permission = $permission->slug;
         }
@@ -27,7 +31,8 @@ trait Permissionable {
         return $this->permissions()->where('slug', $permission)->count() > 0;
     }
 
-    public function grant( $permission ) {
+    public function grant($permission)
+    {
         if (!$permission instanceof Permission) {
             $permission = Permission::where('slug', $permission)->first();
         }
@@ -37,7 +42,8 @@ trait Permissionable {
         }
     }
 
-    public function refuse( $permission ) {
+    public function refuse($permission)
+    {
         if (!$permission instanceof Permission) {
             $permission = Permission::where('slug', $permission)->first();
         }

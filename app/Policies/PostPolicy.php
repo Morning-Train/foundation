@@ -10,7 +10,8 @@ class PostPolicy
 {
     use HandlesAuthorization;
 
-    public function test(User $user, Post $post) {
+    public function test(User $user, Post $post)
+    {
         return false;
     }
 }

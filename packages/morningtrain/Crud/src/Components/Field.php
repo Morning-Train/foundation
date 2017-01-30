@@ -6,10 +6,13 @@ use Illuminate\Config\Repository;
 use Illuminate\Http\Request;
 use morningtrain\Crud\Contracts\Model;
 
-class Field {
+class Field
+{
 
-    public static function create( array $options = [] ) {
+    public static function create(array $options = [])
+    {
         $class = static::class;
+
         return new $class($options);
     }
 
@@ -19,7 +22,8 @@ class Field {
 
     protected static $customFields = [];
 
-    public static function registerCustomField( $type, \Closure $callback ) {
+    public static function registerCustomField($type, \Closure $callback)
+    {
         static::$customFields[$type] = $callback;
     }
 
@@ -27,7 +31,8 @@ class Field {
      * Helper to create blade rendering fields
      */
 
-    public static function __callStatic( $name, $arguments ) {
+    public static function __callStatic($name, $arguments)
+    {
         // Convert name to blade friendly name
         $type = strtolower(preg_replace('/\B([A-Z])/', '-$1', $name));
         $callback = isset(static::$customFields[$type]) ? static::$customFields[$type] : null;
@@ -39,7 +44,7 @@ class Field {
                         'crud'  => $helper,
                         'entry' => $resource,
                         'field' => $field,
-                        'value' => $field->value($resource)
+                        'value' => $field->value($resource),
 
                     ]))->render();
                 }
@@ -59,16 +64,20 @@ class Field {
 
     public $options;
 
-    function __construct( array $options = [] ) {
+    function __construct(array $options = [])
+    {
         $this->options = new Repository($options);
     }
 
-    function __isset( $name ) {
+    function __isset($name)
+    {
         $value = $this->$name;
+
         return isset($value);
     }
 
-    function __get( $name ) {
+    function __get($name)
+    {
 
         // Try to look for method getter
         $methodLink = [$this, 'get' . ucfirst($name)];
@@ -84,10 +93,11 @@ class Field {
 
     }
 
-    function __set( $name, $value ) {
+    function __set($name, $value)
+    {
 
         // Try to look for method getter
-        $methodLink = [ $this, 'set' . ucfirst($name) ];
+        $methodLink = [$this, 'set' . ucfirst($name)];
 
         if (is_callable($methodLink)) {
             return $methodLink($value);
@@ -102,9 +112,10 @@ class Field {
      * Id generator
      */
 
-    public function getId() {
+    public function getId()
+    {
         if (!$this->options->has('id')) {
-            $this->options->set('id', md5($this->options->get('name', uniqid()).time()));
+            $this->options->set('id', md5($this->options->get('name', uniqid()) . time()));
         }
 
         return $this->options->get('id');
@@ -114,9 +125,10 @@ class Field {
      * Attributes getter
      */
 
-    public function getAttributes() {
+    public function getAttributes()
+    {
         return array_merge($this->options->get('attributes', []), [
-            'id'    => $this->id
+            'id' => $this->id,
         ]);
     }
 
@@ -124,14 +136,14 @@ class Field {
      * Rules
      */
 
-    public function rules( Model $resource, Request $request ) {
+    public function rules(Model $resource, Request $request)
+    {
         $name = $this->options->get('name');
         $rules = $this->options->get('rules');
 
         // String rules
         if (is_string($rules) && (strlen($rules) > 0)) {
-            return is_string($name) && (strlen($name) > 0) ?
-                [ $name => $rules ] : [];
+            return is_string($name) && (strlen($name) > 0) ? [$name => $rules] : [];
         }
 
         // Array rules
@@ -153,7 +165,8 @@ class Field {
      * Extensions
      */
 
-    public function render( Model $resource, ViewHelper $helper ) {
+    public function render(Model $resource, ViewHelper $helper)
+    {
         $renderer = $this->render;
 
         if (is_callable($renderer)) {
@@ -163,7 +176,8 @@ class Field {
         return '';
     }
 
-    public function update( Model $resource, Request $request ) {
+    public function update(Model $resource, Request $request)
+    {
         $setter = $this->options->get('update');
 
         if (is_callable($setter)) {
@@ -180,7 +194,8 @@ class Field {
         }
     }
 
-    public function value( Model $resource ) {
+    public function value(Model $resource)
+    {
         $name = $this->options->get('name');
         $getter = $this->options->get('value');
 

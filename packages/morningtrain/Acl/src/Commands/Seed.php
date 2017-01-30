@@ -29,7 +29,8 @@ class Seed extends Command
      *
      * @return void
      */
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
 
         $this->hash = app()->make('hash');
@@ -46,7 +47,8 @@ class Seed extends Command
      *
      * @return mixed
      */
-    public function handle() {
+    public function handle()
+    {
         $model = config('auth.providers.users.model', '\\App\\User');
 
         // Validate model
@@ -71,7 +73,7 @@ class Seed extends Command
             }
 
             // Check if a user with this role already exists
-            $user = $model::whereHas('roles', function( $query ) use( $role ) {
+            $user = $model::whereHas('roles', function ($query) use ($role) {
                 $query->where('role_id', $role->id);
 
             })->first();

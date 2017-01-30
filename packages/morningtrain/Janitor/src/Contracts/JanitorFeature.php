@@ -5,7 +5,8 @@ namespace morningtrain\Janitor\Contracts;
 use Illuminate\Routing\Router;
 use morningtrain\Janitor\Services\Janitor;
 
-abstract class JanitorFeature {
+abstract class JanitorFeature
+{
 
     /**
      * @var array
@@ -45,7 +46,8 @@ abstract class JanitorFeature {
     /**
      * @param Router $router
      */
-    protected function routes( Router $router ) {
+    protected function routes(Router $router)
+    {
         // Register your routes here
     }
 
@@ -54,14 +56,16 @@ abstract class JanitorFeature {
      *
      * @return Closure|null
      */
-    protected function initializer() {
+    protected function initializer()
+    {
         // Return a closure here
     }
 
     /**
      * Returns a closure called in janitor:publish after all default publishing is done
      */
-    protected function publisher() {
+    protected function publisher()
+    {
         // Return a closure here
     }
 
@@ -69,38 +73,46 @@ abstract class JanitorFeature {
      * Accessors (or dynamic getters)
      */
 
-    protected function models() {
+    protected function models()
+    {
         return $this->models;
     }
 
-    protected function controllers() {
+    protected function controllers()
+    {
         return $this->controllers;
     }
 
-    protected function classes() {
+    protected function classes()
+    {
         return $this->classes;
     }
 
-    protected function migrations() {
+    protected function migrations()
+    {
         return $this->migrations;
     }
 
-    protected function middleware() {
+    protected function middleware()
+    {
         return $this->middleware;
     }
 
-    protected function routerGroup() {
+    protected function routerGroup()
+    {
         return $this->routerGroup;
     }
 
-    protected function routerOptions() {
+    protected function routerOptions()
+    {
         return $this->routerOptions;
     }
 
     /**
      * @param Janitor $janitor
      */
-    public function register( Janitor $janitor ) {
+    public function register(Janitor $janitor)
+    {
         $feature = $this;
 
         // Initializer
@@ -136,7 +148,7 @@ abstract class JanitorFeature {
         $group = $this->routerGroup();
 
         if (is_string($group) && (strlen($group) > 0)) {
-            $janitor->registerRoutes($group, $this->routerOptions(), function( Router $router ) use( $feature ) {
+            $janitor->registerRoutes($group, $this->routerOptions(), function (Router $router) use ($feature) {
                 return $feature->routes($router);
             });
         }

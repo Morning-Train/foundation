@@ -33,7 +33,8 @@ class Update extends Command
      *
      * @return mixed
      */
-    public function handle() {
+    public function handle()
+    {
         $this->call('config:cache');
 
         $this->info('Everything has been successfully updated!');

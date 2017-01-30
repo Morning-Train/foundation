@@ -15,7 +15,7 @@
     @yield('head')
 </head>
 <body class="{{ Theme::get('bodyClass') }}">
-    @yield('body')
-    {!! Theme::do('footer') !!}
+@yield('body')
+{!! Theme::do('footer') !!}
 </body>
 </html>

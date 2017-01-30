@@ -17,8 +17,8 @@
 
   &.profile-nav {
     width: $profile-sidebar-openwidth;
-    right:0px;
-    top:0px;
+    right: 0px;
+    top: 0px;
     z-index: 500001;
 
     @include break(535px) {
@@ -30,7 +30,7 @@
     }
 
     .close {
-      right:auto;
+      right: auto;
       left: 10px;
     }
 
@@ -59,8 +59,8 @@
 
   &.main-nav {
     width: $main-sidebar-openwidth;
-    left:0px;
-    top:$header-height;
+    left: 0px;
+    top: $header-height;
 
     @include break(535px) {
       width: 100%;
@@ -165,7 +165,7 @@
     font-size: 14px;
     text-decoration: none;
     color: #fff;
-    overflow:hidden;
+    overflow: hidden;
 
     span {
       position: absolute;

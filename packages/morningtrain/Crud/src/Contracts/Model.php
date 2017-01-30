@@ -4,19 +4,22 @@ namespace morningtrain\Crud\Contracts;
 
 use Illuminate\Database\Eloquent\Model as BaseModel;
 
-abstract class Model extends BaseModel {
+abstract class Model extends BaseModel
+{
 
     /**
      * @return string
      */
-    public function getClass() {
+    public function getClass()
+    {
         return get_called_class();
     }
 
     /**
      * @return string
      */
-    public function getShortName() {
+    public function getShortName()
+    {
         $reflect = new \ReflectionClass($this);
 
         return strtolower($reflect->getShortName());
@@ -25,14 +28,16 @@ abstract class Model extends BaseModel {
     /**
      * @return string
      */
-    public function getPluralName() {
+    public function getPluralName()
+    {
         return str_plural($this->getShortName());
     }
 
     /**
      * @return bool
      */
-    public function isNew() {
+    public function isNew()
+    {
         return !isset($this->id);
     }
 
@@ -46,7 +51,8 @@ abstract class Model extends BaseModel {
      * @return bool
      */
 
-    public function wasNew() {
+    public function wasNew()
+    {
         return $this->isNew() || $this->was_new;
     }
 
@@ -56,8 +62,10 @@ abstract class Model extends BaseModel {
      * @param array $options
      * @return bool
      */
-    public function save( array $options = [] ) {
+    public function save(array $options = [])
+    {
         $this->was_new = $this->isNew();
+
         return parent::save($options);
     }
 

@@ -6,33 +6,33 @@ return [
      * Common translations (applies to all models unless overwritten)
      */
 
-    'common'    => [
+    'common' => [
 
-        'routes'        => [
-            'index'     => '',
-            'create'    => 'create',
-            'edit'      => ':id',
-            'store'     => ':id',
-            'delete'    => ':id/delete'
+        'routes' => [
+            'index'  => '',
+            'create' => 'create',
+            'edit'   => ':id',
+            'store'  => ':id',
+            'delete' => ':id/delete',
         ],
 
-        'buttons'       => [
-            'create'    => 'Create',
-            'update'    => 'Save'
+        'buttons'  => [
+            'create' => 'Create',
+            'update' => 'Save',
         ],
 
         // Page titles
-        'title'     => [
-            'index'     => ':type',
-            'create'    => 'Create :type',
-            'edit'      => 'Edit :type'
+        'title'    => [
+            'index'  => ':type',
+            'create' => 'Create :type',
+            'edit'   => 'Edit :type',
         ],
 
         // Actions
-        'actions'   => [
-            'create'    => 'Create :type',
-            'edit'      => 'Edit :type',
-            'delete'    => 'Delete :type'
+        'actions'  => [
+            'create' => 'Create :type',
+            'edit'   => 'Edit :type',
+            'delete' => 'Delete :type',
         ],
 
         // Messages
@@ -63,14 +63,14 @@ return [
      * a particular model as shown in the example below
      */
 
-    'users'     => [
+    'users' => [
 
         // Routing
-        'prefix'    => 'users',
+        'prefix' => 'users',
 
         // User friendly name
-        'label'     => 'Users'
+        'label'  => 'Users'
 
-    ]
+    ],
 
 ];

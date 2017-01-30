@@ -5,18 +5,21 @@ namespace morningtrain\Themer\Middleware;
 use Closure;
 use morningtrain\Themer\Services\Themer;
 
-class LoadTheme {
+class LoadTheme
+{
 
     /**
      * @var Themer
      */
     protected $themer;
 
-    function __construct( Themer $themer ) {
+    function __construct(Themer $themer)
+    {
         $this->themer = $themer;
     }
 
-    public function handle($request, Closure $next) {
+    public function handle($request, Closure $next)
+    {
         $action = $request->route()->getAction();
 
         // Determine requested theme
@@ -26,9 +29,8 @@ class LoadTheme {
             $requestedTheme = array_pop($requestedTheme);
         }
 
-        $themeName = is_string($requestedTheme) && (strlen($requestedTheme) > 0) ?
-            $requestedTheme :
-            config('themer.default', 'Base');
+        $themeName = is_string($requestedTheme) && (strlen($requestedTheme) > 0) ? $requestedTheme : config('themer.default',
+            'Base');
 
         // Load theme
         $this->themer->load($themeName);
