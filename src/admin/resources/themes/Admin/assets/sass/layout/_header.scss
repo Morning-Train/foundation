@@ -1,0 +1,128 @@
+.header {
+  position: fixed;
+  left: 0;
+  top: 0px;
+  z-index: 100;
+  width: 100%;
+  height: $header-height;
+  background: $header-bg;
+  font-size: 0;
+  transition: padding 0.4s;
+  padding-right: $profile-sidebar-openwidth;
+
+  &.sidebar-closed {
+    padding-right: $profile-sidebar-closedwidth;
+  }
+
+  @include break(535px) {
+    height: 60px;
+  }
+
+  .sidebar-toggle-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
+    width: $header-height;
+    height: $header-height;
+    background: $secondary;
+    text-align: center;
+
+    @include break(535px) {
+      display: block;
+    }
+
+    &:hover {
+      background: lighten($secondary, 5%);
+    }
+
+    .material-icons {
+      line-height: 80px;
+      font-size: 32px;
+      color: #fff;
+    }
+  }
+
+  .logo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: inline-block;
+    vertical-align: top;
+    width: auto;
+    height: $header-height;
+    padding: 10px 20px;
+
+    .v-center {
+      display: inline-block;
+      vertical-align: middle;
+      height: 100%;
+    }
+
+    img {
+      width: auto;
+      height: 100%;
+      font-size: initial;
+      vertical-align: middle;
+    }
+  }
+
+  .controls {
+    position: absolute;
+    top: 0;
+    left: 25%;
+    display: inline-block;
+    width: 75%;
+    height: $header-height;
+    padding: $padding-desktop;
+    padding-right: 140px;
+
+    @include break(535px) {
+      width: 100%;
+      height: 60px;
+      background: #F7F7F7;
+      bottom: 0;
+      top: auto;
+      left: 0;
+      padding-right: 0;
+      padding: 10px 40px;
+      text-align: center;
+    }
+
+    .button {
+      margin-top: -10px;
+    }
+
+  }
+
+  .nav-toggle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: $header-height;
+    height: $header-height;
+    background: $primary;
+    text-align: center;
+    cursor: pointer;
+
+    &:hover {
+      background: lighten($primary, 10%);
+    }
+
+    .material-icons {
+      font-size: 32px;
+      line-height: $header-height;
+      color: #fff;
+    }
+
+    .avatar {
+      width: 100%;
+    }
+
+  }
+
+  .header-content-wrapper {
+    width: 100%;
+    position: relative;
+  }
+}

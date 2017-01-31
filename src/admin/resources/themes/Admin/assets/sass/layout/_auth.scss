@@ -1,0 +1,78 @@
+.authentication {
+  width: 100%;
+  text-align: left;
+  position: relative;
+
+  .authentication-content {
+    width: 90%;
+    text-align: left;
+    margin: 75px auto;
+
+    @media(min-width: $bp-medium) {
+      width: 60%;
+    }
+
+    @media(min-width: $bp-large) {
+      width: 40%;
+    }
+
+    .submission {
+      @include clearfix;
+
+      input[type=submit] {
+        float: right;
+      }
+    }
+
+  }
+
+  .actions {
+    text-align: center;
+    margin-top: 10px;
+    padding-top: 25px;
+    border-top: 1px solid #dfdfdf;
+
+    a {
+      display: block;
+      margin: 0;
+    }
+  }
+
+  .notifications {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+
+    .notification {
+
+      box-sizing: border-box;
+      width: 100%;
+      padding: 10px 15px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 1em;
+      cursor: default;
+      box-shadow: 1px 1px 1px #333;
+      -webkit-box-shadow: 1px 1px 1px #333;
+      -moz-box-shadow: 1px 1px 1px #333;
+      color: #fff;
+
+      opacity: 1;
+      visibility: visible;
+
+      &.error {
+        background-color: $red;
+      }
+
+      &.success {
+        background-color: $green;
+      }
+    }
+  }
+
+}
