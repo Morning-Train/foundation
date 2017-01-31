@@ -3,7 +3,6 @@
 Admin panel and tools built on top of Laravel 5.4.
 
 ## Installation
-
 ```shell
     composer require morningtrain\foundation
 ```
@@ -11,7 +10,6 @@ Admin panel and tools built on top of Laravel 5.4.
 ## Setup
 
 1. Add the following providers and facades to your app config:
-
 ```php
     'providers' => [
         ... 
@@ -67,7 +65,6 @@ Admin panel and tools built on top of Laravel 5.4.
 ```
 
 4. Publish janitor with initialize flag
-
 ```shell
     php artisan janitor:publish --init
 ```
@@ -76,7 +73,7 @@ Admin panel and tools built on top of Laravel 5.4.
 
 1. Run the create command with your desired model name
 ```shell
-    php artisan crud:new MyModel --config=admin.crud
+php artisan crud:new MyModel --config=admin.crud
 ```
 
 2. Configure migration, model and controller
@@ -96,5 +93,5 @@ Admin panel and tools built on top of Laravel 5.4.
 
 4. Update (migrates and refreshes the config)
 ```shell
-    php artisan admin:update
+php artisan admin:update
 ```
