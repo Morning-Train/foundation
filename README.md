@@ -50,20 +50,20 @@ composer require morningtrain\foundation
 
 3. Add the following to your existing authentication controllers
 ```php
-use morningtrain\Admin\Extensions\RedirectsAdmins;
+    use morningtrain\Admin\Extensions\RedirectsAdmins;
 
-class ... {
-    use RedirectsAdmins;
-    
-    ...
-    /**
-     * @return string
-     */
-    public function redirectPath()
-    {
-        return $this->redirectAdmin($this->guard()) ?: $this->redirectTo;
+    class ... {
+        use RedirectsAdmins;
+        
+        ...
+        /**
+         * @return string
+         */
+        public function redirectPath()
+        {
+            return $this->redirectAdmin($this->guard()) ?: $this->redirectTo;
+        }
     }
-}
 ```
 
 4. Publish janitor with initialize flag
@@ -83,15 +83,15 @@ php artisan crud:new MyModel --config=admin.crud
 
 3. Register the model into the admin configuration (config/admin.php)
 ```php
-[
-    'items' => [
-        ...
-        App\Models\MyModel::class   => [
-            'icon'  => '{material-icon}'
+    [
+        'items' => [
+            ...
+            App\Models\MyModel::class   => [
+                'icon'  => '{material-icon}'
+            ]
+            ...
         ]
-        ...
     ]
-]
 ```
 
 4. Update (migrates and refreshes the config)
