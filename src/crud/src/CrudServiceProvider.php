@@ -133,7 +133,12 @@ class CrudServiceProvider extends ServiceProvider
                     $sorter = $column->options->get('sort');
 
                     if (is_callable($sorter)) {
-                        $sorter($query, $name, $direction);
+                        $postFilter = $sorter($query, $name, $direction);
+
+                        if (is_callable($postFilter)) {
+                            return $postFilter;
+                        }
+
                     } else {
                         $query->orderBy($name, $direction);
                     }

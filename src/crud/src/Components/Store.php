@@ -51,10 +51,15 @@ class Store
     public function all(callable $callback = null)
     {
         $query = $this->query();
-        $appliedFilters = $this->applyFilters($query);
+        $postFilters = $this->applyFilters($query);
         $resources = $this->applyPagination($query);
 
-        return is_null($callback) ? $resources : $callback($resources, $appliedFilters);
+        // Apply post filters
+        foreach ($postFilters as $filter) {
+            $resources = $filter($resources);
+        }
+
+        return is_null($callback) ? $resources : $callback($resources);
     }
 
     /**
@@ -107,12 +112,17 @@ class Store
     protected function applyFilters($query)
     {
         $filters = $this->options->get('filters', []);
+        $postFilters = [];
 
         foreach ($filters as $callback) {
-            $callback($query, $this->request);
+            $response = $callback($query, $this->request);
+
+            if (is_callable($response)) {
+                $postFilters[] = $response;
+            }
         }
 
-        return $query;
+        return $postFilters;
     }
 
 
