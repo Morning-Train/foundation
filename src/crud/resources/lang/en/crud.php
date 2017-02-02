@@ -19,6 +19,7 @@ return [
         'buttons' => [
             'create' => 'Create',
             'update' => 'Save',
+            'filter' => 'Filter'
         ],
 
         // Page titles

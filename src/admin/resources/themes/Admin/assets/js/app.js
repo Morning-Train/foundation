@@ -12,7 +12,7 @@ import MenuModule from "./modules/menu";
 import NotificationModule from "./modules/notifications";
 import ModalModule from "./modules/modal";
 import SortableModule from "./modules/sortable";
-
+import CrudForms from "./modules/crud-forms";
 
 /* Setup
  ----------------------------------------------------------*/
@@ -28,3 +28,4 @@ app.use(MenuModule);
 app.use("notifications", NotificationModule);
 app.use("modals", ModalModule);
 app.use(SortableModule);
+app.use(CrudForms);
