@@ -7,6 +7,7 @@ use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use morningtrain\Crud\Contracts\Model;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class Store
 {
@@ -53,13 +54,24 @@ class Store
         $query = $this->query();
         $postFilters = $this->applyFilters($query);
         $resources = $this->applyPagination($query);
+        $filteredResources = $resources;
 
         // Apply post filters
         foreach ($postFilters as $filter) {
-            $resources = $filter($resources);
+            $filteredResources = $filter($filteredResources);
         }
 
-        return is_null($callback) ? $resources : $callback($resources);
+        // Convert to length aware paginator
+        if (!($filteredResources instanceof LengthAwarePaginator)) {
+            $filteredResources = new LengthAwarePaginator(
+                $filteredResources,
+                $resources->total(),
+                $resources->perPage(),
+                $resources->currentPage()
+            );
+        }
+
+        return is_null($callback) ? $filteredResources : $callback($filteredResources);
     }
 
     /**
