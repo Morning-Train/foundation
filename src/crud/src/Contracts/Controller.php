@@ -201,7 +201,7 @@ abstract class Controller extends BaseController
         return [];
     }
 
-    protected function registerIndexFilters(ViewHelper $crud)
+    protected function registerIndexFilters()
     {
         foreach ($this->indexFilters as $filter) {
             $this->store->addFilter(function ($query, Request $request) use ($filter) {
