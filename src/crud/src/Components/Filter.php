@@ -122,7 +122,7 @@ class Filter
 
         $fields = [];
 
-        foreach ($fields as $field => $params) {
+        foreach ($rawFields as $field => $params) {
             if (is_int($field)) {
                 $field = $params;
                 $params = null;

@@ -45,6 +45,9 @@ class CrudServiceProvider extends ServiceProvider
         $this->app->singleton(Crud::class, function ($app) {
             return new Crud($app->make(Router::class));
         });
+
+        // Custom filters
+        $this->registerCustomFilters();
     }
 
     /**
