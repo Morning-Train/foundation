@@ -6,6 +6,7 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use morningtrain\Crud\Components\Field;
+use morningtrain\Crud\Components\Filter;
 use morningtrain\Crud\Components\Store;
 use morningtrain\Crud\Components\ViewHelper;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -200,10 +201,12 @@ abstract class Controller extends BaseController
         return [];
     }
 
-    protected function registerIndexFilters()
+    protected function registerIndexFilters(ViewHelper $crud)
     {
         foreach ($this->indexFilters as $filter) {
-            $this->store->addFilter($filter->name, $filter->apply);
+            $this->store->addFilter(function ($query, Request $request) use ($filter) {
+                $filter->apply($query, $request);
+            });
         }
     }
 

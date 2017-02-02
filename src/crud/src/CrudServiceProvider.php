@@ -95,26 +95,21 @@ class CrudServiceProvider extends ServiceProvider
     {
 
         Filter::registerCustomFilter('order', function (array $args) {
-            // Validate name
-            if (!isset($args['name'])) {
-                $args['name'] = 'order';
-            }
-
-            // Direction name
-            if (!isset($args['direction'])) {
-                $args['direction'] = 'direction';
-            }
+            // Fields
+            $args['fields'] = [
+                'order',
+                'direction' => ['required' => false, 'default' => 'asc']
+            ];
 
             // Get columns
             if (!isset($args['columns']) || !($args['columns'] instanceof Collection)) {
                 throw new JanitorException('The order filter requires a `columns` argument to be passed.');
             }
 
-            $columns = $args['columns'];
-            $direction = $args['direction'];
-
-            $args['apply'] = function ($query, $name) use ($columns, $direction) {
+            $args['apply'] = function (Filter $filter, $query) {
                 // Find column
+                $name = $filter->value('order');
+                $columns = $filter->columns;
                 $column = $columns->where('name', $name)->first();
 
                 if (isset($column) && $column->options->get('sortable', true)) {
@@ -125,7 +120,7 @@ class CrudServiceProvider extends ServiceProvider
                         }
                     });
 
-                    $direction = request()->get($direction, 'asc');
+                    $direction = $filter->value('direction');
                     $column->order = $direction;
 
                     // Check if custom sorter

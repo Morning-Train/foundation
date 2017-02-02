@@ -88,13 +88,14 @@ class Store
     /**
      * Adds a new filter
      *
-     * @param string $name
-     * @param callable $callback
+     * @param \Closure $callback
      * @return $this
      */
-    public function addFilter(string $name, callable $callback)
+    public function addFilter(\Closure $callback)
     {
-        $this->options->set("filters.$name", $callback);
+        $filters = $this->options->get('filters', []);
+        $filters[] = $callback;
+        $this->options->set('filters', $filters);
 
         return $this;
     }
@@ -105,18 +106,15 @@ class Store
      */
     protected function applyFilters($query)
     {
-        $filters = $this->request->all();
+        $filters = $this->options->get('filters', []);
 
-        foreach ($filters as $name => $value) {
-            $filter = $this->options->get("filters.$name");
-
-            if (is_callable($filter)) {
-                $filter($query, $value);
-            }
+        foreach ($filters as $callback) {
+            $callback($query, $this->request);
         }
 
         return $query;
     }
+
 
     /*
      * Pagination

@@ -3,6 +3,7 @@
 namespace morningtrain\Crud\Components;
 
 use morningtrain\Janitor\Exceptions\JanitorException;
+use Illuminate\Http\Request;
 
 class Filter
 {
@@ -63,15 +64,7 @@ class Filter
     function __construct(array $options = [])
     {
         $this->options = new Repository($options);
-
-        // Validate
-        if (!isset($this->name) || !is_string($this->name) || (strlen($this->name) === 0)) {
-            throw new JanitorException('A filter must have a name to register to.');
-        }
-
-        if (!isset($this->apply) || !($this->apply instanceof \Closure)) {
-            throw new JanitorException('A filter must have contain an `apply` closure.');
-        }
+        $this->buildFields();
     }
 
     function __isset($name)
@@ -114,8 +107,52 @@ class Filter
     }
 
     /*
+     * Helpers
+     */
+
+    protected function buildFields()
+    {
+        $rawFields = $this->options->get('fields', []);
+
+        // Field ?
+        if ((count($rawFields) === 0) && $this->options->has('field')) {
+            $rawFields = [$this->options->get('field')];
+        }
+
+        $fields = [];
+
+        foreach ($fields as $field => $params) {
+            if (is_int($field)) {
+                $field = $params;
+                $params = null;
+            }
+
+            if (!is_array($params)) {
+                $params = [];
+            }
+
+            $params = array_merge([
+                'required' => true,
+                'default' => null
+
+            ], $params);
+
+            $fields[$field] = $params;
+        }
+
+        $this->options->set('fields', $fields);
+    }
+
+    /*
      * Methods
      */
+
+    public function value($field)
+    {
+        if ($this->options->has("fields.$field")) {
+            return request()->get($field, $this->options->get("fields.$field.default"));
+        }
+    }
 
     public function render(ViewHelper $helper)
     {
@@ -126,9 +163,23 @@ class Filter
         }
     }
 
-    public function value()
+    public function apply($query, Request $request)
     {
-        return request()->get($this->name);
+        $apply = $this->apply;
+
+        if (is_callable($apply)) {
+
+            // Validate fields
+            $fields = $this->options->get('fields');
+
+            foreach ($fields as $field => $params) {
+                if ($params['required'] && !$request->has($field)) {
+                    return;
+                }
+            }
+
+            $apply($this, $query);
+        }
     }
 
 }
