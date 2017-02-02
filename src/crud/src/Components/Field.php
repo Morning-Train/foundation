@@ -39,9 +39,9 @@ class Field
         $args = array_merge(
             isset($arguments[0]) && is_array($arguments[0]) ? $arguments[0] : [],
             [
-                'render'    => function( Field $field, Model $resource, ViewHelper $helper, array $params ) use( $type ) {
+                'render' => function (Field $field, Model $resource, ViewHelper $helper, array $params) use ($type) {
                     return view($helper->view("fields.$type"))->with(array_merge($params, [
-                        'crud'  => $helper,
+                        'crud' => $helper,
                         'entry' => $resource,
                         'field' => $field,
                         'value' => $field->value($resource),
@@ -179,6 +179,10 @@ class Field
     public function update(Model $resource, Request $request)
     {
         $setter = $this->options->get('update');
+
+        if ($setter === false) {
+            return;
+        }
 
         if (is_callable($setter)) {
             return $setter($resource, $request);
