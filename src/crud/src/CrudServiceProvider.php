@@ -109,8 +109,8 @@ class CrudServiceProvider extends ServiceProvider
                 throw new JanitorException('The order filter requires a `columns` argument to be passed.');
             }
 
-            // Remove render
-            unset($args['render']);
+            // Change render
+            $args['renderable'] = false;
 
             $args['apply'] = function (Filter $filter, $query) {
                 // Find column

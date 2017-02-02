@@ -112,6 +112,10 @@ class Filter
 
     protected function getRenderable()
     {
+        if ($this->options->has('renderable')) {
+            return $this->options->get('renderable');
+        }
+
         return is_callable($this->options->get('render'));
     }
 
