@@ -1,12 +1,12 @@
 @extends('stubs::class')
 
 @section('imports')
-use Illuminate\Http\Request;
-use morningtrain\Crud\Contracts\Model;
-use morningtrain\Crud\Components\Filter;
-use morningtrain\Crud\Components\Column;
-use morningtrain\Crud\Components\Field;
-use morningtrain\Crud\Components\ViewHelper;
+    use Illuminate\Http\Request;
+    use morningtrain\Crud\Contracts\Model;
+    use morningtrain\Crud\Components\Filter;
+    use morningtrain\Crud\Components\Column;
+    use morningtrain\Crud\Components\Field;
+    use morningtrain\Crud\Components\ViewHelper;
 @stop
 
 @section('body')
@@ -47,6 +47,27 @@ use morningtrain\Crud\Components\ViewHelper;
     'label'     => $crud->trans('columns.id'),
     'order'     => 'asc'    // default order on columns
     ])
+    ];
+    }
+
+    /*
+    * ------------------------------------------------
+    *                Filters hook
+    * ------------------------------------------------
+    */
+
+    /**
+    * Generates and returns the form fields
+    * @param ViewHelper $crud
+    *
+    * @return array
+    */
+    protected function generateIndexFilters(ViewHelper $crud)
+    {
+    return [
+    Filter::order([
+    'columns'   => $this->indexColumns
+    ]);
     ];
     }
 
@@ -98,8 +119,7 @@ use morningtrain\Crud\Components\ViewHelper;
     */
     protected function boot()
     {
-    // Register filters
-    $this->store->addFilter('order', Filter::order($this->indexColumns));
+
     }
 
 @stop

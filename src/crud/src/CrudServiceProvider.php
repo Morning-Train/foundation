@@ -7,7 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
 use morningtrain\Crud\Commands\NewCrud;
+use morningtrain\Crud\Components\Filter;
+use morningtrain\Crud\Components\ViewHelper;
 use morningtrain\Crud\Services\Crud;
+use Illuminate\Support\Collection;
+use morningtrain\Janitor\Exceptions\JanitorException;
 
 class CrudServiceProvider extends ServiceProvider
 {
@@ -84,6 +88,59 @@ class CrudServiceProvider extends ServiceProvider
             __DIR__ . '/../resources/lang' => base_path('resources/lang'),
 
         ], 'lang');
+
+    }
+
+    public function registerCustomFilters()
+    {
+
+        Filter::registerCustomFilter('order', function (array $args) {
+            // Validate name
+            if (!isset($args['name'])) {
+                $args['name'] = 'order';
+            }
+
+            // Direction name
+            if (!isset($args['direction'])) {
+                $args['direction'] = 'direction';
+            }
+
+            // Get columns
+            if (!isset($args['columns']) || !($args['columns'] instanceof Collection)) {
+                throw new JanitorException('The order filter requires a `columns` argument to be passed.');
+            }
+
+            $columns = $args['columns'];
+            $direction = $args['direction'];
+
+            $args['apply'] = function ($query, $name) use ($columns, $direction) {
+                // Find column
+                $column = $columns->where('name', $name)->first();
+
+                if (isset($column) && $column->options->get('sortable', true)) {
+                    // Remove order from already ordered columns
+                    $columns->each(function ($column) {
+                        if ($column->order !== 'none') {
+                            $column->order = 'none';
+                        }
+                    });
+
+                    $direction = request()->get($direction, 'asc');
+                    $column->order = $direction;
+
+                    // Check if custom sorter
+                    $sorter = $column->options->get('sort');
+
+                    if (is_callable($sorter)) {
+                        $sorter($query, $name, $direction);
+                    } else {
+                        $query->orderBy($name, $direction);
+                    }
+                }
+            };
+
+            return $args;
+        });
 
     }
 

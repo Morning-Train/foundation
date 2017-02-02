@@ -53,16 +53,19 @@ abstract class Controller extends BaseController
         $dummyModel = new $model;
 
         $this->viewHelper = new ViewHelper([
-            'namespace'     => $this->namespace,
+            'namespace' => $this->namespace,
             'viewNamespace' => $this->viewNamespace,
-            'baseRoute'     => $this->baseRoute,
-            'slug'          => $this->currentSlug,
-            'singularName'  => $dummyModel->getShortName(),
-            'pluralName'    => $dummyModel->getPluralName(),
+            'baseRoute' => $this->baseRoute,
+            'slug' => $this->currentSlug,
+            'singularName' => $dummyModel->getShortName(),
+            'pluralName' => $dummyModel->getPluralName(),
         ]);
 
         // Create index columns
         $this->indexColumns = collect($this->generateIndexColumns($this->viewHelper));
+
+        // Create index filters
+        $this->indexFilters = collect($this->generateIndexFilters($this->viewHelper));
 
         // Create form fields
         $this->formFields = collect($this->generateFormFields($this->viewHelper));
@@ -70,8 +73,12 @@ abstract class Controller extends BaseController
         // Assign index columns and fields to the view helper
         $this->viewHelper->options->set([
             'columns' => $this->indexColumns,
-            'fields'  => $this->formFields,
+            'fields' => $this->formFields,
+            'filters' => $this->indexFilters
         ]);
+
+        // Register filters
+        $this->registerIndexFilters();
 
         // Share view data
         $this->shareViewData();
@@ -168,6 +175,35 @@ abstract class Controller extends BaseController
             if (!is_null($status)) {
                 return $status;
             }
+        }
+    }
+
+    /*
+    * ------------------------------------------------
+    * 			    Filters hook
+    * ------------------------------------------------
+    */
+
+    /**
+     * @var Collection
+     */
+    protected $indexFilters;
+
+    /**
+     * Generates and returns the form fields
+     * @param ViewHelper $crud
+     *
+     * @return array
+     */
+    protected function generateIndexFilters(ViewHelper $crud)
+    {
+        return [];
+    }
+
+    protected function registerIndexFilters()
+    {
+        foreach ($this->indexFilters as $filter) {
+            $this->store->addFilter($filter->name, $filter->apply);
         }
     }
 
