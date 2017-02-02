@@ -20,11 +20,12 @@ trait Roleable
     }
 
     /*
-     * Helpers
+     * Scopes
      */
 
-    public function allowed($permission)
+    public function scopeWhereIsAllowed($query, $permission)
     {
+
         if ($permission instanceof Permission) {
             $permission = $permission->slug;
         }
@@ -36,26 +37,48 @@ trait Roleable
             $permissionables = array_merge($permissionables, $this->permissionables);
         }
 
-        return $this->newQuery()->where('id', $this->id)->where(function ($query) use ($permission, $permissionables) {
+        return $query->where(function ($query) use ($permission, $permissionables) {
 
-                // Check assigned permissions
-                $query->whereHas('permissions', function ($query) use ($permission) {
-                    return $query->where('slug', $permission);
+            // Check assigned permissions
+            $query->whereHas('permissions', function ($query) use ($permission) {
+                return $query->where('slug', $permission);
+            });
+
+            // Check permissionables
+            foreach ($permissionables as $relation) {
+                $query->orWhereHas($relation, function ($query) use ($permission) {
+                    return $query->where('is_super', 1)->orWhereHas('permissions',
+                        function ($query) use ($permission) {
+                            $query->where('slug', $permission);
+                        });
                 });
+            }
 
-                // Check permissionables
-                foreach ($permissionables as $relation) {
-                    $query->orWhereHas($relation, function ($query) use ($permission) {
-                        return $query->where('is_super', 1)->orWhereHas('permissions',
-                                function ($query) use ($permission) {
-                                    $query->where('slug', $permission);
-                                });
-                    });
-                }
+            return $query;
 
-                return $query;
+        });
+    }
 
-            })->count() > 0;
+    public function scopeWhereHasAccess($query, $slug)
+    {
+        return $this->scopeWhereIsAllowed($query, "access.$slug");
+    }
+
+    /*
+     * Helpers
+     */
+
+    public function allowed($permission)
+    {
+        return $this->newQuery()
+            ->where('id', $this->id)
+            ->whereIsAllowed($permission)
+            ->count() > 0;
+    }
+
+    public function hasAccess($slug)
+    {
+        return $this->allowed("access.$slug");
     }
 
     public function isSuper()
