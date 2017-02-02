@@ -55,19 +55,13 @@ export default class CrudForms extends Module {
             e.preventDefault();
 
             var action = form.attr("action"),
-                method = form.attr("method"),
                 data = form.serialize();
 
-            $.ajax({
-                url: action,
-                method: method,
-                data: data,
-                success: function (response) {
-                    form.replaceWith($(response).find("form.crud-index"));
-                },
-                error: function () {
-                    //...
-                }
+            $.get(action, data).then((response) => {
+                form.replaceWith($(response).find("form.crud-index"));
+
+            }).catch(() => {
+                // ...
             });
         });
 
