@@ -21,8 +21,9 @@ class Column
 
     protected static $customColumns = [];
 
-    public static function registerCustomColumn( $type, \Closure $callback ) {
-        static::$customColumns[] = $callback;
+    public static function registerCustomColumn($type, \Closure $callback)
+    {
+        static::$customColumns[$type] = $callback;
     }
 
     /*
@@ -37,11 +38,11 @@ class Column
         $args = array_merge(
             isset($arguments[0]) && is_array($arguments[0]) ? $arguments[0] : [],
             [
-                'render'    => function( Column $column, Model $resource, ViewHelper $helper, array $params ) use( $type ) {
+                'render' => function (Column $column, Model $resource, ViewHelper $helper, array $params) use ($type) {
                     return view($helper->view("columns.$type"))->with(array_merge($params, [
-                        'crud'      => $helper,
-                        'entry'     => $resource,
-                        'column'    => $column
+                        'crud' => $helper,
+                        'entry' => $resource,
+                        'column' => $column
 
                     ]))->render();
                 }
