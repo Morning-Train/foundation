@@ -75,7 +75,7 @@ abstract class Controller extends BaseController
         $this->viewHelper->options->set([
             'columns' => $this->indexColumns,
             'fields' => $this->formFields,
-            'filters' => $this->indexFilters
+            'filters' => $this->indexFilters->where('renderable', true)->all()
         ]);
 
         // Register filters

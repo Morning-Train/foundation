@@ -107,6 +107,15 @@ class Filter
     }
 
     /*
+     * Accessors
+     */
+
+    protected function getRenderable()
+    {
+        return is_callable($this->options->get('render'));
+    }
+
+    /*
      * Helpers
      */
 
