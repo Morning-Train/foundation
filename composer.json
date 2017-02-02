@@ -1,5 +1,5 @@
 {
-  "name": "morningtrain/Foundation",
+  "name": "morningtrain/foundation",
   "type": "library",
   "description": "Tools built on top of laravel 5.4",
   "version": "0.0.1-dev",
