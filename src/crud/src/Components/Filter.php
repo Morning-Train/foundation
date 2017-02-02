@@ -4,6 +4,7 @@ namespace morningtrain\Crud\Components;
 
 use morningtrain\Janitor\Exceptions\JanitorException;
 use Illuminate\Http\Request;
+use Illuminate\Config\Repository;
 
 class Filter
 {
