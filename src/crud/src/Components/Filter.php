@@ -41,8 +41,7 @@ class Filter
                 'render' => function (Filter $filter, ViewHelper $helper, array $params) use ($type) {
                     return view($helper->view("filters.$type"))->with(array_merge($params, [
                         'crud' => $helper,
-                        'filter' => $filter,
-                        'value' => $filter->value(),
+                        'filter' => $filter
 
                     ]))->render();
                 }
