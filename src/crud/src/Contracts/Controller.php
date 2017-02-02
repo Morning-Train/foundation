@@ -205,7 +205,7 @@ abstract class Controller extends BaseController
     {
         foreach ($this->indexFilters as $filter) {
             $this->store->addFilter(function ($query, Request $request) use ($filter) {
-                $filter->apply($query, $request);
+                return $filter->apply($query, $request);
             });
         }
     }

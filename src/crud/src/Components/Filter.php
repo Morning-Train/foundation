@@ -187,7 +187,7 @@ class Filter
                 }
             }
 
-            $apply($this, $query);
+            return $apply($this, $query);
         }
     }
 
