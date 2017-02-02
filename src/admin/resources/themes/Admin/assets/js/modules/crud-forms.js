@@ -58,7 +58,7 @@ export default class CrudForms extends Module {
                 data = form.serialize();
 
             $.get(action, data).then((response) => {
-                form.replaceWith($(response).find("form.crud-index"));
+                form.empty().append($(response).find("form.crud-index").children());
 
             }).catch(() => {
                 // ...
