@@ -101,17 +101,32 @@ class AdminServiceProvider extends ServiceProvider
         });
 
         Field::registerCustomField('text', function (array $args) {
+            // Set type
             $args['type'] = 'text';
+
+            // Remove current render
+            unset($args['render']);
+
             return Field::input($args);
         });
 
         Field::registerCustomField('email', function (array $args) {
+            // Set type
             $args['type'] = 'email';
+
+            // Remove current render
+            unset($args['render']);
+
             return Field::input($args);
         });
 
         Field::registerCustomField('password', function (array $args) {
+            // Set type
             $args['type'] = 'password';
+
+            // Remove current render
+            unset($args['render']);
+
             return Field::input($args);
         });
 
