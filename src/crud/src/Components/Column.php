@@ -36,7 +36,6 @@ class Column
         $type = strtolower(preg_replace('/\B([A-Z])/', '-$1', $name));
         $callback = isset(static::$customColumns[$type]) ? static::$customColumns[$type] : null;
         $args = array_merge(
-            isset($arguments[0]) && is_array($arguments[0]) ? $arguments[0] : [],
             [
                 'render' => function (Column $column, Model $resource, ViewHelper $helper, array $params) use ($type) {
                     return view($helper->view("columns.$type"))->with(array_merge($params, [
@@ -46,14 +45,15 @@ class Column
 
                     ]))->render();
                 }
-            ]
+            ],
+            isset($arguments[0]) && is_array($arguments[0]) ? $arguments[0] : []
         );
 
         if (is_callable($callback)) {
             $args = $callback($args);
         }
 
-        return static::create($args);
+        return $args instanceof Column ? $args : static::create($args);
     }
 
     /**

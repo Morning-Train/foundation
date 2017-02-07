@@ -37,7 +37,6 @@ class Field
         $type = strtolower(preg_replace('/\B([A-Z])/', '-$1', $name));
         $callback = isset(static::$customFields[$type]) ? static::$customFields[$type] : null;
         $args = array_merge(
-            isset($arguments[0]) && is_array($arguments[0]) ? $arguments[0] : [],
             [
                 'render' => function (Field $field, Model $resource, ViewHelper $helper, array $params) use ($type) {
                     return view($helper->view("fields.$type"))->with(array_merge($params, [
@@ -48,14 +47,15 @@ class Field
 
                     ]))->render();
                 }
-            ]
+            ],
+            isset($arguments[0]) && is_array($arguments[0]) ? $arguments[0] : []
         );
 
         if (is_callable($callback)) {
             $args = $callback($args);
         }
 
-        return static::create($args);
+        return $args instanceof Field ? $args : static::create($args);
     }
 
     /**
@@ -127,7 +127,37 @@ class Field
 
     public function getAttributes()
     {
-        return array_merge($this->options->get('attributes', []), [
+        // Compute push attributes
+        $attributes = [];
+        $pushAttrs = $this->options->get('$attributes', []);
+
+        foreach ($pushAttrs as $key => $query) {
+            if (!is_array($query)) {
+                $query = ['key' => $query];
+            }
+
+            // Normalize query
+            $query = array_merge(['key' => null, 'default' => null], $query);
+
+            // Validate query
+            if (!is_string($query['key']) || (strlen($query['key']) === 0)) {
+                continue;
+            }
+
+            // Compute query
+            $value = $this->options->get($query['key'], $query['default']);
+
+            if (!is_null($value)) {
+                // Normalize key
+                if (is_int($key)) {
+                    $key = $query['key'];
+                }
+
+                $attributes[$key] = $value;
+            }
+        }
+
+        return array_merge($this->options->get('attributes', []), $attributes, [
             'id' => $this->id,
         ]);
     }
@@ -202,6 +232,11 @@ class Field
     {
         $name = $this->options->get('name');
         $getter = $this->options->get('value');
+
+        // No value
+        if ($getter === false) {
+            return;
+        }
 
         if (is_callable($getter)) {
             return $getter($this, $resource);

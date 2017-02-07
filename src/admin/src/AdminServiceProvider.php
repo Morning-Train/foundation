@@ -85,18 +85,56 @@ class AdminServiceProvider extends ServiceProvider
     public function registerCustomFields()
     {
 
-        // Select field
+        /*
+         * --------------------------------------
+         * Input fields
+         * --------------------------------------
+         */
+
+        Field::registerCustomField('input', function (array $args) {
+            // Register push attributes
+            $args['$attributes'] = [
+                'placeholder'
+            ];
+
+            return $args;
+        });
+
+        Field::registerCustomField('text', function (array $args) {
+            $args['type'] = 'text';
+            return Field::input($args);
+        });
+
+        Field::registerCustomField('email', function (array $args) {
+            $args['type'] = 'email';
+            return Field::input($args);
+        });
+
+        Field::registerCustomField('password', function (array $args) {
+            $args['type'] = 'password';
+            return Field::input($args);
+        });
+
+        /*
+         * --------------------------------------
+         * Select fields
+         * --------------------------------------
+         */
+
         Field::registerCustomField('select', function (array $args) {
             $render = $args['render'];
 
-            $args['render'] = function (Field $field, Model $resource, ViewHelper $helper, array $params) use ($render) {
+            $args['render'] = function (Field $field, Model $resource, ViewHelper $helper, array $params) use ($render
+            ) {
                 $optionsConstructor = $field->options->get('options', []);
                 $options = [];
 
                 if (is_callable($optionsConstructor)) {
                     $options = $optionsConstructor($resource);
-                } else if (is_array($optionsConstructor)) {
-                    $options = $optionsConstructor;
+                } else {
+                    if (is_array($optionsConstructor)) {
+                        $options = $optionsConstructor;
+                    }
                 }
 
                 return $render($field, $resource, $helper, array_merge($params, [

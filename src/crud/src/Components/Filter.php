@@ -36,7 +36,6 @@ class Filter
         $type = strtolower(preg_replace('/\B([A-Z])/', '-$1', $name));
         $callback = isset(static::$customFilters[$type]) ? static::$customFilters[$type] : null;
         $args = array_merge(
-            isset($arguments[0]) && is_array($arguments[0]) ? $arguments[0] : [],
             [
                 'render' => function (Filter $filter, ViewHelper $helper, array $params) use ($type) {
                     return view($helper->view("filters.$type"))->with(array_merge($params, [
@@ -45,14 +44,15 @@ class Filter
 
                     ]))->render();
                 }
-            ]
+            ],
+            isset($arguments[0]) && is_array($arguments[0]) ? $arguments[0] : []
         );
 
         if (is_callable($callback)) {
             $args = $callback($args);
         }
 
-        return static::create($args);
+        return $args instanceof Filter ? $args : static::create($args);
     }
 
     /**
