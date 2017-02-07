@@ -93,9 +93,13 @@ class AdminServiceProvider extends ServiceProvider
 
         Field::registerCustomField('input', function (array $args) {
             // Register push attributes
-            $args['$attributes'] = [
-                'placeholder'
-            ];
+            $args['$attributes'] = array_merge(
+                isset($args['$attributes']) && is_array($args['$attributes']) ? $args['$attributes'] : [],
+                [
+                    'class',
+                    'placeholder'
+                ]
+            );
 
             return $args;
         });
