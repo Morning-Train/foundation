@@ -152,6 +152,7 @@ class AdminServiceProvider extends ServiceProvider
         // Actions
         Column::registerCustomColumn('actions', function (array $args) {
             return array_merge([
+                'name' => 'actions',
                 'sortable' => false,
                 'class' => 'align-right'
 
