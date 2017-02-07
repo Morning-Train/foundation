@@ -183,9 +183,15 @@ class Field
 
         // Callable
         if ($rules instanceof \Closure) {
-            $dynamicRules = $rules($resource, $request);
+            $dynamicRules = $rules($this, $resource, $request);
 
-            return is_array($dynamicRules) ? $dynamicRules : [];
+            if (is_array($dynamicRules)) {
+                return $dynamicRules;
+            }
+
+            if (is_string($dynamicRules)) {
+                return is_string($name) && (strlen($name) > 0) ? [$name => $rules] : [];
+            }
         }
 
         return [];
