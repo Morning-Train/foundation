@@ -2,6 +2,6 @@
     <label for="{{ $field->id }}">{{ $field->label }}</label>
     {!! call_user_func(
             [ Form::class, $field->options->get('type', 'text') ],
-            $field->name, old($field->name), $field->attributes
+            $field->name, old($field->name, $value), $field->attributes
     ) !!}
 </div>
