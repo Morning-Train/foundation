@@ -14,8 +14,8 @@ module.exports = function (basepath) {
     var fields = fs.readdirSync(fieldsPath);
 
     fields.forEach(function (field) {
-        var sassPath = basepath + "/resources/fields/" + field + "/field.scss",
-            jsPath = basepath + "/resources/fields/" + field + "/field.js";
+        var sassPath = basepath + "/resources/fields/" + field + "/" + field + ".scss",
+            jsPath = basepath + "/resources/fields/" + field + "/" + field + ".js";
 
 
         // Validate sass file
