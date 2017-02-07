@@ -23,6 +23,26 @@ trait Roleable
      * Scopes
      */
 
+    public function scopeWhereIsSuper($query)
+    {
+        return $query->whereHas('roles', function ($query) {
+            return $query->whereIsSuper();
+        });
+    }
+    
+    public function scopeWhereIsAssigned($query, array $roles)
+    {
+        foreach ($roles as $role) {
+            $slug = $role instanceof Role ? $role->slug : $role;
+
+            $query->whereHas('roles', function ($query) use ($slug) {
+                $query->where('slug', $slug);
+            });
+        }
+
+        return $query;
+    }
+
     public function scopeWhereIsAllowed($query, $permission)
     {
 
@@ -114,17 +134,10 @@ trait Roleable
 
     public function isAssigned(array $roles)
     {
-        $query = $this->newQuery()->where('id', $this->id);
-
-        foreach ($roles as $role) {
-            $slug = $role instanceof Role ? $role->slug : $role;
-
-            $query->whereHas('roles', function ($query) use ($slug) {
-                $query->where('slug', $slug);
-            });
-        }
-
-        return $query->count() > 0;
+        return $this->newQuery()
+            ->where('id', $this->id)
+            ->whereIsAssigned($roles)
+            ->count() > 0;
     }
 
 }
