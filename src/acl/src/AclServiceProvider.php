@@ -84,24 +84,32 @@ class AclServiceProvider extends ServiceProvider
         if (class_exists('\morningtrain\Crud\CrudServiceProvider')) {
             $this->app->make('\morningtrain\Crud\Services\Crud')->addFilter(function ($model, $options) {
 
-                $middleware = isset($options['middleware']) ? $options['middleware'] : null;
-
-                if (is_string($middleware)) {
-                    $middleware = [$middleware];
-                } else {
-                    $middleware = [];
-                }
-
                 $public = isset($options['public']) && ($options['public'] === true) ? true : false;
+                $routeOptions = isset($options['routeOptions']) ? $options['routeOptions'] : [];
 
-                if (($public === false) && !in_array('auth.access', $middleware)) {
-                    $middleware[] = 'auth.access';
-                }
+                if ($public === false) {
+                    $options['routeOptions'] = function ($model, $name, $path) use ($routeOptions) {
+                        $options = is_callable($routeOptions) ? $routeOptions($model, $name, $path) : $routeOptions;
 
-                unset($options['public']);
+                        if (!is_array($options)) {
+                            $options = [];
+                        }
 
-                if (count($middleware) > 0) {
-                    $options['middleware'] = $middleware;
+                        // Push middleware
+                        $middleware = isset($options['middleware']) ? $options['middleware'] : [];
+
+                        if (!is_array($middleware)) {
+                            $middleware = [$middleware];
+                        }
+
+                        if (!in_array('auth.access', $middleware)) {
+                            $middleware[] = 'auth.access';
+                        }
+
+                        $options['middleware'] = $middleware;
+
+                        return $options;
+                    };
                 }
 
                 return $options;

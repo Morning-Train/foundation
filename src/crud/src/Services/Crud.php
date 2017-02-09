@@ -60,8 +60,9 @@ class Crud
         $base = isset($options['base']) ? $options['base'] : null;
         $controller = isset($options['controller']) ? $options['controller'] : null;
         $routes = $this->determineRoutes(isset($options['routes']) && is_array($options['routes']) ? $options['routes'] : null);
+        $routeOptions = isset($options['routeOptions']) ? $options['routeOptions'] : [];
 
-        unset($options['base'], $options['controller'], $options['routes']);
+        unset($options['base'], $options['controller'], $options['routes'], $options['routeOptions']);
 
         if (!is_string($base) || (strlen($base) === 0)) {
             throw new CrudException('Invalid base route!');
@@ -81,23 +82,39 @@ class Crud
             }
         }
 
-        $this->router->group($options, function ($router) use ($base, $controller, $routes) {
-            foreach ($routes as $name => $params) {
-                $method = $params['method'];
-                $action = $params['action'];
-                $path = $params['path'];
-                $where = isset($params['where']) ? $params['where'] : null;
+        $this->router->group($options,
+            function ($router) use ($base, $controller, $routes, $routeOptions, $modelClass) {
+                foreach ($routes as $name => $params) {
+                    $method = $params['method'];
+                    $action = $params['action'];
+                    $path = $params['path'];
+                    $where = isset($params['where']) ? $params['where'] : null;
 
-                $route = $router->$method($path, [
-                    'as'   => "$base.$name",
-                    'uses' => "$controller@$action",
-                ]);
+                    // Build options
+                    $options = [];
 
-                if (is_array($where)) {
-                    $route->where($where);
+                    if (is_array($routeOptions)) {
+                        $options = $routeOptions;
+                    } else {
+                        if (is_callable($routeOptions)) {
+                            $options = $routeOptions($modelClass, $name, $path);
+
+                            if (!is_array($options)) {
+                                $options = [];
+                            }
+                        }
+                    }
+
+                    $route = $router->$method($path, array_merge($options, [
+                        'as' => "$base.$name",
+                        'uses' => "$controller@$action",
+                    ]));
+
+                    if (is_array($where)) {
+                        $route->where($where);
+                    }
                 }
-            }
-        });
+            });
     }
 
     /*
@@ -141,20 +158,20 @@ class Crud
             'index' => [
                 'method' => 'get',
                 'action' => 'index',
-                'path'   => trans('crud.common.routes.index'),
+                'path' => trans('crud.common.routes.index'),
             ],
 
             'create' => [
                 'method' => 'get',
                 'action' => 'create',
-                'path'   => trans('crud.common.routes.create'),
+                'path' => trans('crud.common.routes.create'),
             ],
 
             'edit' => [
                 'method' => 'get',
                 'action' => 'show',
-                'path'   => trans('crud.common.routes.edit', ['id' => '{id}']),
-                'where'  => [
+                'path' => trans('crud.common.routes.edit', ['id' => '{id}']),
+                'where' => [
                     'id' => '[0-9]+',
                 ],
             ],
@@ -162,8 +179,8 @@ class Crud
             'store' => [
                 'method' => 'post',
                 'action' => 'store',
-                'path'   => trans('crud.common.routes.store', ['id' => '{id?}']),
-                'where'  => [
+                'path' => trans('crud.common.routes.store', ['id' => '{id?}']),
+                'where' => [
                     'id' => '[0-9]+',
                 ],
             ],
@@ -171,8 +188,8 @@ class Crud
             'delete' => [
                 'method' => 'get',
                 'action' => 'destroy',
-                'path'   => trans('crud.common.routes.delete', ['id' => '{id}']),
-                'where'  => [
+                'path' => trans('crud.common.routes.delete', ['id' => '{id}']),
+                'where' => [
                     'id' => '[0-9]+',
                 ],
             ],
