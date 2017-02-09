@@ -76,9 +76,6 @@ trait HasAssets
         $this->addStylesheet(asset('themes/' . $this->slug . '/app.css'));
         $this->addScript(asset('themes/' . $this->slug . '/app.js'));
 
-        $this->addStylesheet(asset('assets/css/fields.css'));
-        $this->addScript(asset('assets/js/fields.js'));
-
         // Register actions
         $this->addAction('head', [$this, 'printStylesheets']);
         $this->addAction('footer', [$this, 'printLocalization']);
