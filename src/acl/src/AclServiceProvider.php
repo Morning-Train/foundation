@@ -80,7 +80,7 @@ class AclServiceProvider extends ServiceProvider
 
     protected function registerCrudAccessFilter()
     {
-        // Register acl access filter if the service is loaded
+        // Register acl manage filter if the service is loaded
         if (class_exists('\morningtrain\Crud\CrudServiceProvider')) {
             $this->app->make('\morningtrain\Crud\Services\Crud')->addFilter(function ($model, $options) {
 
@@ -88,8 +88,10 @@ class AclServiceProvider extends ServiceProvider
                 $routeOptions = isset($options['routeOptions']) ? $options['routeOptions'] : [];
 
                 if ($public === false) {
-                    $options['routeOptions'] = function ($model, $name, $path) use ($routeOptions) {
-                        $options = is_callable($routeOptions) ? $routeOptions($model, $name, $path) : $routeOptions;
+                    $options['routeOptions'] = function ($model, $base, $name, $params) use ($routeOptions) {
+                        $options = is_callable($routeOptions) ?
+                            $routeOptions($model, $base, $name, $params) :
+                            $routeOptions;
 
                         if (!is_array($options)) {
                             $options = [];
@@ -102,11 +104,23 @@ class AclServiceProvider extends ServiceProvider
                             $middleware = [$middleware];
                         }
 
-                        if (!in_array('auth.access', $middleware)) {
-                            $middleware[] = 'auth.access';
+                        if (!in_array('auth.can', $middleware)) {
+                            $middleware[] = 'auth.can';
                         }
 
                         $options['middleware'] = $middleware;
+
+                        // Push permission
+                        $permissions = isset($options['permissions']) && is_array($options['permissions']) ?
+                            $options['permissions'] : [];
+
+                        $permission = "$base.manage";
+
+                        if (!in_array($permission, $permissions)) {
+                            $permissions[] = $permission;
+                        }
+
+                        $options['permissions'] = $permissions;
 
                         return $options;
                     };

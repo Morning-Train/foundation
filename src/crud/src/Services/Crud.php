@@ -97,7 +97,7 @@ class Crud
                         $options = $routeOptions;
                     } else {
                         if (is_callable($routeOptions)) {
-                            $options = $routeOptions($modelClass, $name, $path);
+                            $options = $routeOptions($modelClass, $base, $name, $params);
 
                             if (!is_array($options)) {
                                 $options = [];
