@@ -114,7 +114,9 @@ class AclServiceProvider extends ServiceProvider
                         $permissions = isset($options['permissions']) && is_array($options['permissions']) ?
                             $options['permissions'] : [];
 
-                        $permission = "$base.manage";
+                        $slug = (new $model)->getPluralName();
+
+                        $permission = "$slug.manage";
 
                         if (!in_array($permission, $permissions)) {
                             $permissions[] = $permission;
