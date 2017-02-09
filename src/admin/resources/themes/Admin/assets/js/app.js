@@ -2,9 +2,19 @@
  ----------------------------------------------------------*/
 import {Application} from "wrapper6";
 
+/* Setup
+ ----------------------------------------------------------*/
+var app = window.app = new Application(window.options || {});
+
 /* Services
  ----------------------------------------------------------*/
 import CookieService from "./services/cookie";
+import CsrfService from "./services/csrf";
+
+/* Register services
+ ----------------------------------------------------------*/
+app.use("cookie", CookieService);
+app.use(CsrfService);
 
 /* Modules
  ----------------------------------------------------------*/
@@ -13,14 +23,6 @@ import NotificationModule from "./modules/notifications";
 import ModalModule from "./modules/modal";
 import SortableModule from "./modules/sortable";
 import CrudForms from "./modules/crud-forms";
-
-/* Setup
- ----------------------------------------------------------*/
-var app = window.app = new Application(window.options || {});
-
-/* Register services
- ----------------------------------------------------------*/
-app.use("cookie", CookieService);
 
 /* Register modules
  ----------------------------------------------------------*/

@@ -2,7 +2,7 @@
   "name": "morningtrain/foundation",
   "type": "library",
   "description": "Tools built on top of laravel 5.4",
-  "version": "1.0.27-dev",
+  "version": "1.0.28-dev",
   "keywords": [
     "morningtrain",
     "Foundation"
