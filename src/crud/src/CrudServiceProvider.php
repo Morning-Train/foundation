@@ -62,12 +62,6 @@ class CrudServiceProvider extends ServiceProvider
 
         ], 'config');
 
-        // Publish gulp file
-        $this->publishes([
-            __DIR__ . '/../gulp/fields.js' => base_path('gulp/fields.js'),
-
-        ], 'gulp');
-
         // Publish views
         $this->publishes([
             __DIR__ . '/../resources/views/crud' => base_path('resources/views/crud'),

@@ -1,7 +1,6 @@
 /* Dependencies
  ----------------------------------------------------------*/
 import {Application} from "wrapper6";
-import $ from "jquery";
 
 /* Services
  ----------------------------------------------------------*/
@@ -18,10 +17,6 @@ import CrudForms from "./modules/crud-forms";
 /* Setup
  ----------------------------------------------------------*/
 var app = window.app = new Application(window.options || {});
-
-/* Register third party bindings
- ----------------------------------------------------------*/
-app.define("$", $);
 
 /* Register services
  ----------------------------------------------------------*/
