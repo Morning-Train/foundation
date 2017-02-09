@@ -76,7 +76,7 @@ class Build extends Command
         foreach ($permissions as $segment => $name) {
             // Nested permissions
             if (is_array($name)) {
-                $this->syncPermissions($name, strlen($namespace) > 0 ? "$namespace.$segment" : $segment);
+                $this->syncPermissions($name, $this->slugify($namespace, $segment));
                 continue;
             }
 
@@ -87,7 +87,7 @@ class Build extends Command
             }
 
             // Prepare data
-            $slug = strlen($namespace) > 0 ? "$namespace.$segment" : $segment;
+            $slug = $this->slugify($namespace, $segment);
 
             // Check if it needs update
             $permission = $permissionModel::where('slug', $slug)->first();
@@ -152,5 +152,18 @@ class Build extends Command
                 }
             }
         }
+    }
+
+    protected function slugify()
+    {
+        $parts = [];
+
+        foreach (func_get_args() as $arg) {
+            if (is_string($arg) && (strlen($arg) > 0)) {
+                $parts[] = $arg;
+            }
+        }
+
+        return implode('.', $parts);
     }
 }
