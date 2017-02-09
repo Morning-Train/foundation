@@ -37,7 +37,7 @@ trait Permissionable
             $permission = Permission::where('slug', $permission)->first();
         }
 
-        if (!is_null($permission)) {
+        if (!is_null($permission) && ($this->permissions()->where('id', $permission->id)->count() === 0)) {
             $this->permissions()->attach($permission->id);
         }
     }

@@ -29,7 +29,7 @@ trait Roleable
             return $query->whereIsSuper();
         });
     }
-    
+
     public function scopeWhereIsAssigned($query, array $roles)
     {
         foreach ($roles as $role) {
@@ -113,7 +113,7 @@ trait Roleable
                 $role = Role::where('slug', $role)->first();
             }
 
-            if (!is_null($role)) {
+            if (!is_null($role) && ($this->roles()->where('id', $role->id)->count() === 0)) {
                 $this->roles()->attach($role->id);
             }
         }
