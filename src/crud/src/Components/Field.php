@@ -221,7 +221,7 @@ class Field
         }
 
         if (is_callable($setter)) {
-            return $setter($resource, $request);
+            return $setter($this, $resource, $request);
         }
 
         // Set value by name
