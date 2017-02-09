@@ -190,7 +190,7 @@ class Field
             }
 
             if (is_string($dynamicRules)) {
-                return is_string($name) && (strlen($name) > 0) ? [$name => $rules] : [];
+                return is_string($name) && (strlen($name) > 0) ? [$name => $dynamicRules] : [];
             }
         }
 
