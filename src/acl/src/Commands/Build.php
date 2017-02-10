@@ -141,14 +141,14 @@ class Build extends Command
 
             foreach ($currentPermissions as $permission) {
                 if (!in_array($permission->slug, $permissions)) {
-                    $role->refuse($permission);
+                    $role->refuse([$permission]);
                 }
             }
 
             // Grant new permissions
             foreach ($permissions as $permission) {
                 if (is_null($currentPermissions->where('slug', $permission)->first())) {
-                    $role->grant($permission);
+                    $role->grant([$permission]);
                 }
             }
         }
