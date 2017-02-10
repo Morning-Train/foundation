@@ -16,4 +16,13 @@ class Translation
         return $key === $trans ? $default : $trans;
     }
 
+    public static function getCrudBasepath($model)
+    {
+        $slug = (new $model)->getPluralName();
+        $adminPrefix = config('janitor.routing.groups.admin.prefix', trans('admin.prefix'));
+        $modelPrefix = static::get("crud.$slug.prefix", [], $slug);
+
+        return "/$adminPrefix/$modelPrefix";
+    }
+
 }

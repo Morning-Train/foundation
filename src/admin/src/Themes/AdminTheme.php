@@ -49,7 +49,7 @@ class AdminTheme extends Theme
 
                 $item = new \stdClass();
                 $item->slug = (new $model)->getPluralName();
-                $item->basepath = route('admin.' . $item->slug . '.index');     // Have to fix this when index is not ''
+                $item->basepath = Translation::getCrudBasepath($model);
                 $item->path = route('admin.' . $item->slug . '.index');
                 $item->label = Translation::get('crud.' . $item->slug . '.label', [], ucfirst($item->slug));
                 $item->params = $params;
