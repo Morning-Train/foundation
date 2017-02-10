@@ -438,15 +438,15 @@ abstract class Controller extends BaseController
             return $status;
         }
 
+        // Save
+        $resource->save();
+
         // Post update
         $this->postUpdateFields($request, $resource);
 
         if (!is_null($status)) {
             return $status;
         }
-
-        // Save
-        $resource->save();
 
         // Call hook
         $this->afterStore($resource);
