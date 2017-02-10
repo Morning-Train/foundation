@@ -82,7 +82,7 @@ class AclServiceProvider extends ServiceProvider
     {
         // Register acl manage filter if the service is loaded
         if (class_exists('\morningtrain\Crud\CrudServiceProvider')) {
-            $this->app->make('\morningtrain\Crud\Services\Crud')->addFilter(function ($model, $options) {
+            $this->app->make(\morningtrain\Crud\Services\Crud::class)->addFilter(function ($model, $options) {
 
                 $public = isset($options['public']) && ($options['public'] === true) ? true : false;
                 $routeOptions = isset($options['routeOptions']) ? $options['routeOptions'] : [];
