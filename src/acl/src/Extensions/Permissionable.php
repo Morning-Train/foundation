@@ -31,25 +31,29 @@ trait Permissionable
         return $this->permissions()->where('slug', $permission)->count() > 0;
     }
 
-    public function grant($permission)
+    public function grant(array $permissions)
     {
-        if (!$permission instanceof Permission) {
-            $permission = Permission::where('slug', $permission)->first();
-        }
+        foreach ($permissions as $permission) {
+            if (!$permission instanceof Permission) {
+                $permission = Permission::where('slug', $permission)->first();
+            }
 
-        if (!is_null($permission) && ($this->permissions()->where('id', $permission->id)->count() === 0)) {
-            $this->permissions()->attach($permission->id);
+            if (!is_null($permission) && ($this->permissions()->where('id', $permission->id)->count() === 0)) {
+                $this->permissions()->attach($permission->id);
+            }
         }
     }
 
-    public function refuse($permission)
+    public function refuse(array $permissions)
     {
-        if (!$permission instanceof Permission) {
-            $permission = Permission::where('slug', $permission)->first();
-        }
+        foreach ($permissions as $permission) {
+            if (!$permission instanceof Permission) {
+                $permission = Permission::where('slug', $permission)->first();
+            }
 
-        if (!is_null($permission)) {
-            $this->permissions()->detach($permission->id);
+            if (!is_null($permission)) {
+                $this->permissions()->detach($permission->id);
+            }
         }
     }
 
