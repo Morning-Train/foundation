@@ -22,7 +22,7 @@ class Translation
         $adminPrefix = config('janitor.routing.groups.admin.prefix', trans('admin.prefix'));
         $modelPrefix = static::get("crud.$slug.prefix", [], $slug);
 
-        return "/$adminPrefix/$modelPrefix";
+        return "$adminPrefix/$modelPrefix";
     }
 
 }
