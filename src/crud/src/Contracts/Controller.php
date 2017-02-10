@@ -149,6 +149,11 @@ abstract class Controller extends BaseController
     protected $formFields;
 
     /**
+     * @var array
+     */
+    protected $postUpdate = [];
+
+    /**
      * Generates and returns the form fields
      * @param ViewHelper $crud
      *
@@ -172,6 +177,27 @@ abstract class Controller extends BaseController
          */
         foreach ($this->formFields as $field) {
             $status = $field->update($resource, $request);
+
+            if ($status instanceof \Closure) {
+                $this->postUpdate[] = [
+                    'field' => $field,
+                    'callback' => $status
+                ];
+            } else {
+                if (!is_null($status)) {
+                    return $status;
+                }
+            }
+        }
+    }
+
+    protected function postUpdateFields(Request $request, Model $resource)
+    {
+        foreach ($this->postUpdate as $postUpdate) {
+            $field = $postUpdate['field'];
+            $callback = $postUpdate['callback'];
+
+            $status = $callback($field, $resource, $request);
 
             if (!is_null($status)) {
                 return $status;
@@ -407,6 +433,13 @@ abstract class Controller extends BaseController
 
         // Update attributes
         $status = $this->setFields($request, $resource);
+
+        if (!is_null($status)) {
+            return $status;
+        }
+
+        // Post update
+        $this->postUpdateFields($request, $resource);
 
         if (!is_null($status)) {
             return $status;
