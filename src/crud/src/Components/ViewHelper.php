@@ -3,9 +3,19 @@
 namespace morningtrain\Crud\Components;
 
 use Illuminate\Config\Repository;
+use morningtrain\Crud\Contracts\Controller;
 
 class ViewHelper
 {
+
+    /*
+     * Singleton
+     */
+
+    public static function current()
+    {
+        return Controller::current()->getViewHelper();
+    }
 
     function __construct(array $options = [])
     {

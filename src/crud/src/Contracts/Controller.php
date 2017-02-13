@@ -15,10 +15,23 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 abstract class Controller extends BaseController
 {
+    /*
+     * Singleton
+     */
+
+    protected static $current;
+
+    public static function current()
+    {
+        return self::$current;
+    }
+
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     function __construct()
     {
+        // Set singleton
+        self::$current = $this;
 
         // Create store
         $this->store = new Store($this->model, [
@@ -261,6 +274,14 @@ abstract class Controller extends BaseController
      * @var ViewHelper
      */
     protected $viewHelper;
+
+    /**
+     * @return ViewHelper
+     */
+    public function getViewHelper()
+    {
+        return $this->viewHelper;
+    }
 
     /**
      * @param string $messageKey

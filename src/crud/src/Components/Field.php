@@ -109,6 +109,28 @@ class Field
     }
 
     /*
+     * Label accessor
+     */
+
+    public function getLabel()
+    {
+        return $this->options->has('label') ?
+            $this->options->get('label') :
+            ViewHelper::current()->trans('fields.' . $this->options->get('name') . '.label');
+    }
+
+    /*
+     * Placeholder accessor
+     */
+
+    public function getPlaceholder()
+    {
+        return $this->options->has('placeholder') ?
+            $this->options->get('placeholder') :
+            ViewHelper::current()->trans('fields.' . $this->options->get('name') . '.placeholder');
+    }
+
+    /*
      * Id generator
      */
 
@@ -145,7 +167,12 @@ class Field
             }
 
             // Compute query
-            $value = $this->options->get($query['key'], $query['default']);
+            $queryKey = $query['key'];
+            $value = $this->$queryKey;
+
+            if (is_null($value)) {
+                $value = $query['default'];
+            }
 
             if (!is_null($value)) {
                 // Normalize key

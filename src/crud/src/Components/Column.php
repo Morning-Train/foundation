@@ -123,4 +123,15 @@ class Column
         return '';
     }
 
+    /*
+     * Accessors
+     */
+
+    public function getLabel()
+    {
+        return $this->options->has('label') ?
+            $this->options->get('label') :
+            ViewHelper::current()->trans('columns.' . $this->options->get('name'));
+    }
+
 }
