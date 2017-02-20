@@ -29,6 +29,7 @@ return [
         'developer' => [
             'name' => 'Developer',
             'super' => true,
+            'protected' => true,
             'permissions' => [
 
             ],
@@ -37,6 +38,7 @@ return [
         'admin' => [
             'name' => 'Administrator',
             'super' => true,
+            'protected' => true,
             'permissions' => [
 
             ],

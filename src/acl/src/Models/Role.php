@@ -26,5 +26,24 @@ class Role extends Model
     {
         return $query->where('is_super', 1);
     }
-    
+
+    public function scopeWhereIsProtected($query)
+    {
+        return $query->where('is_protected', 1);
+    }
+
+    /*
+     * Helpers
+     */
+
+    public function isSuper()
+    {
+        return $this->is_super === 1;
+    }
+
+    public function isProtected()
+    {
+        return $this->is_protected === 1;
+    }
+
 }

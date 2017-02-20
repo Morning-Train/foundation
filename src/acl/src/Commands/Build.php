@@ -118,6 +118,7 @@ class Build extends Command
             $role = $roleModel::where('slug', $slug)->first();
             $name = isset($data['name']) ? $data['name'] : null;
             $super = isset($data['super']) && $data['super'] ? 1 : 0;
+            $protected = isset($data['protected']) && $data['protected'] ? 1 : 0;
             $permissions = isset($data['permissions']) && is_array($data['permissions']) ? $data['permissions'] : [];
 
             // Create the role if missing
@@ -126,12 +127,18 @@ class Build extends Command
                 $role->slug = $slug;
                 $role->name = $name;
                 $role->is_super = $super;
+                $role->is_protected = $protected;
                 $role->save();
             } // Check if the fields need update
             else {
-                if (($role->name !== $name) || ($role->is_super !== $super)) {
+                if (
+                    ($role->name !== $name) ||
+                    ($role->is_super !== $super) ||
+                    ($role->is_protected !== $protected)
+                ) {
                     $role->name = $name;
                     $role->is_super = $super;
+                    $role->is_protected = $protected;
                     $role->save();
                 }
             }
