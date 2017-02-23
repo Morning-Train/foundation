@@ -14,7 +14,7 @@
 
     @yield('head')
 </head>
-<body class="{{ Theme::get('bodyClass') }}">
+<body class="{!! Theme::do('bodyClass') !!}">
 @yield('body')
 {!! Theme::do('footer') !!}
 </body>

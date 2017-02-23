@@ -71,6 +71,7 @@ class Theme
 
         $this->registerConfig();
         $this->registerAssets();
+        $this->registerBodyClass();
     }
 
     /*
