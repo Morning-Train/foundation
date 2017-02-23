@@ -80,6 +80,12 @@ class AdminServiceProvider extends ServiceProvider
 
         ], 'themes');
 
+        // Publish assets
+        $this->publishes([
+            __DIR__ . '/../resources/shared' => base_path('resources/shared'),
+
+        ], 'assets');
+
     }
 
     public function registerCustomFields()

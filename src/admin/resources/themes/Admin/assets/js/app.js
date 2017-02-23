@@ -8,8 +8,8 @@ var app = window.app = new Application(window.options || {});
 
 /* Services
  ----------------------------------------------------------*/
-import CookieService from "./services/cookie";
-import CsrfService from "./services/csrf";
+import CookieService from "./../../../../shared/js/services/cookie";
+import CsrfService from "./../../../../shared/js/services/csrf";
 
 /* Register services
  ----------------------------------------------------------*/
