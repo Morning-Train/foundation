@@ -3,12 +3,13 @@
 namespace morningtrain\Themer\Contracts;
 
 use morningtrain\Themer\Extensions\HasAssets;
+use morningtrain\Themer\Extensions\HasBodyClass;
 use morningtrain\Themer\Extensions\HasConfig;
 
 class Theme
 {
 
-    use HasAssets, HasConfig;
+    use HasAssets, HasBodyClass;
 
     /**
      * @var string
