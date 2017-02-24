@@ -50,6 +50,7 @@ class Seed extends Command
     public function handle()
     {
         $model = config('auth.providers.users.model', '\\App\\User');
+        $callback = config('acl.seed.callback');
 
         // Validate model
         if (!class_exists($model)) {
@@ -91,6 +92,10 @@ class Seed extends Command
 
             // Attach the role
             $user->roles()->attach($role->id);
+
+            if ($callback instanceof \Closure) {
+                $callback($user);
+            }
         }
 
         $this->info('The users have been seeded!');
