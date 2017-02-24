@@ -4,10 +4,12 @@ namespace morningtrain\Janitor\Services;
 
 use Illuminate\Routing\Router;
 use morningtrain\Janitor\Exceptions\JanitorException;
+use morningtrain\Janitor\Extensions\Dispatcher;
 use morningtrain\Janitor\Middleware\GlobalMiddleware;
 
 class Janitor
 {
+    use Dispatcher;
 
     function __construct(Router $router)
     {

@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use morningtrain\Acl\Extensions\Roleable;
 use morningtrain\Acl\Models\Permission;
 use morningtrain\Acl\Models\Role;
+use morningtrain\Janitor\Services\Janitor;
 use Symfony\Component\Console\Input\InputArgument;
 
 class Seed extends Command
@@ -29,11 +30,12 @@ class Seed extends Command
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Janitor $janitor)
     {
         parent::__construct();
 
         $this->hash = app()->make('hash');
+        $this->janitor = $janitor;
     }
 
     /*
@@ -41,6 +43,11 @@ class Seed extends Command
      */
 
     protected $hash;
+
+    /**
+     * @var Janitor
+     */
+    protected $janitor;
 
     /**
      * Execute the console command.
@@ -88,14 +95,17 @@ class Seed extends Command
             $user->name = $role->display_name;
             $user->email = "$slug@$domain";
             $user->password = $this->hash->make($slug);
+
+            // Trigger before
+            $this->janitor->trigger('acl.seed.before', $user);
+
             $user->save();
 
             // Attach the role
             $user->roles()->attach($role->id);
 
-            if ($callback instanceof \Closure) {
-                $callback($user);
-            }
+            // Trigger after
+            $this->janitor->trigger('acl.seed.after', $user);
         }
 
         $this->info('The users have been seeded!');
