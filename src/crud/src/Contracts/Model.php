@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\Model as BaseModel;
 abstract class Model extends BaseModel
 {
 
+    protected $dates = [
+        'created_at',
+        'updated_at'
+    ];
+
     /**
      * @return string
      */

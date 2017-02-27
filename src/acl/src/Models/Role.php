@@ -15,7 +15,7 @@ class Role extends Model
      */
 
     protected $appends = [
-        'display_name',
+        'displayName',
     ];
 
     /*
