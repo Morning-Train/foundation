@@ -2,10 +2,21 @@
 
 namespace morningtrain\Themer\Services;
 
+use morningtrain\Janitor\Services\Janitor;
 use morningtrain\Themer\Contracts\Theme;
 
 class Themer
 {
+
+    /**
+     * @var Janitor
+     */
+    protected $janitor;
+
+    public function __construct()
+    {
+        $this->janitor = app()->make(Janitor::class);
+    }
 
     /**
      * @var Theme
@@ -38,9 +49,7 @@ class Themer
         $this->current = class_exists($className) ? new $className($name) : new Theme($name);
 
         // Trigger onLoad
-        foreach ($this->onload as $callback) {
-            $callback($this->current);
-        }
+        $this->janitor->trigger('theme.load', $this->current);
 
         return $this->current;
     }
@@ -49,11 +58,9 @@ class Themer
      * Load listener
      */
 
-    protected $onload = [];
-
-    public function onLoad(callable $callback)
+    public function onLoad(\Closure $callback)
     {
-        $this->onload[] = $callback;
+        $this->janitor->on('theme.load', $callback);
 
         return $this;
     }
