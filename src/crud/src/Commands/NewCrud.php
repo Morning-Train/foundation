@@ -19,7 +19,7 @@ class NewCrud extends Command
      *
      * @var string
      */
-    protected $signature = 'crud:new {model} {--o} {--config=} {--stubs=}';
+    protected $signature = 'crud:new {model} {--o} {--c} {--config=} {--stubs=}';
 
     /**
      * The console command description.
@@ -85,7 +85,10 @@ class NewCrud extends Command
         // Run
         $migration = $this->createMigration($migrationName);
         $model = $this->createModel($modelName);
-        $controller = $this->createController($controllerName, $model);
+
+        if (!$this->option('c')) {
+            $controller = $this->createController($controllerName, $model);
+        }
 
         $this->info('Everything has been successfully created!');
     }
