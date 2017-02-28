@@ -68,7 +68,7 @@ class NewCrud extends Command
     {
         $modelName = ucfirst($this->argument('model'));
         $controllerName = str_plural($modelName) . 'Controller';
-        $migrationName = strtolower(str_plural($modelName));
+        $migrationName = strtolower(preg_replace('/\B([A-Z])/', '_$1', str_plural($modelName)));
 
         // Determine options
         $config = $this->option('config');
