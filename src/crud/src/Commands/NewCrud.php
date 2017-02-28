@@ -118,7 +118,8 @@ class NewCrud extends Command
         $migrationName = 'create_' . $name . '_table';
         $filename = $this->migrator->filename($migrationName);
         $destination = $this->migrator->path($filename);
-        $className = 'Create' . ucfirst($name) . 'Table';
+        $classBaseName = str_replace(' ', '', ucwords(preg_replace('/[^a-zA-Z0-9]/', ' ', $name)));
+        $className = 'Create' . $classBaseName . 'Table';
         $existingMigration = $this->migrator->exists($migrationName);
 
         if (($existingMigration === false) || $this->option('o')) {
