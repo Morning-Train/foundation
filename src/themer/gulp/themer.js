@@ -1,4 +1,4 @@
-module.exports = function (basepath) {
+module.exports = function (mix, basepath) {
 
     /*
      Dependencies
@@ -28,9 +28,7 @@ module.exports = function (basepath) {
                 if (fs.existsSync(sassPath)) {
                     try {
                         fs.accessSync(sassPath, fs.F_OK);
-                        elixir(mix => {
-                            mix.sass(sassPath, basepath + '/public/themes/' + theme.toLowerCase() + '/app.css');
-                        });
+                        mix.sass(sassPath, basepath + '/public/themes/' + theme.toLowerCase() + '/app.css');
                     } catch (e) {
                         console.error(e);
                     }
@@ -42,9 +40,7 @@ module.exports = function (basepath) {
                 if (fs.existsSync(jsPath)) {
                     try {
                         fs.accessSync(jsPath, fs.F_OK);
-                        elixir(mix => {
-                            mix.browserify(jsPath, basepath + '/public/themes/' + theme.toLowerCase() + '/app.js');
-                        });
+                        mix.browserify(jsPath, basepath + '/public/themes/' + theme.toLowerCase() + '/app.js');
                     } catch (e) {
                         console.error(e);
                     }
