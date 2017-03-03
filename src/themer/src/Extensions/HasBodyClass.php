@@ -42,11 +42,15 @@ trait HasBodyClass
         }
 
         // Push current route identifier
-        $routeAction = request()->route()->getAction();
+        $route = request()->route();
 
-        if (isset($routeAction['as'])) {
-            $routeClass = preg_replace('/[^a-zA-Z0-9\-_]+/', '-', $routeAction['as']);
-            $this->setBodyClass($routeClass);
+        if (!is_null($route)) {
+            $routeAction = request()->route()->getAction();
+
+            if (isset($routeAction['as'])) {
+                $routeClass = preg_replace('/[^a-zA-Z0-9\-_]+/', '-', $routeAction['as']);
+                $this->setBodyClass($routeClass);
+            }
         }
 
         // Print
