@@ -5,6 +5,8 @@
         <h1>@yield('title')</h1>
         {!! Form::open([ 'route' => 'auth.reset-password.do' ]) !!}
 
+        {!! Form::hidden('token', $token) !!}
+
         <div class="input-100">
             {!! Form::email('email', old('email'), [
                     'placeholder'   => trans('admin.auth.fields.email'),
