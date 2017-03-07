@@ -24,7 +24,7 @@ class HasPermissions
         if (isset($action['permissions']) && is_array($action['permissions'])) {
             foreach ($action['permissions'] as $permission) {
                 if ($this->gate->denies($permission)) {
-                    return response()->make('Unauthorized', 401);
+                    abort(403, 'Forbidden');
                 }
             }
         }

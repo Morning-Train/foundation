@@ -23,7 +23,7 @@ class HasAccess
 
         if (isset($action['as'])) {
             if ($this->gate->denies('access.' . $action['as'])) {
-                return response()->make('Unauthorized', 401);
+                abort(403, 'Forbidden');
             }
         }
 
