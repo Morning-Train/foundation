@@ -5,6 +5,7 @@ namespace morningtrain\Acl;
 use Illuminate\Contracts\Console\Kernel as ConsoleKernel;
 use morningtrain\Acl\Middleware\HasAccess;
 use morningtrain\Acl\Middleware\HasPermissions;
+use morningtrain\Acl\Middleware\IsAssigned;
 use morningtrain\Acl\Middleware\RequireAuthentication;
 use morningtrain\Acl\Models\Permission;
 use morningtrain\Acl\Models\Role;
@@ -32,7 +33,8 @@ class AclFeature extends JanitorFeature
     protected $middleware = [
         'auth.access' => HasAccess::class,
         'auth.can' => HasPermissions::class,
-        'auth.require' => RequireAuthentication::class
+        'auth.require' => RequireAuthentication::class,
+        'auth.is' => IsAssigned::class
     ];
 
     /*

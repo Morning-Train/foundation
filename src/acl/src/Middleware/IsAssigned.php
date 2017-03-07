@@ -23,8 +23,8 @@ class IsAssigned
             abort(401, 'Unauthorized');
         }
 
-        if (isset($action['role'])) {
-            $role = is_array($action['role']) ? $action['role'] : [$action['role']];
+        if (isset($action['roles'])) {
+            $role = is_array($action['roles']) ? $action['roles'] : [$action['roles']];
 
             if ((count($role) > 0) && !$user->isAssigned($role)) {
                 abort(403, 'Forbidden');
