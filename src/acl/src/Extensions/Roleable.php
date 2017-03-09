@@ -43,6 +43,19 @@ trait Roleable
         return $query;
     }
 
+    public function scopeWhereIsAssignedEither($query, array $roles)
+    {
+        return $query->where(function ($query) use ($roles) {
+            foreach ($roles as $role) {
+                $slug = $role instanceof Role ? $role->slug : $role;
+
+                $query->orWhereHas('roles', function ($query) use ($slug) {
+                    $query->where('slug', $slug);
+                });
+            }
+        });
+    }
+
     public function scopeWhereIsAllowed($query, $permission)
     {
 
@@ -137,6 +150,14 @@ trait Roleable
         return $this->newQuery()
             ->where('id', $this->id)
             ->whereIsAssigned($roles)
+            ->count() > 0;
+    }
+
+    public function isAssignedEither(array $roles)
+    {
+        return $this->newQuery()
+            ->where('id', $this->id)
+            ->whereIsAssignedEither($roles)
             ->count() > 0;
     }
 
