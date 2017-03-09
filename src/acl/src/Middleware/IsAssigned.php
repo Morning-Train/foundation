@@ -38,6 +38,7 @@ class IsAssigned
     protected function getStatus($user, array $roles, $match = 'all')
     {
         switch ($match) {
+            case 'either':
             case 'one':
                 $status = $user->isAssignedEither($roles);
                 break;
