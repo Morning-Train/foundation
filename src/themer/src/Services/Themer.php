@@ -2,6 +2,7 @@
 
 namespace morningtrain\Themer\Services;
 
+use morningtrain\Janitor\Exceptions\JanitorException;
 use morningtrain\Janitor\Services\Janitor;
 use morningtrain\Themer\Contracts\Theme;
 
@@ -58,9 +59,24 @@ class Themer
      * Load listener
      */
 
-    public function onLoad(\Closure $callback)
+    public function onLoad($name, $callback = null)
     {
-        $this->janitor->on('theme.load', $callback);
+        // 1 argument only
+        if (is_null($callback)) {
+            $callback = $name;
+            $name = null;
+        }
+
+        // Validate callback
+        if (!($callback instanceof \Closure)) {
+            throw new JanitorException('Invalid callback passed to Theme::onLoad!');
+        }
+
+        $this->janitor->on('theme.load', function (Theme $theme) use ($name, $callback) {
+            if (is_null($name) || ($theme->getName() === $name)) {
+                return $callback($theme);
+            }
+        });
 
         return $this;
     }

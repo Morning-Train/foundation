@@ -30,6 +30,16 @@ class Theme
         $this->register();
     }
 
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
     /*
      * Actions
      */
