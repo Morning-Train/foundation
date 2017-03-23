@@ -189,6 +189,20 @@ class Field
         ]);
     }
 
+    protected function computeOptions(Model $resource, array $source, $prefix = '')
+    {
+        foreach ($source as $key => $compute) {
+            if (is_array($compute)) {
+                $this->computeOptions($resource, $compute, strlen($prefix) > 0 ? "$prefix.$key" : $key);
+                continue;
+            }
+
+            if (is_callable($compute)) {
+                $this->options->set(strlen($prefix) > 0 ? "$prefix.$key" : $key, $compute($resource));
+            }
+        }
+    }
+
     /*
      * Rules
      */
@@ -230,6 +244,9 @@ class Field
 
     public function render(Model $resource, ViewHelper $helper)
     {
+        // Compute options before render
+        $this->computeOptions($resource, $this->options->get('computed', []));
+
         $renderer = $this->render;
 
         if (is_callable($renderer)) {
