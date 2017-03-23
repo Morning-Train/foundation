@@ -4,6 +4,7 @@ namespace morningtrain\Crud\Components;
 
 use Illuminate\Config\Repository;
 use morningtrain\Crud\Contracts\Controller;
+use Illuminate\Routing\Router;
 
 class ViewHelper
 {
@@ -107,6 +108,12 @@ class ViewHelper
     public function route($slug = null, array $args = [])
     {
         return route($this->routeName($slug), $args);
+    }
+
+    public function hasRoute($slug = null)
+    {
+        $router = app()->make(Router::class);
+        return $router->has($this->routeName($slug));
     }
 
 }

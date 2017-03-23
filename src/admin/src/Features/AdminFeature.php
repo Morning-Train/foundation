@@ -81,6 +81,7 @@ class AdminFeature extends JanitorFeature
                 'base' => "admin.$slug",
                 //'prefix'        => Translation::get("crud.$slug.prefix", [], $slug),
                 'namespace' => config('admin.crud.namespaces.controllers', 'App\\Http\\Controllers\\Admin'),
+                'routes' => isset($params['routes']) ? $params['routes'] : null
             ]);
         }
     }
