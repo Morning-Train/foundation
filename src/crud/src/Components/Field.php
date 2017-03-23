@@ -184,9 +184,22 @@ class Field
             }
         }
 
-        return array_merge($this->options->get('attributes', []), $attributes, [
+        $attrs = array_merge($this->options->get('attributes', []), $attributes, [
             'id' => $this->id,
         ]);
+
+        // Normalize attributes
+        foreach ($attrs as $key => $value) {
+            if ($value === true) {
+                $attrs[$key] = $key;
+            } else {
+                if ($value === false) {
+                    unset($attrs[$key]);
+                }
+            }
+        }
+
+        return $attrs;
     }
 
     protected function computeOptions(Model $resource, array $source, $prefix = '')
