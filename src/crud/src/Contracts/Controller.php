@@ -470,7 +470,11 @@ abstract class Controller extends BaseController
         }
 
         // Call hook
-        $this->afterStore($resource);
+        $status = $this->afterStore($resource);
+
+        if (!is_null($status)) {
+            return $status;
+        }
 
         // Notify
         $this->notify($resource->wasNew() ? 'created' : 'updated');
@@ -502,7 +506,11 @@ abstract class Controller extends BaseController
         $resource->delete();
 
         // Call after hook
-        $this->afterDestroy($resource);
+        $status = $this->afterDestroy($resource);
+
+        if (!is_null($status)) {
+            return $status;
+        }
 
         // Notify
         $this->notify('deleted');
