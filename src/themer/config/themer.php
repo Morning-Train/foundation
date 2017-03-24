@@ -2,7 +2,16 @@
 
 return [
     'namespace' => 'App\Themes',
-    'default'   => 'Base',
+    'default' => 'Base',
+
+    /*
+     * Asset config
+     */
+
+    'assets' => [
+        // Versioning (leave null for no versioning)
+        'version' => null
+    ],
 
     /*
      * You can specify default configuration for each themes here

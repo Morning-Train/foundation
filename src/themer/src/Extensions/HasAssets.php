@@ -72,9 +72,13 @@ trait HasAssets
             $this->localization = [];
         }
 
+        // Get asset version
+        $version = config('themer.assets.version');
+        $versionString = is_string($version) ? '?v=' . $version : '';
+
         // Register default theme assets
-        $this->addStylesheet(asset('themes/' . $this->slug . '/app.css'));
-        $this->addScript(asset('themes/' . $this->slug . '/app.js'));
+        $this->addStylesheet(asset('themes/' . $this->slug . '/app.css') . $versionString);
+        $this->addScript(asset('themes/' . $this->slug . '/app.js') . $versionString);
 
         // Register actions
         $this->addAction('head', [$this, 'printStylesheets']);
