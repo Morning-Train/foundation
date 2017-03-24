@@ -42,12 +42,17 @@ class AdminFeature extends JanitorFeature
     protected function routes(Router $router)
     {
         $items = config('admin.items', []);
+        $baseRoute = config('admin.baseRoute');
 
         // Define base admin route
         $router->get('', [
             'as' => 'admin',
             'middleware' => 'auth.access',
-            'uses' => function () use ($items) {
+            'uses' => function () use ($items, $baseRoute) {
+                if (is_string($baseRoute) && (strlen($baseRoute) > 0)) {
+                    return redirect(route($baseRoute));
+                }
+
                 if (count($items) === 0) {
                     return redirect('/');
                 }

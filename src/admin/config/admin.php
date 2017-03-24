@@ -3,6 +3,12 @@
 return [
 
     /*
+     * Base route (redirection after login - leave null for auto)
+     */
+
+    'baseRoute' => null,
+
+    /*
      * Authentication configuration
      */
 
