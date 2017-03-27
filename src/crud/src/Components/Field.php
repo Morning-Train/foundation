@@ -4,7 +4,6 @@ namespace morningtrain\Crud\Components;
 
 use Illuminate\Config\Repository;
 use Illuminate\Http\Request;
-use morningtrain\Crud\Contracts\Model;
 
 class Field
 {
@@ -38,7 +37,7 @@ class Field
         $callback = isset(static::$customFields[$type]) ? static::$customFields[$type] : null;
         $args = array_merge(
             [
-                'render' => function (Field $field, Model $resource, ViewHelper $helper, array $params) use ($type) {
+                'render' => function (Field $field, $resource, ViewHelper $helper, array $params) use ($type) {
                     return view($helper->view("fields.$type"))->with(array_merge($params, [
                         'crud' => $helper,
                         'entry' => $resource,
@@ -202,7 +201,7 @@ class Field
         return $attrs;
     }
 
-    protected function computeOptions(Model $resource, array $source, $prefix = '')
+    protected function computeOptions($resource, array $source, $prefix = '')
     {
         foreach ($source as $key => $compute) {
             if (is_array($compute)) {
@@ -220,7 +219,7 @@ class Field
      * Rules
      */
 
-    public function rules(Model $resource, Request $request)
+    public function rules($resource, Request $request)
     {
         $name = $this->options->get('name');
         $rules = $this->options->get('rules');
@@ -255,7 +254,7 @@ class Field
      * Extensions
      */
 
-    public function render(Model $resource, ViewHelper $helper)
+    public function render($resource, ViewHelper $helper)
     {
         // Compute options before render
         $this->computeOptions($resource, $this->options->get('computed', []));
@@ -269,7 +268,7 @@ class Field
         return '';
     }
 
-    public function update(Model $resource, Request $request)
+    public function update($resource, Request $request)
     {
         $setter = $this->options->get('update');
 
@@ -291,7 +290,7 @@ class Field
         }
     }
 
-    public function value(Model $resource)
+    public function value($resource)
     {
         $name = $this->options->get('name');
         $getter = $this->options->get('value');
