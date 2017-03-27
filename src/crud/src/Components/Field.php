@@ -113,6 +113,25 @@ class Field
     }
 
     /*
+     * Name attribute accessor
+     */
+
+    public function getNameAttribute()
+    {
+        $name = $this->options->get('name', '');
+        $nameParts = explode('.', $name);
+        $nameAttribute = '';
+
+        while ($part = array_shift($nameParts)) {
+            $nameAttribute = (strlen($nameAttribute) > 0) ?
+                "$nameAttribute[$part]" :
+                $part;
+        }
+
+        return $nameAttribute;
+    }
+
+    /*
      * Label accessor
      */
 
