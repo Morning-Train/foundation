@@ -30,6 +30,8 @@ class Crud
         $dummyModel = new $modelClass;
         $singularName = $dummyModel->getShortName();
         $pluralName = $dummyModel->getPluralName();
+        $classParts = explode('\\', $modelClass);
+        $className = end($classParts);
 
         // Determine prefix
         if (!isset($options['prefix'])) {
@@ -47,7 +49,7 @@ class Crud
 
         // Determine controller
         if (!isset($options['controller'])) {
-            $options['controller'] = ucfirst($pluralName) . 'Controller';
+            $options['controller'] = str_plural($className) . 'Controller';
         }
 
         // Determine routes
