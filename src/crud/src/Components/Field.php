@@ -68,6 +68,11 @@ class Field
         $this->options = new Repository($options);
     }
 
+    public function copy(array $override = [])
+    {
+        return new Field(array_merge($this->options->all(), $override));
+    }
+
     function __isset($name)
     {
         $value = $this->$name;
