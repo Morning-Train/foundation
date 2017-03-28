@@ -124,7 +124,7 @@ class Field
 
         while ($part = array_shift($nameParts)) {
             $nameAttribute = (strlen($nameAttribute) > 0) ?
-                "$nameAttribute[$part]" :
+                $nameAttribute . '[' . $part . ']' :
                 $part;
         }
 
